@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 47% 11%;
+  --foreground: 220 20% 91%;
+  --card: 222 50% 8%;
+  --card-foreground: 220 20% 91%;
+  --primary: 217 91% 56%;
+  --primary-foreground: 220 20% 91%;
+  --secondary: 222 20% 16%;
+  --secondary-foreground: 220 20% 91%;
+  --muted: 222 18% 20%;
+  --muted-foreground: 215 19% 65%;
+  --accent: 172 81% 40%;
+  --accent-foreground: 220 20% 91%;
+  --border: 217 19% 27%;
+  --input: 217 19% 27%;
+  --ring: 217 91% 56%;
+  --radius: 0.75rem;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-exec-navy text-primary-text font-sans antialiased;
+  line-height: 1.6;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-primary-text;
+  }
+
+  p {
+    line-height: 1.65;
+  }
+}
+
+@layer components {
+  .h1 {
+    @apply text-4xl font-semibold tracking-[-0.02em] text-primary-text md:text-5xl;
+  }
+
+  .h2 {
+    @apply text-3xl font-semibold tracking-tight text-primary-text;
+  }
+
+  .h3 {
+    @apply text-[22px] font-semibold tracking-tight text-primary-text;
+  }
+
+  .h4 {
+    @apply text-xl font-semibold tracking-tight text-primary-text;
+  }
+
+  .body-lg {
+    @apply text-lg text-muted-text;
+  }
+
+  .body-md {
+    @apply text-base text-muted-text;
+  }
+
+  .mono-label {
+    @apply font-mono text-sm text-systems-teal;
+  }
+
+  .card-case-study {
+    @apply rounded-xl border border-slate-700 bg-slate-950/70 p-6 md:p-8;
+  }
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.25);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  @apply outline-none ring-2 ring-strategic-blue ring-offset-2 ring-offset-exec-navy;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition-duration: 0ms !important;
+  }
+}
