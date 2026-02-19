@@ -1,5 +1,5 @@
 import type { VercelRequest } from "@vercel/node";
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "../../lib/session";
+import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "../../lib/session.js";
 
 export async function assertCmsAuthorized(req: VercelRequest): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
   const secret = process.env.SITE_PASSWORD;

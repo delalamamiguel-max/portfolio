@@ -1,4 +1,4 @@
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "./lib/session";
+import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "./lib/session.js";
 
 function redirectToLogin(request: Request): Response {
   const url = new URL(request.url);

@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildSessionCookie, createSessionToken } from "../lib/session";
+import { buildSessionCookie, createSessionToken } from "../lib/session.js";
 
 type RateLimitEntry = {
   count: number;

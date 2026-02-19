@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "../lib/session";
+import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "../lib/session.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "GET") {

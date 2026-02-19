@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { assertCmsAuthorized } from "./auth";
-import { assertCsrf } from "./csrf";
-import { loadGithubConfig, writeFileToGithub } from "./github";
-import { isRateLimited } from "./rate-limit";
+import { assertCmsAuthorized } from "./auth.js";
+import { assertCsrf } from "./csrf.js";
+import { loadGithubConfig, writeFileToGithub } from "./github.js";
+import { isRateLimited } from "./rate-limit.js";
 
 const ALLOWED_PATHS = [
   "content/pages/home.json",
