@@ -1,0 +1,63 @@
+{
+  "heroHeadline": "Senior Product Leader - Strategy, Data Platforms & ML Systems",
+  "heroSubheadline": "I concept, architect, and scale intelligent systems that drive measurable business outcomes.",
+  "proofMetrics": [
+    {
+      "value": "+8%",
+      "label": "CTR lift",
+      "context": "Delivered through ML modernization and model-serving improvements."
+    },
+    {
+      "value": "+12%",
+      "label": "Engagement",
+      "context": "Gained by scaling experimentation systems across product surfaces."
+    },
+    {
+      "value": "$8M+",
+      "label": "OPEX reduced",
+      "context": "Achieved with platform strategy and architecture simplification."
+    }
+  ],
+  "strategicPillars": [
+    {
+      "title": "Strategy",
+      "bullets": [
+        "Vision framing tied to measurable outcomes",
+        "TAM and sequencing for portfolio choices",
+        "Roadmap clarity under governance constraints"
+      ]
+    },
+    {
+      "title": "Architecture",
+      "bullets": [
+        "Platform-first operating model design",
+        "Governance-aware data and ML lifecycle decisions",
+        "System trade-offs made explicit early"
+      ]
+    },
+    {
+      "title": "Execution",
+      "bullets": [
+        "Cross-functional delivery cadence at scale",
+        "Experimentation loops connected to business metrics",
+        "Operational discipline from concept to launch"
+      ]
+    },
+    {
+      "title": "Leadership",
+      "bullets": [
+        "Alignment across product, engineering, data, and compliance",
+        "Executive communication without technical dilution",
+        "Teams organized around durable system outcomes"
+      ]
+    }
+  ],
+  "primaryCTA": {
+    "label": "Explore Case Studies",
+    "href": "/case-studies"
+  },
+  "secondaryCTA": {
+    "label": "Download Resume",
+    "href": "/resume"
+  }
+}

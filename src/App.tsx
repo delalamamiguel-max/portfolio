@@ -19,6 +19,17 @@ const DeepDiveDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.DeepDiveDetailPage })),
 );
 const StyleGuidePage = lazy(() => import("@/pages/style-guide-page").then((module) => ({ default: module.StyleGuidePage })));
+const AdminHomePage = lazy(() => import("@/pages/admin/admin-home").then((module) => ({ default: module.AdminHomePage })));
+const AdminPagesPage = lazy(() => import("@/pages/admin/admin-pages").then((module) => ({ default: module.AdminPagesPage })));
+const AdminPhilosophyPage = lazy(() =>
+  import("@/pages/admin/admin-philosophy").then((module) => ({ default: module.AdminPhilosophyPage })),
+);
+const AdminCaseStudiesPage = lazy(() =>
+  import("@/pages/admin/admin-case-studies").then((module) => ({ default: module.AdminCaseStudiesPage })),
+);
+const AdminDeepDivePage = lazy(() =>
+  import("@/pages/admin/admin-deep-dive").then((module) => ({ default: module.AdminDeepDivePage })),
+);
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const location = useLocation();
@@ -89,6 +100,46 @@ export default function App() {
             element={
               <PrivateRoute>
                 <StyleGuidePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminHomePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/pages"
+            element={
+              <PrivateRoute>
+                <AdminPagesPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/philosophy"
+            element={
+              <PrivateRoute>
+                <AdminPhilosophyPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/case-studies"
+            element={
+              <PrivateRoute>
+                <AdminCaseStudiesPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/deep-dive"
+            element={
+              <PrivateRoute>
+                <AdminDeepDivePage />
               </PrivateRoute>
             }
           />

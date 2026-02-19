@@ -1,0 +1,11 @@
+{
+  "headline": "If you're building intelligent platforms at scale, let's talk.",
+  "subtext": "Minimal, direct path to conversation.",
+  "contactMethods": [
+    {
+      "type": "email",
+      "label": "hello@migueldelalama.com",
+      "value": "mailto:hello@migueldelalama.com"
+    }
+  ]
+}

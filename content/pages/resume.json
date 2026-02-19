@@ -1,0 +1,29 @@
+{
+  "sections": [
+    {
+      "role": "Senior Product Leader",
+      "company": "Enterprise Platform",
+      "timeline": "Recent",
+      "highlights": [
+        "Led ML and platform modernization across regulated product surfaces.",
+        "Built shared experimentation capabilities for consistent decision velocity.",
+        "Drove system-level strategy with measurable business impact."
+      ],
+      "metrics": ["+8% CTR", "$8M+ OPEX reduction"],
+      "tags": ["strategy", "ml-systems", "platform-governance"]
+    },
+    {
+      "role": "Product Leadership",
+      "company": "Data & Growth Systems",
+      "timeline": "Prior",
+      "highlights": [
+        "Scaled cross-functional operating model across product, engineering, and analytics.",
+        "Institutionalized experimentation standards and measurement quality.",
+        "Delivered architecture-aware execution with measurable behavior change."
+      ],
+      "metrics": ["+12% engagement lift"],
+      "tags": ["experimentation", "execution", "leadership"]
+    }
+  ],
+  "downloadablePdfUrl": "/resume.pdf"
+}

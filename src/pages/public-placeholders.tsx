@@ -4,50 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TagPill } from "@/components/ui/tag-pill";
-
-const philosophyEssays = [
-  {
-    title: "Product as Systems Design",
-    summary: "Roadmaps create value only when they align architecture, governance, and operating rhythm.",
-  },
-  {
-    title: "Governance as Acceleration",
-    summary: "Clear controls reduce decision drag and make enterprise-scale shipping safer and faster.",
-  },
-  {
-    title: "Data as a Compounding Asset",
-    summary: "Instrumentation discipline turns one-off execution into repeatable strategic advantage.",
-  },
-];
-
-const resumeTimeline = [
-  {
-    role: "Senior Product Leader",
-    company: "Enterprise Platform",
-    timeline: "Recent",
-    highlights: [
-      "Led ML and platform modernization across regulated product surfaces.",
-      "Built shared experimentation capabilities for consistent decision velocity.",
-      "Drove system-level strategy with measurable business impact.",
-    ],
-    metrics: ["+8% CTR", "$8M+ OPEX reduction"],
-    tags: ["strategy", "ml-systems", "platform-governance"],
-  },
-  {
-    role: "Product Leadership",
-    company: "Data & Growth Systems",
-    timeline: "Prior",
-    highlights: [
-      "Scaled cross-functional operating model across product, engineering, and analytics.",
-      "Institutionalized experimentation standards and measurement quality.",
-      "Delivered architecture-aware execution with measurable behavior change.",
-    ],
-    metrics: ["+12% engagement lift"],
-    tags: ["experimentation", "execution", "leadership"],
-  },
-];
+import { getContactContent, getPhilosophyDocs, getResumeContent } from "@/lib/content-loader";
+import { markdownToHtml } from "@/lib/markdown";
 
 export function PhilosophyPage() {
+  const essays = getPhilosophyDocs(false);
+
   return (
     <Section>
       <div className="max-w-4xl space-y-8">
@@ -57,10 +19,16 @@ export function PhilosophyPage() {
         </header>
 
         <div className="space-y-4">
-          {philosophyEssays.map((essay) => (
-            <article key={essay.title} className="card-case-study">
+          {essays.map((essay) => (
+            <article key={essay.slug} className="card-case-study">
               <h2 className="h3">{essay.title}</h2>
               <p className="mt-3 body-md">{essay.summary}</p>
+              <div className="mt-4 body-md" dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }} />
+              <div className="mt-4 flex flex-wrap gap-2">
+                {essay.tags.map((tag) => (
+                  <TagPill key={`${essay.slug}-${tag}`}>{tag}</TagPill>
+                ))}
+              </div>
             </article>
           ))}
         </div>
@@ -70,6 +38,8 @@ export function PhilosophyPage() {
 }
 
 export function ResumePage() {
+  const resume = getResumeContent();
+
   return (
     <Section>
       <div className="max-w-5xl space-y-8">
@@ -78,13 +48,13 @@ export function ResumePage() {
             <h1 className="h1">Resume</h1>
             <p className="body-lg max-w-3xl">Metrics-forward timeline optimized for fast recruiter and executive skim.</p>
           </div>
-          <a href="/resume.pdf" download>
+          <a href={resume.downloadablePdfUrl} download>
             <Button variant="secondary" size="lg">Download PDF</Button>
           </a>
         </header>
 
         <div className="space-y-4">
-          {resumeTimeline.map((entry) => (
+          {resume.sections.map((entry) => (
             <Card key={`${entry.role}-${entry.company}`} variant="case-study" padding="md">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
@@ -125,6 +95,7 @@ export function ResumePage() {
 }
 
 export function ContactPage() {
+  const contact = getContactContent();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -161,10 +132,17 @@ export function ContactPage() {
       <div className="max-w-3xl space-y-8">
         <header className="space-y-4">
           <h1 className="h1">Contact</h1>
-          <p className="body-lg">If you're building intelligent platforms at scale, let's talk.</p>
+          <p className="body-lg">{contact.headline}</p>
+          <p className="body-md">{contact.subtext}</p>
         </header>
 
         <Card variant="case-study" padding="md">
+          <div className="mb-4 space-y-2">
+            {contact.contactMethods.map((method) => (
+              <a key={method.value} className="mono-label block hover:underline" href={method.value}>{method.label}</a>
+            ))}
+          </div>
+
           <form className="space-y-4" onSubmit={onSubmit}>
             <div className="space-y-2">
               <label className="text-sm text-primary-text" htmlFor="contact-email">
@@ -186,7 +164,7 @@ export function ContactPage() {
               </label>
               <textarea
                 id="contact-message"
-                className="min-h-32 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-base text-primary-text placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-strategic-blue focus-visible:ring-offset-2 ring-offset-exec-navy"
+                className="min-h-32 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-base text-primary-text placeholder:text-slate-500"
                 required
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}

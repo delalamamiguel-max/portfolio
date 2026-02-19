@@ -1,19 +1,19 @@
-import { lazy, Suspense } from "react";
 import { Section } from "@/components/layout/section";
 import { StickySideNav } from "@/components/layout/sticky-side-nav";
 import { TagPill } from "@/components/ui/tag-pill";
-import type { CaseStudy } from "@/lib/case-studies";
-
-const ArchitectureDiagram = lazy(() =>
-  import("@/components/case-study/architecture-diagram").then((module) => ({ default: module.ArchitectureDiagram })),
-);
+import type { ValidatedCaseStudy } from "@/lib/content-schema";
+import { markdownToHtml } from "@/lib/markdown";
 
 type CaseStudyTemplateProps = {
-  study: CaseStudy;
+  study: ValidatedCaseStudy;
 };
 
+function toId(heading: string): string {
+  return heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
 export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
-  const navItems = study.sections.map((section) => ({ id: section.id, label: section.label }));
+  const navItems = study.sections.map((section) => ({ id: toId(section.heading), label: section.heading }));
 
   return (
     <Section density="dense">
@@ -32,16 +32,12 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
           </header>
 
           {study.sections.map((section) => (
-            <article key={section.id} id={section.id} className="card-case-study">
-              <h2 className="h3">{section.label}</h2>
-
-              {section.id === "architecture" && study.architectureDiagram ? (
-                <Suspense fallback={<p className="mt-4 body-md">Loading architecture diagram...</p>}>
-                  <ArchitectureDiagram diagram={study.architectureDiagram} />
-                </Suspense>
-              ) : null}
-
-              <p className="mt-4 body-md">{section.content}</p>
+            <article key={section.heading} id={toId(section.heading)} className="card-case-study">
+              <h2 className="h3">{section.heading}</h2>
+              <div
+                className="mt-4 body-md space-y-3"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(section.content) }}
+              />
             </article>
           ))}
         </div>

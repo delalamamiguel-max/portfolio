@@ -32,5 +32,5 @@ export default async function middleware(request: Request) {
 }
 
 export const config = {
-  matcher: ["/case-studies/:path*", "/deep-dive/:path*"],
+  matcher: ["/case-studies/:path*", "/deep-dive/:path*", "/admin/:path*"],
 };
