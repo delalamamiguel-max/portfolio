@@ -22,13 +22,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const auth = await assertCmsAuthorized(req);
-  if (!auth.ok) {
+  if (auth.ok === false) {
     res.status(auth.status).json({ error: auth.error });
     return;
   }
 
   const csrf = assertCsrf(req);
-  if (!csrf.ok) {
+  if (csrf.ok === false) {
     res.status(csrf.status).json({ error: csrf.error });
     return;
   }
