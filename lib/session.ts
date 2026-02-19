@@ -37,16 +37,22 @@ function toHex(buffer: ArrayBuffer): string {
 }
 
 async function hmacHex(secret: string, payload: string): Promise<string> {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
+  // Prefer Web Crypto where available (Edge/middleware), but fall back to Node crypto for serverless functions.
+  if (typeof crypto !== "undefined" && crypto.subtle) {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
 
-  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
-  return toHex(signature);
+    const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
+    return toHex(signature);
+  }
+
+  const { createHmac } = await import("node:crypto");
+  return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
 export async function createSessionToken(secret: string): Promise<string> {
