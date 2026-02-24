@@ -3,7 +3,7 @@ slug: fluently-ai-case-studyv2
 title: Fluently_AI_Case_Study_V2
 summary: BACKGROUND
 tags: [ai, platform, translation, multilingual, governance, data, automation, product-strategy]
-published: false
+published: true
 ---
 
 ## Strategic Context
