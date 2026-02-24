@@ -42,8 +42,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const config = loadGithubConfig();
-    await deleteFileFromGithub(config, path, `cms: delete ${path}`);
-    res.status(200).json({ ok: true });
+    const message = `cms: delete ${path}`;
+    await deleteFileFromGithub(config, path, message);
+    res.status(200).json({ ok: true, path, message });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown delete error";
     res.status(500).json({ error: message });

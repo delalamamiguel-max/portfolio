@@ -63,8 +63,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const config = loadGithubConfig();
-    await writeFileToGithub(config, path, content, commitMessage(path, req.body?.message));
-    res.status(200).json({ ok: true });
+    const message = commitMessage(path, req.body?.message);
+    await writeFileToGithub(config, path, content, message);
+    res.status(200).json({ ok: true, path, message });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown write error";
     res.status(500).json({ error: message });

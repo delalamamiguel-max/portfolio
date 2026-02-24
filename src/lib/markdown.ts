@@ -84,22 +84,125 @@ export function extractSections(body: string): Array<{ heading: string; content:
 }
 
 export function markdownToHtml(markdown: string): string {
-  const escaped = markdown
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  const normalized = markdown.replace(/\r\n/g, "\n").trim();
+  if (!normalized) return "";
 
-  return escaped
-    .split(/\n\n+/)
-    .map((block) => {
-      const trimmed = block.trim();
-      if (trimmed.startsWith("## ")) {
-        return `<h2>${trimmed.slice(3)}</h2>`;
+  const escapeHtml = (value: string) =>
+    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const renderInline = (input: string): string => {
+    let out = escapeHtml(input);
+
+    out = out.replace(/&lt;u&gt;([\s\S]*?)&lt;\/u&gt;/g, "<u>$1</u>");
+    out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
+    out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g, (_match, label: string, href: string) => {
+      if (String(href).startsWith("/")) {
+        return `<a href="${href}">${label}</a>`;
       }
-      if (trimmed.startsWith("# ")) {
-        return `<h1>${trimmed.slice(2)}</h1>`;
+      return `<a href="${href}" target="_blank" rel="noreferrer">${label}</a>`;
+    });
+    out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    out = out.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+    return out;
+  };
+
+  const renderImageLine = (line: string): string | null => {
+    const match = line.trim().match(/^!\[([^\]]+)\]\((\/[^\s)]+|https?:\/\/[^\s)]+)\)(?:\{align=(left|center|full)\})?$/);
+    if (!match) return null;
+    const [, alt, src, align = "center"] = match;
+    const classes =
+      align === "full"
+        ? "my-4 w-full overflow-hidden rounded-md"
+        : align === "left"
+          ? "my-4 max-w-[70%] rounded-md"
+          : "my-4 mx-auto max-w-[85%] rounded-md";
+    const imgClasses = align === "full" ? "w-full rounded-md" : "w-full rounded-md";
+    return `<figure class="${classes}" data-align="${align}"><img src="${src}" alt="${escapeHtml(alt)}" class="${imgClasses}" loading="lazy" /></figure>`;
+  };
+
+  const lines = normalized.split("\n");
+  const html: string[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const raw = lines[i];
+    const line = raw.trimEnd();
+
+    if (!line.trim()) {
+      i += 1;
+      continue;
+    }
+
+    const imageHtml = renderImageLine(line);
+    if (imageHtml) {
+      html.push(imageHtml);
+      i += 1;
+      continue;
+    }
+
+    if (line.startsWith("```")) {
+      const lang = line.slice(3).trim();
+      const block: string[] = [];
+      i += 1;
+      while (i < lines.length && !lines[i].trimStart().startsWith("```")) {
+        block.push(lines[i]);
+        i += 1;
       }
-      return `<p>${trimmed.replace(/\n/g, "<br />")}</p>`;
-    })
-    .join("\n");
+      if (i < lines.length) i += 1;
+      html.push(`<pre><code${lang ? ` data-lang="${escapeHtml(lang)}"` : ""}>${escapeHtml(block.join("\n"))}</code></pre>`);
+      continue;
+    }
+
+    const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      html.push(`<h${level}>${renderInline(headingMatch[2].trim())}</h${level}>`);
+      i += 1;
+      continue;
+    }
+
+    if (line.trimStart().startsWith(">")) {
+      const parts: string[] = [];
+      while (i < lines.length && lines[i].trimStart().startsWith(">")) {
+        parts.push(lines[i].replace(/^\s*>\s?/, ""));
+        i += 1;
+      }
+      html.push(`<blockquote>${parts.map((part) => `<p>${renderInline(part)}</p>`).join("")}</blockquote>`);
+      continue;
+    }
+
+    if (/^\s*[-*]\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
+        i += 1;
+      }
+      html.push(`<ul>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ul>`);
+      continue;
+    }
+
+    if (/^\s*\d+\.\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*\d+\.\s+/, ""));
+        i += 1;
+      }
+      html.push(`<ol>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`);
+      continue;
+    }
+
+    const paragraph: string[] = [line];
+    i += 1;
+    while (
+      i < lines.length &&
+      lines[i].trim() &&
+      !lines[i].trim().match(/^(!\[|```|#{1,4}\s+|>|\d+\.\s+|[-*]\s+)/)
+    ) {
+      paragraph.push(lines[i]);
+      i += 1;
+    }
+    html.push(`<p>${paragraph.map((part) => renderInline(part)).join("<br />")}</p>`);
+  }
+
+  return html.join("\n");
 }

@@ -76,6 +76,33 @@ export async function writeFileToGithub(config: GithubConfig, path: string, cont
   }
 }
 
+export async function writeBase64FileToGithub(
+  config: GithubConfig,
+  path: string,
+  contentBase64: string,
+  message: string,
+): Promise<void> {
+  const sha = await getFileSha(config, path);
+
+  const response = await fetchJson(contentUrl(config, path), config.token, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message,
+      content: contentBase64,
+      branch: config.branch,
+      sha: sha ?? undefined,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GitHub write failed: ${text}`);
+  }
+}
+
 export async function deleteFileFromGithub(config: GithubConfig, path: string, message: string): Promise<void> {
   const sha = await getFileSha(config, path);
 
