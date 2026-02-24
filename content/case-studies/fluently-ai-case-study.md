@@ -105,6 +105,6 @@ Planned next iterations:
 
 ## Execution
 
-## Impact
+## Impact 
 
 ## What's Next
