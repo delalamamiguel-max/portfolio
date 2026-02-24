@@ -60,6 +60,11 @@ type ImportDraftState = {
   generatedMarkdown: string;
 };
 
+type GeneratedMarkdownResult = {
+  markdown: string;
+  warnings: string[];
+};
+
 const REQUIRED_CASE_STUDY_SECTIONS = [
   "Strategic Context",
   "Architecture",
@@ -321,6 +326,129 @@ function blocksToMarkdown(blocks: ImportBlock[], imageUploads: Record<string, Im
   return { markdown: chunks.filter(Boolean).join("\n\n").trim() + "\n", warnings };
 }
 
+function headingToRequiredSection(heading: string): string | null {
+  const normalized = heading.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+  if (
+    normalized.includes("strategic context") ||
+    normalized.startsWith("background") ||
+    normalized.includes("context") ||
+    normalized.includes("challenge")
+  ) {
+    return "Strategic Context";
+  }
+
+  if (
+    normalized.includes("architecture") ||
+    normalized.includes("solution") ||
+    normalized.includes("design decision") ||
+    normalized.includes("technical design")
+  ) {
+    return "Architecture";
+  }
+
+  if (
+    normalized.includes("trade off") ||
+    normalized.includes("tradeoff") ||
+    normalized.includes("decision") ||
+    normalized.includes("risk")
+  ) {
+    return "Trade-offs";
+  }
+
+  if (
+    normalized.includes("execution") ||
+    normalized.includes("collaboration") ||
+    normalized.includes("implementation") ||
+    normalized.includes("rollout") ||
+    normalized.includes("build")
+  ) {
+    return "Execution";
+  }
+
+  if (
+    normalized.includes("impact") ||
+    normalized.includes("result") ||
+    normalized.includes("outcome")
+  ) {
+    return "Impact";
+  }
+
+  if (
+    normalized.includes("what s next") ||
+    normalized.includes("whats next") ||
+    normalized.includes("next step") ||
+    normalized.includes("learning") ||
+    normalized.includes("takeaway")
+  ) {
+    return "What's Next";
+  }
+
+  return null;
+}
+
+function autoMapBlocksToRequiredCaseStudySections(
+  blocks: ImportBlock[],
+  imageUploads: Record<string, ImageUploadResult>,
+): GeneratedMarkdownResult {
+  const buckets = new Map<string, ImportBlock[]>();
+  for (const section of REQUIRED_CASE_STUDY_SECTIONS) {
+    buckets.set(section, []);
+  }
+
+  const warnings: string[] = [];
+  let currentSection = "Strategic Context";
+  let remappedAnyHeading = false;
+
+  for (const block of blocks) {
+    if (block.type === "heading") {
+      const headingText = runsToPlainText(block.runs).trim();
+      const mapped = headingToRequiredSection(headingText);
+      const exactRequired = REQUIRED_CASE_STUDY_SECTIONS.find((section) => section === headingText);
+
+      if (exactRequired) {
+        currentSection = exactRequired;
+        continue;
+      }
+
+      if (mapped) {
+        currentSection = mapped;
+        remappedAnyHeading = true;
+        if (headingText && headingText !== mapped) {
+          warnings.push(`Auto-mapped DOCX heading "${headingText}" to required section "${mapped}".`);
+        }
+        continue;
+      }
+
+      buckets.get(currentSection)?.push({
+        type: "paragraph",
+        runs: [{ text: headingText, bold: true }],
+      });
+      warnings.push(`Unmapped heading "${headingText}" was preserved inside "${currentSection}".`);
+      continue;
+    }
+
+    buckets.get(currentSection)?.push(block);
+  }
+
+  const orderedBlocks: ImportBlock[] = [];
+  for (const section of REQUIRED_CASE_STUDY_SECTIONS) {
+    orderedBlocks.push({ type: "heading", level: 2, runs: [{ text: section }] });
+    const sectionBlocks = buckets.get(section) || [];
+    orderedBlocks.push(...sectionBlocks);
+  }
+
+  const generated = blocksToMarkdown(orderedBlocks, imageUploads);
+  if (remappedAnyHeading) {
+    warnings.unshift("DOCX headings were auto-mapped to the required case study section structure.");
+  }
+
+  return {
+    markdown: generated.markdown,
+    warnings: [...warnings, ...generated.warnings],
+  };
+}
+
 function validateCaseStudyImportDraft(title: string, slug: string, body: string, imageWarnings: string[], parserWarnings: string[]) {
   const warnings: string[] = [...parserWarnings, ...imageWarnings];
 
@@ -398,11 +526,24 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
   const [applying, setApplying] = useState(false);
   const [status, setStatus] = useState<string>("");
   const [importFolder, setImportFolder] = useState("case-studies/imports");
+  const [autoMapSections, setAutoMapSections] = useState(true);
+
+  const displayGenerated = useMemo(() => {
+    if (!state) return null;
+    const placeholderMap = Object.fromEntries(
+      state.images.map((img) => [img.id, { id: img.id, alt: "Imported image" } satisfies ImageUploadResult]),
+    ) as Record<string, ImageUploadResult>;
+    return autoMapSections
+      ? autoMapBlocksToRequiredCaseStudySections(state.blocks, placeholderMap)
+      : { markdown: state.generatedMarkdown, warnings: [] };
+  }, [state, autoMapSections]);
 
   const finalWarnings = useMemo(() => {
     if (!state) return [];
-    return validateCaseStudyImportDraft(state.title, state.slug, state.generatedMarkdown, [], state.warnings);
-  }, [state]);
+    const markdown = displayGenerated?.markdown || state.generatedMarkdown;
+    const autoMapWarnings = displayGenerated?.warnings || [];
+    return validateCaseStudyImportDraft(state.title, state.slug, markdown, [], [...state.warnings, ...autoMapWarnings]);
+  }, [state, displayGenerated]);
 
   const handleDocxFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -473,7 +614,9 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
         }
       }
 
-      const generated = blocksToMarkdown(state.blocks, imageUploadMap);
+      const generated = autoMapSections
+        ? autoMapBlocksToRequiredCaseStudySections(state.blocks, imageUploadMap)
+        : blocksToMarkdown(state.blocks, imageUploadMap);
       const allWarnings = validateCaseStudyImportDraft(state.title, state.slug, generated.markdown, generated.warnings, state.warnings);
 
       onApplyDraft({
@@ -484,7 +627,9 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
         warnings: allWarnings,
       });
 
-      setStatus("DOCX import applied to editor as an unpublished draft. Review and Save Draft to commit.");
+      setStatus(
+        `DOCX import applied to editor as an unpublished draft${autoMapSections ? " with auto-mapped case study sections" : ""}. Review and Save Draft to commit.`,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to apply DOCX import.");
     } finally {
@@ -533,6 +678,16 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
         tracked changes, text boxes, complex layouts.
       </div>
 
+      <label className="inline-flex items-center gap-2 text-sm text-primary-text">
+        <input
+          type="checkbox"
+          checked={autoMapSections}
+          onChange={(e) => setAutoMapSections(e.target.checked)}
+          disabled={disabled || loading || applying}
+        />
+        Auto-map imported headings into required case study sections (recommended)
+      </label>
+
       {error ? <p className="text-sm text-red-400">{error}</p> : null}
       {status ? <p className="text-sm text-emerald-400">{status}</p> : null}
 
@@ -568,7 +723,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
               <p className="text-sm text-primary-text">Generated Markdown (diffable output)</p>
               <textarea
                 readOnly
-                value={state.generatedMarkdown}
+                value={displayGenerated?.markdown || state.generatedMarkdown}
                 className="min-h-[280px] w-full rounded-md border border-slate-700 bg-slate-950 p-3 text-xs text-primary-text"
               />
             </div>
@@ -585,7 +740,10 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
           <div className="space-y-2">
             <p className="text-sm text-primary-text">Preview (pre-save)</p>
             <article className="min-h-[180px] rounded-md border border-slate-700 bg-slate-950 p-4">
-              <div className="body-md space-y-3" dangerouslySetInnerHTML={{ __html: markdownToHtml(state.generatedMarkdown) }} />
+              <div
+                className="body-md space-y-3"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(displayGenerated?.markdown || state.generatedMarkdown) }}
+              />
             </article>
           </div>
         </div>
@@ -593,4 +751,3 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
     </section>
   );
 }
-
