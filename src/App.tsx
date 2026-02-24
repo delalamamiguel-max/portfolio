@@ -27,6 +27,9 @@ const AdminPhilosophyPage = lazy(() =>
 const AdminCaseStudiesPage = lazy(() =>
   import("@/pages/admin/admin-case-studies").then((module) => ({ default: module.AdminCaseStudiesPage })),
 );
+const AdminCaseStudyPreviewPage = lazy(() =>
+  import("@/pages/admin/admin-case-study-preview").then((module) => ({ default: module.AdminCaseStudyPreviewPage })),
+);
 const AdminDeepDivePage = lazy(() =>
   import("@/pages/admin/admin-deep-dive").then((module) => ({ default: module.AdminDeepDivePage })),
 );
@@ -132,6 +135,14 @@ export default function App() {
             element={
               <PrivateRoute>
                 <AdminCaseStudiesPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/case-studies/preview/:slug"
+            element={
+              <PrivateRoute>
+                <AdminCaseStudyPreviewPage />
               </PrivateRoute>
             }
           />

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { DocxCaseStudyImporter } from "@/components/admin/docx-case-study-importer";
 import { MarkdownSplitEditor } from "@/components/admin/markdown-split-editor";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,14 @@ type StatusState = {
 type ImportedDraftState = {
   pendingFirstDraftSave: boolean;
   warnings: string[];
+};
+
+type SaveResultState = {
+  created: boolean;
+  path: string;
+  previewUrl?: string;
+  liveUrl?: string;
+  deploymentNote?: string;
 };
 
 const emptyState: EditorState = {
@@ -118,6 +127,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<StatusState>({ tone: "idle", message: "" });
   const [importedDraftState, setImportedDraftState] = useState<ImportedDraftState | null>(null);
+  const [lastSaveResult, setLastSaveResult] = useState<SaveResultState | null>(null);
 
   useEffect(() => {
     setDocsByPath(normalizePathMap(rawMap));
@@ -147,6 +157,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
     setSlugTouched(true);
     setStatus({ tone: "idle", message: "" });
     setImportedDraftState(null);
+    setLastSaveResult(null);
   };
 
   const resetForNew = () => {
@@ -155,10 +166,12 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
     setSlugTouched(false);
     setStatus({ tone: "idle", message: "" });
     setImportedDraftState(null);
+    setLastSaveResult(null);
   };
 
   const onSave = async () => {
     setStatus({ tone: "idle", message: "" });
+    setLastSaveResult(null);
 
     if (!state.title.trim()) {
       setStatus({ tone: "error", message: "Title is required." });
@@ -211,7 +224,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       const path = `${directory}/${state.slug}.md`;
       const previousPath = selectedPath;
       const messagePrefix = directory.endsWith("case-studies") ? `cms: update case study ${state.slug}` : `cms: update ${state.slug}`;
-      await cmsWriteFile(path, markdown, messagePrefix);
+      const response = await cmsWriteFile(path, markdown, messagePrefix);
       setDocsByPath((prev) => {
         const next = { ...prev, [path]: markdown };
         if (previousPath && previousPath !== path) {
@@ -222,9 +235,30 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       setSelectedPath(path);
       setSlugTouched(true);
       setImportedDraftState((prev) => (prev ? { ...prev, pendingFirstDraftSave: false } : null));
-      setStatus({ tone: "success", message: `Saved "${state.title}" to GitHub. Preview updated immediately. Public site updates after Vercel deploy.` });
+      setLastSaveResult({
+        created: Boolean(response.created),
+        path: response.path,
+        previewUrl: response.previewUrl,
+        liveUrl: response.liveUrl,
+        deploymentNote: response.deployment,
+      });
+      setStatus({
+        tone: "success",
+        message: response.created
+          ? "Case study successfully created and saved to GitHub."
+          : `Saved "${state.title}" to GitHub.`,
+      });
+      console.info("[cms/editor] save-success", {
+        directory,
+        path: response.path,
+        created: response.created,
+        previewUrl: response.previewUrl,
+        liveUrl: response.liveUrl,
+      });
     } catch (error) {
-      setStatus({ tone: "error", message: formatUiError(error) });
+      const message = formatUiError(error);
+      console.error("[cms/editor] save-failed", { directory, selectedPath, slug: state.slug, message });
+      setStatus({ tone: "error", message });
     } finally {
       setSaving(false);
     }
@@ -245,6 +279,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         return next;
       });
       resetForNew();
+      setLastSaveResult(null);
       setStatus({ tone: "success", message: "Deleted from GitHub. Public site updates after Vercel deploy." });
     } catch (error) {
       setStatus({ tone: "error", message: formatUiError(error) });
@@ -270,6 +305,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
             setSelectedPath("");
             setSlugTouched(Boolean(draft.slug));
             setImportedDraftState({ pendingFirstDraftSave: true, warnings: draft.warnings });
+            setLastSaveResult(null);
             setStatus({
               tone: draft.warnings.length ? "info" : "success",
               message: draft.warnings.length
@@ -355,6 +391,33 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         <p className={`body-md ${status.tone === "error" ? "text-red-400" : status.tone === "success" ? "text-emerald-400" : "text-muted-text"}`}>
           {status.message}
         </p>
+      ) : null}
+      {lastSaveResult ? (
+        <div className="rounded-md border border-slate-700 bg-slate-950/60 p-3">
+          <p className="text-sm text-primary-text">
+            {lastSaveResult.created ? "Verification links (new case study)" : "Verification links"}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-4 text-sm">
+            {lastSaveResult.previewUrl ? (
+              <Link className="font-mono text-systems-teal hover:underline" to={lastSaveResult.previewUrl}>
+                Open admin preview
+              </Link>
+            ) : null}
+            {lastSaveResult.liveUrl ? (
+              <Link className="font-mono text-systems-teal hover:underline" to={lastSaveResult.liveUrl}>
+                Open live route
+              </Link>
+            ) : null}
+          </div>
+          {lastSaveResult.deploymentNote ? (
+            <p className="mt-2 text-xs text-muted-text">{lastSaveResult.deploymentNote}</p>
+          ) : null}
+          {lastSaveResult.created ? (
+            <p className="mt-1 text-xs text-muted-text">
+              New files become visible on public listing/detail pages after the Vercel rebuild for this commit completes.
+            </p>
+          ) : null}
+        </div>
       ) : null}
       {importedDraftState?.warnings.length ? (
         <div className="rounded-md border border-amber-700/40 bg-amber-900/10 p-3">

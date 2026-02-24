@@ -1,6 +1,14 @@
 let csrfTokenCache: string | null = null;
 
-type CmsWriteResponse = { ok: true; path: string };
+type CmsWriteResponse = {
+  ok: true;
+  path: string;
+  message?: string;
+  created?: boolean;
+  liveUrl?: string;
+  previewUrl?: string;
+  deployment?: string;
+};
 type CmsDeleteResponse = { ok: true; path: string };
 type CmsUploadImageResponse = { ok: true; path: string; publicUrl: string; message?: string };
 
@@ -47,7 +55,15 @@ export async function cmsWriteFile(path: string, content: string, message?: stri
   }
 
   const payload = (await response.json().catch(() => ({ ok: true, path }))) as Partial<CmsWriteResponse>;
-  return { ok: true, path: payload.path || path };
+  return {
+    ok: true,
+    path: payload.path || path,
+    message: payload.message,
+    created: payload.created,
+    liveUrl: payload.liveUrl,
+    previewUrl: payload.previewUrl,
+    deployment: payload.deployment,
+  };
 }
 
 export async function cmsDeleteFile(path: string): Promise<CmsDeleteResponse> {
