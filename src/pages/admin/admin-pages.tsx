@@ -1,12 +1,55 @@
+import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TagPill } from "@/components/ui/tag-pill";
-import { cmsWriteFile } from "@/lib/cms-client";
+import { cmsUploadImage, cmsWriteFile } from "@/lib/cms-client";
 import { getContactContent, getHomeContent, getResumeContent } from "@/lib/content-loader";
 import { validateContactContent, validateHomeContent, validateResumeContent } from "@/lib/content-schema";
+
+async function squareCropAndOptimizeImage(file: File): Promise<{ mimeType: string; fileName: string; dataBase64: string }> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Profile image must be an image file.");
+  }
+
+  const bitmap = await createImageBitmap(file);
+  const side = Math.min(bitmap.width, bitmap.height);
+  const sx = Math.floor((bitmap.width - side) / 2);
+  const sy = Math.floor((bitmap.height - side) / 2);
+
+  const targetSide = Math.min(1200, side);
+  const canvas = document.createElement("canvas");
+  canvas.width = targetSide;
+  canvas.height = targetSide;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    throw new Error("Image processing is unavailable in this browser.");
+  }
+
+  ctx.drawImage(bitmap, sx, sy, side, side, 0, 0, targetSide, targetSide);
+
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.88));
+  if (!blob) {
+    throw new Error("Failed to optimize profile image.");
+  }
+
+  const buffer = await blob.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.slice(i, i + chunkSize));
+  }
+
+  return {
+    mimeType: "image/webp",
+    fileName: `${file.name.replace(/\.[a-z0-9]+$/i, "")}.webp`,
+    dataBase64: btoa(binary),
+  };
+}
 
 export function AdminPagesPage() {
   const [home, setHome] = useState(getHomeContent());
@@ -14,6 +57,39 @@ export function AdminPagesPage() {
   const [contact, setContact] = useState(getContactContent());
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploadingHomeImage, setUploadingHomeImage] = useState(false);
+
+  const uploadHomeProfileImage = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    try {
+      setStatus("");
+      setUploadingHomeImage(true);
+      const processed = await squareCropAndOptimizeImage(file);
+      const upload = await cmsUploadImage({
+        fileName: processed.fileName,
+        mimeType: processed.mimeType,
+        dataBase64: processed.dataBase64,
+        folder: "home/profile",
+      });
+
+      setHome((prev) => ({
+        ...prev,
+        profileImage: {
+          src: upload.publicUrl,
+          alt: prev.profileImage?.alt || "Homepage profile image",
+        },
+      }));
+      setStatus("Homepage profile image uploaded. Click “Save JSON pages” to persist home.json.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Profile image upload failed";
+      setStatus(message);
+    } finally {
+      setUploadingHomeImage(false);
+    }
+  };
 
   const saveAll = async () => {
     try {
@@ -48,6 +124,40 @@ export function AdminPagesPage() {
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <Input value={home.heroHeadline} onChange={(e) => setHome((prev) => ({ ...prev, heroHeadline: e.target.value }))} placeholder="Hero headline" />
             <Input value={home.heroSubheadline} onChange={(e) => setHome((prev) => ({ ...prev, heroSubheadline: e.target.value }))} placeholder="Hero subheadline" />
+          </div>
+          <div className="mt-4 rounded-md border border-slate-700 p-4">
+            <p className="text-sm text-muted-text">Homepage profile image (square, responsive, repo-backed)</p>
+            <div className="mt-3 grid gap-4 md:grid-cols-[200px_1fr]">
+              <div className="aspect-square overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
+                {home.profileImage?.src ? (
+                  <img src={home.profileImage.src} alt={home.profileImage.alt || "Homepage profile preview"} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xs text-muted-text">No image</div>
+                )}
+              </div>
+              <div className="space-y-3">
+                <Input
+                  value={home.profileImage?.alt || ""}
+                  onChange={(e) => setHome((prev) => ({ ...prev, profileImage: { ...(prev.profileImage ?? { src: "" }), alt: e.target.value } }))}
+                  placeholder="Profile image alt text (required)"
+                />
+                <Input
+                  value={home.profileImage?.src || ""}
+                  onChange={(e) => setHome((prev) => ({ ...prev, profileImage: { ...(prev.profileImage ?? { alt: "" }), src: e.target.value } }))}
+                  placeholder="/images/cms/home/profile/..."
+                />
+                <div className="flex flex-wrap items-center gap-3">
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={uploadHomeProfileImage}
+                    disabled={saving || uploadingHomeImage}
+                    className="block text-xs text-muted-text file:mr-3 file:rounded-md file:border-0 file:bg-strategic-blue file:px-3 file:py-2 file:text-sm file:font-medium file:text-white"
+                  />
+                  <p className="text-xs text-muted-text">Auto-crops to square and optimizes to WebP before upload.</p>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {home.proofMetrics.map((metric, i) => (
@@ -117,7 +227,7 @@ export function AdminPagesPage() {
         </Card>
 
         <div className="flex items-center gap-2">
-          <Button variant="primary" onClick={saveAll} disabled={saving}>{saving ? "Saving..." : "Save JSON pages"}</Button>
+          <Button variant="primary" onClick={saveAll} disabled={saving || uploadingHomeImage}>{saving ? "Saving..." : "Save JSON pages"}</Button>
           {status ? <p className="body-md text-muted-text">{status}</p> : null}
         </div>
       </div>

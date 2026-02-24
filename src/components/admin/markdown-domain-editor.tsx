@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DocxCaseStudyImporter } from "@/components/admin/docx-case-study-importer";
 import { MarkdownSplitEditor } from "@/components/admin/markdown-split-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,11 @@ type EditorState = {
 type StatusState = {
   tone: "idle" | "success" | "error" | "info";
   message: string;
+};
+
+type ImportedDraftState = {
+  pendingFirstDraftSave: boolean;
+  warnings: string[];
 };
 
 const emptyState: EditorState = {
@@ -111,6 +117,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
   const [slugTouched, setSlugTouched] = useState(Boolean(records[0]?.state?.slug));
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<StatusState>({ tone: "idle", message: "" });
+  const [importedDraftState, setImportedDraftState] = useState<ImportedDraftState | null>(null);
 
   useEffect(() => {
     setDocsByPath(normalizePathMap(rawMap));
@@ -139,6 +146,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
     setState({ ...record.state });
     setSlugTouched(true);
     setStatus({ tone: "idle", message: "" });
+    setImportedDraftState(null);
   };
 
   const resetForNew = () => {
@@ -146,6 +154,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
     setState(emptyState);
     setSlugTouched(false);
     setStatus({ tone: "idle", message: "" });
+    setImportedDraftState(null);
   };
 
   const onSave = async () => {
@@ -163,6 +172,14 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
     if (!state.body.trim()) {
       setStatus({ tone: "error", message: "Content body is required." });
+      return;
+    }
+
+    if (importedDraftState?.pendingFirstDraftSave && state.published) {
+      setStatus({
+        tone: "error",
+        message: "Imported DOCX content must be saved as a draft first. Uncheck Published, save once, then review before publishing.",
+      });
       return;
     }
 
@@ -204,6 +221,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       });
       setSelectedPath(path);
       setSlugTouched(true);
+      setImportedDraftState((prev) => (prev ? { ...prev, pendingFirstDraftSave: false } : null));
       setStatus({ tone: "success", message: `Saved "${state.title}" to GitHub. Preview updated immediately. Public site updates after Vercel deploy.` });
     } catch (error) {
       setStatus({ tone: "error", message: formatUiError(error) });
@@ -237,6 +255,31 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
   return (
     <div className="space-y-4">
+      {directory === "content/case-studies" ? (
+        <DocxCaseStudyImporter
+          disabled={saving}
+          onApplyDraft={(draft) => {
+            setState((prev) => ({
+              ...prev,
+              slug: draft.slug || prev.slug,
+              title: draft.title || prev.title,
+              summary: draft.summary || prev.summary,
+              body: draft.body,
+              published: false,
+            }));
+            setSelectedPath("");
+            setSlugTouched(Boolean(draft.slug));
+            setImportedDraftState({ pendingFirstDraftSave: true, warnings: draft.warnings });
+            setStatus({
+              tone: draft.warnings.length ? "info" : "success",
+              message: draft.warnings.length
+                ? `DOCX draft applied with ${draft.warnings.length} warning(s). Save as draft first, then review warnings.`
+                : "DOCX draft applied. Save as draft first before publishing.",
+            });
+          }}
+        />
+      ) : null}
+
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="secondary" onClick={resetForNew} disabled={saving}>New</Button>
         {records.map((record) => (
@@ -312,6 +355,16 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         <p className={`body-md ${status.tone === "error" ? "text-red-400" : status.tone === "success" ? "text-emerald-400" : "text-muted-text"}`}>
           {status.message}
         </p>
+      ) : null}
+      {importedDraftState?.warnings.length ? (
+        <div className="rounded-md border border-amber-700/40 bg-amber-900/10 p-3">
+          <p className="text-sm text-amber-300">DOCX import warnings (review before publish)</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-amber-200">
+            {importedDraftState.warnings.map((warning, index) => (
+              <li key={`${warning}-${index}`}>{warning}</li>
+            ))}
+          </ul>
+        </div>
       ) : null}
     </div>
   );

@@ -1,6 +1,10 @@
 {
   "heroHeadline": "Senior Product Leader - Strategy, Data Platforms & ML Systems",
   "heroSubheadline": "I concept, architect, and scale intelligent systems that drive measurable business outcomes.",
+  "profileImage": {
+    "src": "",
+    "alt": ""
+  },
   "proofMetrics": [
     {
       "value": "+8%",

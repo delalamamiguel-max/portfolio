@@ -5,6 +5,7 @@ export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export type HomeContent = {
   heroHeadline: string;
   heroSubheadline: string;
+  profileImage: { src: string; alt: string };
   proofMetrics: Array<{ value: string; label: string; context: string }>;
   strategicPillars: Array<{ title: string; bullets: string[] }>;
   primaryCTA: { label: string; href: string };
@@ -86,9 +87,19 @@ export function validateHomeContent(input: unknown): HomeContent {
     throw new Error("Invalid home arrays");
   }
 
+  const profileImage = {
+    src: typeof data.profileImage?.src === "string" ? data.profileImage.src.trim() : "",
+    alt: typeof data.profileImage?.alt === "string" ? data.profileImage.alt.trim() : "",
+  };
+
+  if (profileImage.src && !profileImage.alt) {
+    throw new Error("profileImage.alt is required when profileImage.src is set");
+  }
+
   return {
     heroHeadline: asString(data.heroHeadline, "heroHeadline"),
     heroSubheadline: asString(data.heroSubheadline, "heroSubheadline"),
+    profileImage,
     proofMetrics: data.proofMetrics.map((entry) => ({
       value: asString(entry.value, "proofMetrics.value"),
       label: asString(entry.label, "proofMetrics.label"),
@@ -166,21 +177,24 @@ export function parseMarkdownDoc(raw: string): MarkdownDoc {
 export function validateCaseStudyDoc(raw: string): ValidatedCaseStudy {
   const doc = parseMarkdownDoc(raw);
   const sections = extractSections(doc.body);
+  const isDraft = doc.published === false;
 
   const sectionOrder = sections.map((section) => section.heading);
 
-  if (sectionOrder.length !== requiredCaseStudySections.length) {
+  if (!isDraft && sectionOrder.length !== requiredCaseStudySections.length) {
     throw new Error("Case study must include all required sections");
   }
 
-  for (let i = 0; i < requiredCaseStudySections.length; i += 1) {
-    if (sectionOrder[i] !== requiredCaseStudySections[i]) {
-      throw new Error("Case study section order is invalid");
+  if (!isDraft) {
+    for (let i = 0; i < requiredCaseStudySections.length; i += 1) {
+      if (sectionOrder[i] !== requiredCaseStudySections[i]) {
+        throw new Error("Case study section order is invalid");
+      }
     }
   }
 
   const impactSection = sections.find((section) => section.heading === "Impact");
-  if (!impactSection || !/\d/.test(impactSection.content)) {
+  if (!isDraft && (!impactSection || !/\d/.test(impactSection.content))) {
     throw new Error("Impact section must include at least one numeric metric");
   }
 
