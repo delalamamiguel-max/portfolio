@@ -3,7 +3,7 @@ slug: fluently-ai-case-study
 title: Fluently_AI_Case_Study
 summary: +-----------------------------------------------------------------------+
 tags: []
-published: false
+published: true
 ---
 
 +-----------------------------------------------------------------------+
