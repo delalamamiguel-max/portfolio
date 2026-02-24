@@ -9,6 +9,7 @@ type CmsWriteResponse = {
   previewUrl?: string;
   deployment?: string;
 };
+type CmsRouteCheckResult = { ok: boolean; status: number; url: string };
 type CmsDeleteResponse = { ok: true; path: string };
 type CmsUploadImageResponse = { ok: true; path: string; publicUrl: string; message?: string };
 
@@ -117,4 +118,12 @@ export async function cmsUploadImage(input: {
   }
 
   return { ok: true, path: payload.path, publicUrl: payload.publicUrl, message: payload.message };
+}
+
+export async function cmsCheckRoute(url: string): Promise<CmsRouteCheckResult> {
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+  return { ok: response.ok, status: response.status, url };
 }

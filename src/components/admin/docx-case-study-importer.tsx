@@ -9,8 +9,17 @@ type ImportDraftPayload = {
   title: string;
   slug: string;
   summary: string;
+  tags: string[];
   body: string;
   warnings: string[];
+  diagnostics: {
+    bodyLength: number;
+    bodyMinThresholdPassed: boolean;
+    truncatedSuspected: boolean;
+    importedImageCount: number;
+    placeholderImageAltCount: number;
+    blockingErrors: string[];
+  };
 };
 
 type DocxCaseStudyImporterProps = {
@@ -58,6 +67,8 @@ type ImportDraftState = {
   messages: string[];
   warnings: string[];
   generatedMarkdown: string;
+  blockingErrors: string[];
+  suggestedTags: string[];
 };
 
 type GeneratedMarkdownResult = {
@@ -171,6 +182,49 @@ function summarizeFromBlocks(blocks: ImportBlock[]): string {
   if (!paragraph) return "";
   const plain = runsToPlainText(paragraph.runs).replace(/\s+/g, " ").trim();
   return plain.slice(0, 180).trim();
+}
+
+function detectTagsFromBlocks(blocks: ImportBlock[]): string[] {
+  const text = blocks
+    .map((block) => {
+      if (block.type === "heading") return runsToPlainText(block.runs);
+      if (block.type === "paragraph") return runsToPlainText(block.runs);
+      if (block.type === "list") return block.items.map((item) => runsToPlainText(item)).join(" ");
+      if (block.type === "quote") return block.paragraphs.map((p) => runsToPlainText(p)).join(" ");
+      return "";
+    })
+    .join(" ")
+    .toLowerCase();
+
+  const rules: Array<[string, RegExp]> = [
+    ["ai", /\b(ai|artificial intelligence)\b/],
+    ["ml", /\b(machine learning|ml)\b/],
+    ["platform", /\bplatform\b/],
+    ["translation", /\btranslation|translate|localized|localization\b/],
+    ["multilingual", /\bmultilingual|multi-language|multi language|spanish\b/],
+    ["experimentation", /\bexperiment|experimentation|a\/b\b/],
+    ["governance", /\bgovernance|compliance\b/],
+    ["data", /\bdata\b/],
+    ["automation", /\bautomation|automated\b/],
+    ["product-strategy", /\bstrategy|business case|roadmap\b/],
+  ];
+
+  return rules.filter(([, pattern]) => pattern.test(text)).map(([tag]) => tag).slice(0, 8);
+}
+
+function analyzeBodyTransfer(markdown: string) {
+  const bodyLength = markdown.trim().length;
+  const bodyMinThresholdPassed = bodyLength > 120;
+  const truncatedSuspected =
+    /\*\*[A-Z][A-Z\s&:'-]*$/.test(markdown.trim()) ||
+    /:\s*\*{0,2}$/.test(markdown.trim());
+  const blockingErrors: string[] = [];
+
+  if (!markdown.trim()) blockingErrors.push("Parsed body is empty. Structured content was not generated.");
+  if (!bodyMinThresholdPassed) blockingErrors.push("Parsed body is too short. Verify DOCX parsing before applying draft.");
+  if (truncatedSuspected) blockingErrors.push("Parsed body may be truncated. Review the generated markdown before applying.");
+
+  return { bodyLength, bodyMinThresholdPassed, truncatedSuspected, blockingErrors };
 }
 
 function convertHtmlToBlocks(html: string): { blocks: ImportBlock[]; warnings: string[] } {
@@ -505,6 +559,7 @@ async function parseDocxFile(file: File): Promise<ImportDraftState> {
     images.map((img) => [img.id, { id: img.id, alt: "Imported image" } satisfies ImageUploadResult]),
   ) as Record<string, ImageUploadResult>;
   const generated = blocksToMarkdown(blocks, imagePlaceholders);
+  const bodyCheck = analyzeBodyTransfer(generated.markdown);
 
   return {
     fileName: file.name,
@@ -516,6 +571,8 @@ async function parseDocxFile(file: File): Promise<ImportDraftState> {
     messages: (result.messages || []).map((m: { type: string; message: string }) => `${m.type}: ${m.message}`),
     warnings: [...warnings, ...generated.warnings],
     generatedMarkdown: generated.markdown,
+    blockingErrors: bodyCheck.blockingErrors,
+    suggestedTags: detectTagsFromBlocks(blocks),
   };
 }
 
@@ -543,6 +600,11 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
     const markdown = displayGenerated?.markdown || state.generatedMarkdown;
     const autoMapWarnings = displayGenerated?.warnings || [];
     return validateCaseStudyImportDraft(state.title, state.slug, markdown, [], [...state.warnings, ...autoMapWarnings]);
+  }, [state, displayGenerated]);
+
+  const bodyTransferCheck = useMemo(() => {
+    if (!state) return null;
+    return analyzeBodyTransfer(displayGenerated?.markdown || state.generatedMarkdown);
   }, [state, displayGenerated]);
 
   const handleDocxFile = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -617,14 +679,29 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
       const generated = autoMapSections
         ? autoMapBlocksToRequiredCaseStudySections(state.blocks, imageUploadMap)
         : blocksToMarkdown(state.blocks, imageUploadMap);
+      const bodyCheck = analyzeBodyTransfer(generated.markdown);
+      if (bodyCheck.blockingErrors.length > 0) {
+        setError(bodyCheck.blockingErrors.join(" "));
+        return;
+      }
       const allWarnings = validateCaseStudyImportDraft(state.title, state.slug, generated.markdown, generated.warnings, state.warnings);
+      const placeholderImageAltCount = Object.values(imageUploadMap).filter((entry) => /^Imported image /.test(entry.alt)).length;
 
       onApplyDraft({
         title: state.title,
         slug: state.slug,
         summary: state.summary,
+        tags: state.suggestedTags,
         body: generated.markdown,
         warnings: allWarnings,
+        diagnostics: {
+          bodyLength: bodyCheck.bodyLength,
+          bodyMinThresholdPassed: bodyCheck.bodyMinThresholdPassed,
+          truncatedSuspected: bodyCheck.truncatedSuspected,
+          importedImageCount: state.images.length,
+          placeholderImageAltCount,
+          blockingErrors: bodyCheck.blockingErrors,
+        },
       });
 
       setStatus(
@@ -717,6 +794,29 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
               </ul>
             </div>
           ) : null}
+
+          {(state.blockingErrors.length > 0 || (bodyTransferCheck?.blockingErrors.length ?? 0) > 0) ? (
+            <div className="space-y-2 rounded-md border border-red-700/40 bg-red-900/10 p-3">
+              <p className="text-sm text-red-300">Structured error panel (manual correction required before apply)</p>
+              <ul className="list-disc space-y-1 pl-5 text-xs text-red-200">
+                {[...state.blockingErrors, ...(bodyTransferCheck?.blockingErrors || [])].map((issue, index) => (
+                  <li key={`blocking-${index}`}>{issue}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+            <p className="text-sm text-primary-text">Auto-populated fields preview</p>
+            <div className="mt-2 grid gap-2 text-xs text-muted-text md:grid-cols-2">
+              <p>Title: <span className="text-primary-text">{state.title || "(missing)"}</span></p>
+              <p>Slug: <span className="text-primary-text">{state.slug || "(missing)"}</span></p>
+              <p>Summary: <span className="text-primary-text">{state.summary || "(missing)"}</span></p>
+              <p>Tags: <span className="text-primary-text">{state.suggestedTags.join(", ") || "(none detected)"}</span></p>
+              <p>Body length: <span className="text-primary-text">{bodyTransferCheck?.bodyLength ?? 0}</span></p>
+              <p>Transfer check: <span className="text-primary-text">{bodyTransferCheck?.bodyMinThresholdPassed ? "passed" : "failed"}</span></p>
+            </div>
+          </div>
 
           <div className="grid gap-4 xl:grid-cols-2">
             <div className="space-y-2">

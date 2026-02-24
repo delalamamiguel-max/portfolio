@@ -4,7 +4,7 @@ import { DocxCaseStudyImporter } from "@/components/admin/docx-case-study-import
 import { MarkdownSplitEditor } from "@/components/admin/markdown-split-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cmsDeleteFile, cmsWriteFile } from "@/lib/cms-client";
+import { cmsCheckRoute, cmsDeleteFile, cmsWriteFile } from "@/lib/cms-client";
 import { type MarkdownDoc, SLUG_REGEX } from "@/lib/content-schema";
 import { buildMarkdown, parseFrontmatter } from "@/lib/markdown";
 
@@ -33,6 +33,12 @@ type StatusState = {
 type ImportedDraftState = {
   pendingFirstDraftSave: boolean;
   warnings: string[];
+  bodyLength: number;
+  bodyMinThresholdPassed: boolean;
+  truncatedSuspected: boolean;
+  importedImageCount: number;
+  placeholderImageAltCount: number;
+  imageAltReviewConfirmed: boolean;
 };
 
 type SaveResultState = {
@@ -41,6 +47,8 @@ type SaveResultState = {
   previewUrl?: string;
   liveUrl?: string;
   deploymentNote?: string;
+  liveRouteCheck?: { ok: boolean; status: number };
+  previewRouteCheck?: { ok: boolean; status: number };
 };
 
 const emptyState: EditorState = {
@@ -196,6 +204,34 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       return;
     }
 
+    if (state.published && importedDraftState) {
+      if (!importedDraftState.bodyMinThresholdPassed || importedDraftState.truncatedSuspected) {
+        setStatus({
+          tone: "error",
+          message: "Cannot publish imported content until body transfer checks pass (length/truncation review). Save as draft, review, and correct the content first.",
+        });
+        return;
+      }
+
+      const missingSectionWarning = importedDraftState.warnings.find((w) => /Missing required case study sections/i.test(w));
+      const orderWarning = importedDraftState.warnings.find((w) => /not in the expected order/i.test(w));
+      if (missingSectionWarning || orderWarning) {
+        setStatus({
+          tone: "error",
+          message: "Cannot publish while required case study sections are missing or out of order. Fix the structured content first.",
+        });
+        return;
+      }
+
+      if (importedDraftState.placeholderImageAltCount > 0 && !importedDraftState.imageAltReviewConfirmed) {
+        setStatus({
+          tone: "error",
+          message: "Review imported image alt text placeholders before publishing and confirm the review checkbox.",
+        });
+        return;
+      }
+    }
+
     if (slugError) {
       setStatus({ tone: "error", message: slugError });
       return;
@@ -225,6 +261,10 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       const previousPath = selectedPath;
       const messagePrefix = directory.endsWith("case-studies") ? `cms: update case study ${state.slug}` : `cms: update ${state.slug}`;
       const response = await cmsWriteFile(path, markdown, messagePrefix);
+      const [previewRouteCheck, liveRouteCheck] = await Promise.all([
+        response.previewUrl ? cmsCheckRoute(response.previewUrl).catch(() => ({ ok: false, status: 0, url: response.previewUrl! })) : Promise.resolve(undefined),
+        response.liveUrl ? cmsCheckRoute(response.liveUrl).catch(() => ({ ok: false, status: 0, url: response.liveUrl! })) : Promise.resolve(undefined),
+      ]);
       setDocsByPath((prev) => {
         const next = { ...prev, [path]: markdown };
         if (previousPath && previousPath !== path) {
@@ -241,6 +281,8 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         previewUrl: response.previewUrl,
         liveUrl: response.liveUrl,
         deploymentNote: response.deployment,
+        liveRouteCheck: liveRouteCheck ? { ok: liveRouteCheck.ok, status: liveRouteCheck.status } : undefined,
+        previewRouteCheck: previewRouteCheck ? { ok: previewRouteCheck.ok, status: previewRouteCheck.status } : undefined,
       });
       setStatus({
         tone: "success",
@@ -254,6 +296,8 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         created: response.created,
         previewUrl: response.previewUrl,
         liveUrl: response.liveUrl,
+        liveRouteCheck: liveRouteCheck?.status,
+        previewRouteCheck: previewRouteCheck?.status,
       });
     } catch (error) {
       const message = formatUiError(error);
@@ -299,12 +343,22 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
               slug: draft.slug || prev.slug,
               title: draft.title || prev.title,
               summary: draft.summary || prev.summary,
+              tags: draft.tags.join(", "),
               body: draft.body,
               published: false,
             }));
             setSelectedPath("");
             setSlugTouched(Boolean(draft.slug));
-            setImportedDraftState({ pendingFirstDraftSave: true, warnings: draft.warnings });
+            setImportedDraftState({
+              pendingFirstDraftSave: true,
+              warnings: draft.warnings,
+              bodyLength: draft.diagnostics.bodyLength,
+              bodyMinThresholdPassed: draft.diagnostics.bodyMinThresholdPassed,
+              truncatedSuspected: draft.diagnostics.truncatedSuspected,
+              importedImageCount: draft.diagnostics.importedImageCount,
+              placeholderImageAltCount: draft.diagnostics.placeholderImageAltCount,
+              imageAltReviewConfirmed: draft.diagnostics.placeholderImageAltCount === 0,
+            });
             setLastSaveResult(null);
             setStatus({
               tone: draft.warnings.length ? "info" : "success",
@@ -412,9 +466,34 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
           {lastSaveResult.deploymentNote ? (
             <p className="mt-2 text-xs text-muted-text">{lastSaveResult.deploymentNote}</p>
           ) : null}
+          {(lastSaveResult.previewRouteCheck || lastSaveResult.liveRouteCheck) ? (
+            <div className="mt-2 grid gap-1 text-xs text-muted-text">
+              {lastSaveResult.previewRouteCheck ? (
+                <p>
+                  Admin preview route check:{" "}
+                  <span className={lastSaveResult.previewRouteCheck.ok ? "text-emerald-400" : "text-amber-300"}>
+                    {lastSaveResult.previewRouteCheck.ok ? `OK (${lastSaveResult.previewRouteCheck.status})` : `Failed (${lastSaveResult.previewRouteCheck.status || "network"})`}
+                  </span>
+                </p>
+              ) : null}
+              {lastSaveResult.liveRouteCheck ? (
+                <p>
+                  Live route check:{" "}
+                  <span className={lastSaveResult.liveRouteCheck.ok ? "text-emerald-400" : "text-amber-300"}>
+                    {lastSaveResult.liveRouteCheck.ok ? `OK (${lastSaveResult.liveRouteCheck.status})` : `Failed (${lastSaveResult.liveRouteCheck.status || "network"})`}
+                  </span>
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           {lastSaveResult.created ? (
             <p className="mt-1 text-xs text-muted-text">
               New files become visible on public listing/detail pages after the Vercel rebuild for this commit completes.
+            </p>
+          ) : null}
+          {lastSaveResult.liveRouteCheck && !lastSaveResult.liveRouteCheck.ok ? (
+            <p className="mt-1 text-xs text-amber-300">
+              The live route did not resolve yet. Check deployment status, publish flag, and case study section validation.
             </p>
           ) : null}
         </div>
@@ -427,6 +506,34 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
               <li key={`${warning}-${index}`}>{warning}</li>
             ))}
           </ul>
+        </div>
+      ) : null}
+      {importedDraftState ? (
+        <div className="rounded-md border border-slate-700 bg-slate-950/60 p-3 space-y-2">
+          <p className="text-sm text-primary-text">Imported content verification</p>
+          <div className="grid gap-2 text-xs text-muted-text md:grid-cols-2">
+            <p>Body length: <span className="text-primary-text">{importedDraftState.bodyLength}</span></p>
+            <p>Body threshold: <span className="text-primary-text">{importedDraftState.bodyMinThresholdPassed ? "passed" : "failed"}</span></p>
+            <p>Truncation suspected: <span className="text-primary-text">{importedDraftState.truncatedSuspected ? "yes" : "no"}</span></p>
+            <p>Imported images: <span className="text-primary-text">{importedDraftState.importedImageCount}</span></p>
+            <p>Placeholder image alts: <span className="text-primary-text">{importedDraftState.placeholderImageAltCount}</span></p>
+            <p>Published status: <span className="text-primary-text">{state.published ? "on" : "draft"}</span></p>
+          </div>
+          {importedDraftState.placeholderImageAltCount > 0 ? (
+            <label className="inline-flex items-center gap-2 text-xs text-primary-text">
+              <input
+                type="checkbox"
+                checked={importedDraftState.imageAltReviewConfirmed}
+                onChange={(event) =>
+                  setImportedDraftState((prev) => (prev ? { ...prev, imageAltReviewConfirmed: event.target.checked } : prev))
+                }
+              />
+              I reviewed imported image alt text placeholders and will replace them before publishing.
+            </label>
+          ) : null}
+          {!state.published ? (
+            <p className="text-xs text-muted-text">Drafts do not appear on the public case studies page until Published is enabled and saved.</p>
+          ) : null}
         </div>
       ) : null}
     </div>

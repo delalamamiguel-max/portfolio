@@ -118,6 +118,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const path = typeof req.body?.path === "string" ? req.body.path.trim() : "";
   const content = typeof req.body?.content === "string" ? req.body.content : "";
+  const parsedPayload = path && content ? parseSimpleFrontmatter(content) : { frontmatter: {}, body: "" };
+  const payloadSlug = typeof parsedPayload.frontmatter.slug === "string" ? parsedPayload.frontmatter.slug : "";
+  const bodyLength = parsedPayload.body.trim().length;
 
   if (!path || !content || !isAllowedPath(path)) {
     console.warn("[cms/write-file] request:invalid-payload", { pathPresent: Boolean(path), contentPresent: Boolean(content) });
@@ -127,21 +130,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const validationError = validateMarkdownCreatePayload(path, content);
   if (validationError) {
-    console.warn("[cms/write-file] request:validation-failed", { path, validationError });
+    console.warn("[cms/write-file] request:validation-failed", { path, slug: payloadSlug, bodyLength, validationError });
     res.status(400).json({ error: validationError });
     return;
   }
 
   try {
     const config = loadGithubConfig();
-    console.info("[cms/write-file] github:config-loaded", { path, branch: config.branch });
+    console.info("[cms/write-file] github:config-loaded", { path, slug: payloadSlug, bodyLength, branch: config.branch });
     const existingSha = await getFileSha(config, path);
     const created = !existingSha;
-    console.info("[cms/write-file] github:target-resolved", { path, created });
+    console.info("[cms/write-file] github:target-resolved", { path, slug: payloadSlug, bodyLength, created });
     const message = commitMessage(path, req.body?.message);
     await writeFileToGithub(config, path, content, message);
     const urls = deriveUrls(path);
-    console.info("[cms/write-file] github:write-success", { path, created, message });
+    console.info("[cms/write-file] github:write-success", { path, slug: payloadSlug, bodyLength, created, commitStatus: "success", message });
     res.status(200).json({
       ok: true,
       path,
@@ -152,7 +155,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown write error";
-    console.error("[cms/write-file] github:write-failed", { path, message });
+    console.error("[cms/write-file] github:write-failed", { path, slug: payloadSlug, bodyLength, commitStatus: "failed", message });
     res.status(500).json({ error: message });
   }
 }
