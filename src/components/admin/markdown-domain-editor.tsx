@@ -337,6 +337,36 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       {directory === "content/case-studies" ? (
         <DocxCaseStudyImporter
           disabled={saving}
+          onAutoPopulateParsedDraft={(draft) => {
+            setState((prev) => ({
+              ...prev,
+              slug: draft.slug || prev.slug,
+              title: draft.title || prev.title,
+              summary: draft.summary || prev.summary,
+              tags: draft.tags.join(", "),
+              body: draft.body,
+              published: false,
+            }));
+            setSelectedPath("");
+            setSlugTouched(Boolean(draft.slug));
+            setImportedDraftState({
+              pendingFirstDraftSave: true,
+              warnings: draft.warnings,
+              bodyLength: draft.diagnostics.bodyLength,
+              bodyMinThresholdPassed: draft.diagnostics.bodyMinThresholdPassed,
+              truncatedSuspected: draft.diagnostics.truncatedSuspected,
+              importedImageCount: draft.diagnostics.importedImageCount,
+              placeholderImageAltCount: draft.diagnostics.placeholderImageAltCount,
+              imageAltReviewConfirmed: false,
+            });
+            setLastSaveResult(null);
+            setStatus({
+              tone: draft.diagnostics.blockingErrors.length ? "error" : "info",
+              message: draft.diagnostics.blockingErrors.length
+                ? `DOCX parsed, but manual correction is required before apply/save: ${draft.diagnostics.blockingErrors.join(" ")}`
+                : "DOCX parsed and editor fields auto-filled. Next step: click “Upload Images + Apply Draft” to finalize image URLs, then save draft.",
+            });
+          }}
           onApplyDraft={(draft) => {
             setState((prev) => ({
               ...prev,

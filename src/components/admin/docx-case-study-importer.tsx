@@ -25,6 +25,7 @@ type ImportDraftPayload = {
 type DocxCaseStudyImporterProps = {
   disabled?: boolean;
   onApplyDraft: (payload: ImportDraftPayload) => void;
+  onAutoPopulateParsedDraft?: (payload: ImportDraftPayload) => void;
 };
 
 type InlineRun = {
@@ -576,7 +577,7 @@ async function parseDocxFile(file: File): Promise<ImportDraftState> {
   };
 }
 
-export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCaseStudyImporterProps) {
+export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPopulateParsedDraft }: DocxCaseStudyImporterProps) {
   const [state, setState] = useState<ImportDraftState | null>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -623,8 +624,38 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft }: DocxCa
     try {
       setLoading(true);
       const parsed = await parseDocxFile(file);
+      const placeholderMap = Object.fromEntries(
+        parsed.images.map((img) => [img.id, { id: img.id, alt: "Imported image" } satisfies ImageUploadResult]),
+      ) as Record<string, ImageUploadResult>;
+      const generatedForEditor = autoMapSections
+        ? autoMapBlocksToRequiredCaseStudySections(parsed.blocks, placeholderMap)
+        : { markdown: parsed.generatedMarkdown, warnings: [] };
+      const bodyCheck = analyzeBodyTransfer(generatedForEditor.markdown);
+      const warningsForEditor = validateCaseStudyImportDraft(
+        parsed.title,
+        parsed.slug,
+        generatedForEditor.markdown,
+        generatedForEditor.warnings,
+        parsed.warnings,
+      );
       setState(parsed);
-      setStatus(`Parsed ${file.name}. Review the draft, warnings, and raw structured output before applying.`);
+      onAutoPopulateParsedDraft?.({
+        title: parsed.title,
+        slug: parsed.slug,
+        summary: parsed.summary,
+        tags: parsed.suggestedTags,
+        body: generatedForEditor.markdown,
+        warnings: warningsForEditor,
+        diagnostics: {
+          bodyLength: bodyCheck.bodyLength,
+          bodyMinThresholdPassed: bodyCheck.bodyMinThresholdPassed,
+          truncatedSuspected: bodyCheck.truncatedSuspected,
+          importedImageCount: parsed.images.length,
+          placeholderImageAltCount: parsed.images.length,
+          blockingErrors: [...parsed.blockingErrors, ...bodyCheck.blockingErrors],
+        },
+      });
+      setStatus(`Parsed ${file.name} and auto-filled editor fields. Review warnings, then click “Upload Images + Apply Draft” to replace image placeholders with uploaded image URLs.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "DOCX import failed.");
     } finally {
