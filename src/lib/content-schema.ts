@@ -43,15 +43,6 @@ export type ValidatedCaseStudy = MarkdownDoc & {
   sections: Array<{ heading: string; content: string }>;
 };
 
-const requiredCaseStudySections = [
-  "Strategic Context",
-  "Architecture",
-  "Trade-offs",
-  "Execution",
-  "Impact",
-  "What's Next",
-];
-
 function asString(value: unknown, field: string): string {
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`Invalid ${field}`);
@@ -167,9 +158,11 @@ export function parseMarkdownDoc(raw: string): MarkdownDoc {
   return {
     slug,
     title: asString(parsed.frontmatter.title, "title"),
-    summary: asString(parsed.frontmatter.summary, "summary"),
-    tags: asStringArray(parsed.frontmatter.tags, "tags"),
-    published: asBoolean(parsed.frontmatter.published, "published"),
+    summary: typeof parsed.frontmatter.summary === "string" ? parsed.frontmatter.summary.trim() : "",
+    tags: Array.isArray(parsed.frontmatter.tags)
+      ? asStringArray(parsed.frontmatter.tags, "tags")
+      : [],
+    published: typeof parsed.frontmatter.published === "boolean" ? asBoolean(parsed.frontmatter.published, "published") : false,
     body: parsed.body,
   };
 }
@@ -177,26 +170,6 @@ export function parseMarkdownDoc(raw: string): MarkdownDoc {
 export function validateCaseStudyDoc(raw: string): ValidatedCaseStudy {
   const doc = parseMarkdownDoc(raw);
   const sections = extractSections(doc.body);
-  const isDraft = doc.published === false;
-
-  const sectionOrder = sections.map((section) => section.heading);
-
-  if (!isDraft && sectionOrder.length !== requiredCaseStudySections.length) {
-    throw new Error("Case study must include all required sections");
-  }
-
-  if (!isDraft) {
-    for (let i = 0; i < requiredCaseStudySections.length; i += 1) {
-      if (sectionOrder[i] !== requiredCaseStudySections[i]) {
-        throw new Error("Case study section order is invalid");
-      }
-    }
-  }
-
-  const impactSection = sections.find((section) => section.heading === "Impact");
-  if (!isDraft && (!impactSection || !/\d/.test(impactSection.content))) {
-    throw new Error("Impact section must include at least one numeric metric");
-  }
 
   return {
     ...doc,

@@ -14,11 +14,12 @@ function toId(heading: string): string {
 
 export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
   const navItems = study.sections.map((section) => ({ id: toId(section.heading), label: section.heading }));
+  const hasSections = study.sections.length > 0;
 
   return (
     <Section density="dense">
-      <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
-        <StickySideNav title="Section anchors" items={navItems} />
+      <div className={`grid gap-8 ${hasSections ? "lg:grid-cols-[240px_1fr]" : "lg:grid-cols-1"}`}>
+        {hasSections ? <StickySideNav title="Section anchors" items={navItems} /> : null}
 
         <div className="space-y-8">
           <header className="space-y-4">
@@ -31,15 +32,24 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
             </div>
           </header>
 
-          {study.sections.map((section) => (
-            <article key={section.heading} id={toId(section.heading)} className="card-case-study">
-              <h2 className="h3">{section.heading}</h2>
+          {hasSections ? (
+            study.sections.map((section) => (
+              <article key={section.heading} id={toId(section.heading)} className="card-case-study">
+                <h2 className="h3">{section.heading}</h2>
+                <div
+                  className="mt-4 body-md space-y-3"
+                  dangerouslySetInnerHTML={{ __html: markdownToHtml(section.content) }}
+                />
+              </article>
+            ))
+          ) : (
+            <article className="card-case-study">
               <div
-                className="mt-4 body-md space-y-3"
-                dangerouslySetInnerHTML={{ __html: markdownToHtml(section.content) }}
+                className="body-md space-y-3"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(study.body) }}
               />
             </article>
-          ))}
+          )}
         </div>
       </div>
     </Section>

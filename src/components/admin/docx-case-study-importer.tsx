@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cmsUploadImage } from "@/lib/cms-client";
+import { parseFrontmatter } from "@/lib/markdown";
 import { markdownToHtml } from "@/lib/markdown";
 
 type ImportDraftPayload = {
@@ -60,6 +61,7 @@ type ImportBlock =
 
 type ImportDraftState = {
   fileName: string;
+  importMode: "docx" | "markdown";
   title: string;
   slug: string;
   summary: string;
@@ -488,14 +490,24 @@ function autoMapBlocksToRequiredCaseStudySections(
 
   const orderedBlocks: ImportBlock[] = [];
   for (const section of REQUIRED_CASE_STUDY_SECTIONS) {
+    const sectionBlocks = (buckets.get(section) || []).filter((block) => {
+      if (block.type === "unsupported") return Boolean(block.text?.trim());
+      if (block.type === "paragraph") return runsToPlainText(block.runs).trim().length > 0;
+      if (block.type === "heading") return runsToPlainText(block.runs).trim().length > 0;
+      if (block.type === "list") return block.items.some((item) => runsToPlainText(item).trim().length > 0);
+      if (block.type === "quote") return block.paragraphs.some((p) => runsToPlainText(p).trim().length > 0);
+      if (block.type === "code") return block.code.trim().length > 0;
+      if (block.type === "image") return true;
+      return true;
+    });
+    if (sectionBlocks.length === 0) continue;
     orderedBlocks.push({ type: "heading", level: 2, runs: [{ text: section }] });
-    const sectionBlocks = buckets.get(section) || [];
     orderedBlocks.push(...sectionBlocks);
   }
 
   const generated = blocksToMarkdown(orderedBlocks, imageUploads);
   if (remappedAnyHeading) {
-    warnings.unshift("DOCX headings were auto-mapped to the required case study section structure.");
+    warnings.unshift("DOCX headings were auto-mapped to known case study sections (only detected sections were rendered).");
   }
 
   return {
@@ -513,13 +525,13 @@ function validateCaseStudyImportDraft(title: string, slug: string, body: string,
   const sectionHeadings = [...body.matchAll(/^##\s+(.+)$/gm)].map((m) => (m[1] || "").trim());
   const missingSections = REQUIRED_CASE_STUDY_SECTIONS.filter((section) => !sectionHeadings.includes(section));
   if (missingSections.length) {
-    warnings.push(`Missing required case study sections: ${missingSections.join(", ")}`);
+    warnings.push(`Suggested case study sections not detected: ${missingSections.join(", ")}`);
   }
 
   const orderedSubset = sectionHeadings.filter((h) => REQUIRED_CASE_STUDY_SECTIONS.includes(h));
   const expectedSubset = REQUIRED_CASE_STUDY_SECTIONS.filter((section) => sectionHeadings.includes(section));
   if (orderedSubset.join("|") !== expectedSubset.join("|")) {
-    warnings.push("Required case study sections are not in the expected order.");
+    warnings.push("Detected known case study sections are not in the canonical order.");
   }
 
   return warnings;
@@ -564,6 +576,7 @@ async function parseDocxFile(file: File): Promise<ImportDraftState> {
 
   return {
     fileName: file.name,
+    importMode: "docx",
     title,
     slug,
     summary,
@@ -574,6 +587,47 @@ async function parseDocxFile(file: File): Promise<ImportDraftState> {
     generatedMarkdown: generated.markdown,
     blockingErrors: bodyCheck.blockingErrors,
     suggestedTags: detectTagsFromBlocks(blocks),
+  };
+}
+
+async function parseMarkdownFile(file: File): Promise<ImportDraftState> {
+  const raw = await file.text();
+  const parsed = parseFrontmatter(raw);
+  const body = parsed.body;
+  const titleFromFm = typeof parsed.frontmatter.title === "string" ? parsed.frontmatter.title.trim() : "";
+  const slugFromFm = typeof parsed.frontmatter.slug === "string" ? parsed.frontmatter.slug.trim() : "";
+  const summaryFromFm = typeof parsed.frontmatter.summary === "string" ? parsed.frontmatter.summary.trim() : "";
+  const tagsFromFm =
+    Array.isArray(parsed.frontmatter.tags) && parsed.frontmatter.tags.every((entry) => typeof entry === "string")
+      ? (parsed.frontmatter.tags as string[])
+      : [];
+  const fallbackTitle = firstNonEmptyLine(file.name.replace(/\.(md|mdx)$/i, ""));
+  const title = titleFromFm || fallbackTitle;
+  const slug = slugify(slugFromFm || title || fallbackTitle);
+  const summary = summaryFromFm || firstNonEmptyLine(body).slice(0, 180);
+  const bodyCheck = analyzeBodyTransfer(body);
+  const warnings: string[] = [];
+
+  if (typeof parsed.frontmatter.published === "boolean" && parsed.frontmatter.published === true) {
+    warnings.push("Markdown frontmatter `published: true` was detected but import applies as draft by default.");
+  }
+  if (Object.keys(parsed.frontmatter).length === 0) {
+    warnings.push("No frontmatter detected. Title/slug/summary/tags were inferred where possible.");
+  }
+
+  return {
+    fileName: file.name,
+    importMode: "markdown",
+    title,
+    slug,
+    summary,
+    blocks: [],
+    images: [],
+    messages: [],
+    warnings,
+    generatedMarkdown: body,
+    blockingErrors: bodyCheck.blockingErrors,
+    suggestedTags: tagsFromFm.length ? tagsFromFm : [],
   };
 }
 
@@ -591,6 +645,9 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
     const placeholderMap = Object.fromEntries(
       state.images.map((img) => [img.id, { id: img.id, alt: "Imported image" } satisfies ImageUploadResult]),
     ) as Record<string, ImageUploadResult>;
+    if (state.importMode === "markdown") {
+      return { markdown: state.generatedMarkdown, warnings: [] };
+    }
     return autoMapSections
       ? autoMapBlocksToRequiredCaseStudySections(state.blocks, placeholderMap)
       : { markdown: state.generatedMarkdown, warnings: [] };
@@ -616,18 +673,21 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
     setError("");
     setStatus("");
 
-    if (!/\.docx$/i.test(file.name)) {
-      setError("Please upload a .docx file.");
-      return;
-    }
-
     try {
       setLoading(true);
-      const parsed = await parseDocxFile(file);
+      let parsed: ImportDraftState;
+      if (/\.docx$/i.test(file.name)) {
+        parsed = await parseDocxFile(file);
+      } else if (/\.(md|mdx)$/i.test(file.name)) {
+        parsed = await parseMarkdownFile(file);
+      } else {
+        setError("Supported file types: .docx, .md, .mdx");
+        return;
+      }
       const placeholderMap = Object.fromEntries(
         parsed.images.map((img) => [img.id, { id: img.id, alt: "Imported image" } satisfies ImageUploadResult]),
       ) as Record<string, ImageUploadResult>;
-      const generatedForEditor = autoMapSections
+      const generatedForEditor = parsed.importMode === "docx" && autoMapSections
         ? autoMapBlocksToRequiredCaseStudySections(parsed.blocks, placeholderMap)
         : { markdown: parsed.generatedMarkdown, warnings: [] };
       const bodyCheck = analyzeBodyTransfer(generatedForEditor.markdown);
@@ -655,7 +715,11 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
           blockingErrors: [...parsed.blockingErrors, ...bodyCheck.blockingErrors],
         },
       });
-      setStatus(`Parsed ${file.name} and auto-filled editor fields. Review warnings, then click “Upload Images + Apply Draft” to replace image placeholders with uploaded image URLs.`);
+      setStatus(
+        parsed.importMode === "docx"
+          ? `Parsed ${file.name} and auto-filled editor fields. Review warnings, then click “Upload Images + Apply Draft” to replace image placeholders with uploaded image URLs.`
+          : `Parsed ${file.name} (Markdown direct ingestion) and auto-filled editor fields. Review warnings and save draft.`,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "DOCX import failed.");
     } finally {
@@ -707,15 +771,25 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
         }
       }
 
-      const generated = autoMapSections
+      const generated = state.importMode === "docx" && autoMapSections
         ? autoMapBlocksToRequiredCaseStudySections(state.blocks, imageUploadMap)
         : blocksToMarkdown(state.blocks, imageUploadMap);
-      const bodyCheck = analyzeBodyTransfer(generated.markdown);
+      const normalizedGenerated =
+        state.importMode === "markdown"
+          ? { markdown: state.generatedMarkdown, warnings: [] as string[] }
+          : generated;
+      const bodyCheck = analyzeBodyTransfer(normalizedGenerated.markdown);
       if (bodyCheck.blockingErrors.length > 0) {
         setError(bodyCheck.blockingErrors.join(" "));
         return;
       }
-      const allWarnings = validateCaseStudyImportDraft(state.title, state.slug, generated.markdown, generated.warnings, state.warnings);
+      const allWarnings = validateCaseStudyImportDraft(
+        state.title,
+        state.slug,
+        normalizedGenerated.markdown,
+        normalizedGenerated.warnings,
+        state.warnings,
+      );
       const placeholderImageAltCount = Object.values(imageUploadMap).filter((entry) => /^Imported image /.test(entry.alt)).length;
 
       onApplyDraft({
@@ -723,7 +797,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
         slug: state.slug,
         summary: state.summary,
         tags: state.suggestedTags,
-        body: generated.markdown,
+        body: normalizedGenerated.markdown,
         warnings: allWarnings,
         diagnostics: {
           bodyLength: bodyCheck.bodyLength,
@@ -748,18 +822,18 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
   return (
     <section className="space-y-4 rounded-md border border-slate-700 bg-slate-950 p-4">
       <div className="space-y-1">
-        <h3 className="h3">DOCX Import (Safe Draft Workflow)</h3>
+        <h3 className="h3">Case Study Import (Safe Draft Workflow)</h3>
         <p className="text-sm text-muted-text">
-          Upload a <code>.docx</code>, review a structured draft + warnings, then apply it to the editor as an unpublished draft only.
+          Upload a <code>.docx</code>, <code>.md</code>, or <code>.mdx</code>, review the parsed draft + warnings, then apply it to the editor as an unpublished draft.
         </p>
       </div>
 
       <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end">
         <div className="space-y-1">
-          <label className="text-xs text-muted-text">DOCX file</label>
+          <label className="text-xs text-muted-text">Import file (.docx / .md / .mdx)</label>
           <input
             type="file"
-            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept=".docx,.md,.mdx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/markdown,text/plain"
             onChange={handleDocxFile}
             disabled={disabled || loading || applying}
             className="block w-full text-xs text-muted-text file:mr-3 file:rounded-md file:border-0 file:bg-strategic-blue file:px-3 file:py-2 file:text-sm file:font-medium file:text-white"
@@ -777,13 +851,12 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
         </div>
 
         <Button type="button" variant="secondary" disabled={disabled || loading || applying || !state} onClick={applyImportAsDraft}>
-          {applying ? "Applying..." : "Upload Images + Apply Draft"}
+          {applying ? "Applying..." : state?.importMode === "markdown" ? "Apply Draft" : "Upload Images + Apply Draft"}
         </Button>
       </div>
 
       <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3 text-xs text-muted-text">
-        Supported v1: headings, paragraphs, bold, italic, lists, links, images. Unsupported (flagged): tables, footnotes, comments,
-        tracked changes, text boxes, complex layouts.
+        `.docx` import: converts supported structure with warnings. `.md` / `.mdx` import: direct ingestion (no structural rewrite).
       </div>
 
       <label className="inline-flex items-center gap-2 text-sm text-primary-text">
@@ -793,7 +866,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
           onChange={(e) => setAutoMapSections(e.target.checked)}
           disabled={disabled || loading || applying}
         />
-        Auto-map imported headings into required case study sections (recommended)
+        Auto-map imported headings into known case study sections (recommended for DOCX)
       </label>
 
       {error ? <p className="text-sm text-red-400">{error}</p> : null}
@@ -809,6 +882,10 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
             <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
               <p className="text-xs text-muted-text">Generated slug</p>
               <p className="text-sm text-primary-text">{state.slug || "(none)"}</p>
+            </div>
+            <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+              <p className="text-xs text-muted-text">Import mode</p>
+              <p className="text-sm text-primary-text">{state.importMode}</p>
             </div>
             <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
               <p className="text-xs text-muted-text">Embedded images</p>

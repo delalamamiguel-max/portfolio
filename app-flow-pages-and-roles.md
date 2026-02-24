@@ -152,13 +152,16 @@ Session persists via secure cookie.
 Site Owner (Miguel)
 
 Responsibilities:
-	•	Update content via GitHub
+	•	Update content via owner-only in-app CMS (GitHub-backed)
 	•	Rotate password via Vercel env var
 	•	Manage public vs private routes
-	•	Maintain content structure discipline
+	•	Maintain content quality (section structure is flexible; CMS surfaces warnings)
+	•	Review import warnings before publishing imported case studies
 
 No user accounts exist.
 No database required.
+CMS writes create versioned commits in GitHub and trigger Vercel rebuilds.
+Case study frontend rendering adapts to existing Markdown/MDX headings and does not require a rigid section schema.
 
 ⸻
 
@@ -196,6 +199,17 @@ Scenario C — Returning Visitor
 	2.	Private pages load without interruption.
 
 Experience feels seamless.
+
+⸻
+
+Scenario D — Owner CMS Save + Verification
+	1.	Owner updates content in `/admin/*` and clicks save.
+	2.	CMS commits content to GitHub via secure server-side API routes.
+	3.	CMS returns verification links (`admin preview` / `live route`) and Vercel rebuild note.
+	4.	Owner validates in admin preview immediately; public route updates after Vercel rebuild.
+
+No silent success.
+Clear verification path.
 
 ⸻
 
@@ -256,6 +270,9 @@ Question:
 “Is this person operating at my level?”
 
 Answer: Yes — immediately.
+
+Operational note:
+Homepage hero supports a CMS-controlled square profile image with responsive rendering.
 
 ⸻
 

@@ -93,6 +93,8 @@ export function markdownToHtml(markdown: string): string {
   const renderInline = (input: string): string => {
     let out = escapeHtml(input);
 
+    // Owner-authored CMS content may include inline HTML; allow safe passthrough for valid tags.
+    out = out.replace(/&lt;(\/?[a-zA-Z][a-zA-Z0-9:-]*(?:\s+[^&<>]*)?)&gt;/g, "<$1>");
     out = out.replace(/&lt;u&gt;([\s\S]*?)&lt;\/u&gt;/g, "<u>$1</u>");
     out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
     out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g, (_match, label: string, href: string) => {
@@ -120,6 +122,15 @@ export function markdownToHtml(markdown: string): string {
     return `<figure class="${classes}" data-align="${align}"><img src="${src}" alt="${escapeHtml(alt)}" class="${imgClasses}" loading="lazy" /></figure>`;
   };
 
+  const isTableSeparator = (value: string) => /^\s*\|?[\s:-]+\|[\s|:-]*$/.test(value);
+  const splitTableRow = (value: string) =>
+    value
+      .trim()
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((cell) => cell.trim());
+
   const lines = normalized.split("\n");
   const html: string[] = [];
   let i = 0;
@@ -136,6 +147,12 @@ export function markdownToHtml(markdown: string): string {
     const imageHtml = renderImageLine(line);
     if (imageHtml) {
       html.push(imageHtml);
+      i += 1;
+      continue;
+    }
+
+    if (line.trimStart().startsWith("<") && line.trimEnd().endsWith(">")) {
+      html.push(line.trim());
       i += 1;
       continue;
     }
@@ -188,6 +205,22 @@ export function markdownToHtml(markdown: string): string {
         i += 1;
       }
       html.push(`<ol>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`);
+      continue;
+    }
+
+    if (line.includes("|") && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      const header = splitTableRow(line);
+      i += 2;
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
+        rows.push(splitTableRow(lines[i]));
+        i += 1;
+      }
+      html.push(
+        `<div class="overflow-x-auto"><table><thead><tr>${header.map((cell) => `<th>${renderInline(cell)}</th>`).join("")}</tr></thead><tbody>${rows
+          .map((row) => `<tr>${row.map((cell) => `<td>${renderInline(cell)}</td>`).join("")}</tr>`)
+          .join("")}</tbody></table></div>`,
+      );
       continue;
     }
 

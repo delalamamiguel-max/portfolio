@@ -186,11 +186,6 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       return;
     }
 
-    if (!state.summary.trim()) {
-      setStatus({ tone: "error", message: "Summary is required." });
-      return;
-    }
-
     if (!state.body.trim()) {
       setStatus({ tone: "error", message: "Content body is required." });
       return;
@@ -209,16 +204,6 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         setStatus({
           tone: "error",
           message: "Cannot publish imported content until body transfer checks pass (length/truncation review). Save as draft, review, and correct the content first.",
-        });
-        return;
-      }
-
-      const missingSectionWarning = importedDraftState.warnings.find((w) => /Missing required case study sections/i.test(w));
-      const orderWarning = importedDraftState.warnings.find((w) => /not in the expected order/i.test(w));
-      if (missingSectionWarning || orderWarning) {
-        setStatus({
-          tone: "error",
-          message: "Cannot publish while required case study sections are missing or out of order. Fix the structured content first.",
         });
         return;
       }
@@ -357,7 +342,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
               truncatedSuspected: draft.diagnostics.truncatedSuspected,
               importedImageCount: draft.diagnostics.importedImageCount,
               placeholderImageAltCount: draft.diagnostics.placeholderImageAltCount,
-              imageAltReviewConfirmed: false,
+              imageAltReviewConfirmed: draft.diagnostics.placeholderImageAltCount === 0,
             });
             setLastSaveResult(null);
             setStatus({
@@ -523,7 +508,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
           ) : null}
           {lastSaveResult.liveRouteCheck && !lastSaveResult.liveRouteCheck.ok ? (
             <p className="mt-1 text-xs text-amber-300">
-              The live route did not resolve yet. Check deployment status, publish flag, and case study section validation.
+              The live route did not resolve yet. Check deployment status, publish flag, and route slug.
             </p>
           ) : null}
         </div>

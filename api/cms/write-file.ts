@@ -63,7 +63,7 @@ function validateMarkdownCreatePayload(path: string, content: string): string | 
   }
 
   const { frontmatter, body } = parseSimpleFrontmatter(content);
-  const requiredFields = ["slug", "title", "summary", "tags", "published"];
+  const requiredFields = ["slug", "title"];
   const missing = requiredFields.filter((field) => !frontmatter[field] || !frontmatter[field].trim());
   if (missing.length) {
     return `Missing required metadata: ${missing.join(", ")}.`;

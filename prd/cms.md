@@ -28,3 +28,126 @@ This CMS must not violate any non-negotiables defined in the source documents.
 
 ## Non-Negotiable CMS Goal
 A password-gated owner-only CMS that lets Miguel update homepage, philosophy, resume, contact, and private case studies/deep-dives without editing code, while keeping GitHub as the source of truth (content versioned in-repo).
+
+## Current CMS Behavior (Catch-Up)
+
+### Content Storage + Sync Model
+- CMS writes directly to GitHub via Vercel API routes.
+- Source-of-truth content paths used by both CMS and frontend loaders:
+  - `content/pages/home.json`
+  - `content/pages/resume.json`
+  - `content/pages/contact.json`
+  - `content/case-studies/*.md`
+  - `content/philosophy/*.md`
+  - `content/deep-dive/*.md`
+- Frontend case study/deep-dive content is loaded at build time (`import.meta.glob`), so new content appears publicly after Vercel rebuild completes.
+
+### Rich Markdown Editor + Inline Images
+- Case study / philosophy / deep-dive editors use a structured Markdown/MDX-friendly editor with:
+  - H1-H4
+  - bold / italic / underline
+  - bullets / numbered lists
+  - quotes
+  - code blocks
+  - links
+- Inline image support is available in the editor:
+  - uploads images to repo-backed `public/images/cms/...`
+  - inserts MDX-friendly image syntax into body
+  - supports alignment metadata (`left`, `center`, `full`)
+  - requires alt text before upload (editor-level requirement)
+
+### Case Study Import (Safe Draft Workflow)
+- Case study editor includes review-first import for `.docx`, `.md`, and `.mdx` (not direct publish).
+- Workflow:
+  1. Upload import file (`.docx` / `.md` / `.mdx`)
+  2. Detect import mode:
+     - `.docx` => parse to structured intermediate blocks + convert
+     - `.md` / `.mdx` => direct ingestion into structured content body (no structural rewrite)
+  3. Auto-populate editor fields (title / slug / summary / tags / body)
+  4. Show generated Markdown (diffable), structured JSON (diffable), and preview
+  5. Show warnings/errors for unsupported or risky conversions
+  6. Upload embedded images (DOCX only) and apply to editor as draft
+- Supported v1 import formatting:
+  - headings
+  - paragraphs
+  - bold / italic / underline
+  - lists
+  - links
+  - embedded images
+- Unsupported v1 (flagged in warnings and/or omitted):
+  - tables
+  - footnotes
+  - comments
+  - tracked changes
+  - text boxes
+  - complex layouts
+
+### DOCX Auto-Map Heading Behavior
+- Auto-map is enabled by default in the DOCX importer.
+- Imported headings can be mapped into known case study sections:
+  - `Strategic Context`
+  - `Architecture`
+  - `Trade-offs`
+  - `Execution`
+  - `Impact`
+  - `What's Next`
+- Common imported headings such as `Background`, `Challenge`, `Solution`, `Results and Impact`, and `Learnings / What's Next` are remapped automatically.
+- Unmapped headings are preserved inside the current mapped section and flagged.
+- Auto-map produces only sections that contain content; it does not inject empty headings.
+
+### Flexible Content Model + Draft-First Publishing Rules
+- Case study body (Markdown/MDX headings) is the source of truth for section structure.
+- Frontend renders only sections that exist; if no `##` sections are present, it renders the full body as a single article.
+- Missing canonical sections produce warnings only (no hard save/publish block).
+- DOCX imported content is applied to the editor as `Published = false` by default.
+- First save after DOCX import must be a draft save.
+- Publishing is blocked if any of the following are unresolved:
+  - required fields missing (slug/title/body)
+  - body transfer checks fail (empty / too short / possible truncation)
+  - imported image alt placeholders have not been reviewed/confirmed
+
+### Homepage Profile Image CMS
+- Homepage content supports a CMS-controlled `profileImage` field in `content/pages/home.json`:
+  - `src`
+  - `alt`
+- `/admin/pages` supports profile image upload:
+  - image is center-cropped to square client-side
+  - optimized to WebP before upload
+  - stored under repo-backed `public/images/cms/...`
+- Homepage hero renders the square image responsively.
+- If `profileImage.src` is set, `profileImage.alt` is required.
+
+### Save Verification + Admin Preview
+- CMS save response includes verification metadata for case studies:
+  - file path
+  - create vs update status
+  - admin preview route
+  - public route
+- Admin preview route supports draft verification:
+  - `/admin/case-studies/preview/:slug`
+- Post-save CMS UI shows route links and route-check status.
+- Public route availability still depends on Vercel rebuild + `published: true`.
+
+### Markdown / MDX Import + Rendering Notes
+- `.md` / `.mdx` imports preserve body content exactly as written (no structural rewrite).
+- Frontmatter metadata is mapped when present:
+  - `title`
+  - `slug`
+  - `summary`
+  - `tags`
+  - `published` (detected but import still applies draft by default)
+- Markdown rendering supports:
+  - tables (pipe-table syntax)
+  - code blocks
+  - links
+  - images
+  - inline HTML passthrough for owner-authored content
+
+### Logging + Error Surfacing
+- Server-side CMS write endpoint logs:
+  - slug
+  - file path
+  - body length
+  - create vs update
+  - commit status (success/failed)
+- CMS UI surfaces actionable validation and import errors instead of silent failures.
