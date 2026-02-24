@@ -9,8 +9,15 @@
         "Built shared experimentation capabilities for consistent decision velocity.",
         "Drove system-level strategy with measurable business impact."
       ],
-      "metrics": ["+8% CTR", "$8M+ OPEX reduction"],
-      "tags": ["strategy", "ml-systems", "platform-governance"]
+      "metrics": [
+        "+8% CTR",
+        "$8M+ OPEX reduction"
+      ],
+      "tags": [
+        "strategy",
+        "ml-systems",
+        "platform-governance"
+      ]
     },
     {
       "role": "Product Leadership",
@@ -21,8 +28,14 @@
         "Institutionalized experimentation standards and measurement quality.",
         "Delivered architecture-aware execution with measurable behavior change."
       ],
-      "metrics": ["+12% engagement lift"],
-      "tags": ["experimentation", "execution", "leadership"]
+      "metrics": [
+        "+12% engagement lift"
+      ],
+      "tags": [
+        "experimentation",
+        "execution",
+        "leadership"
+      ]
     }
   ],
   "downloadablePdfUrl": "/resume.pdf"
