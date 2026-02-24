@@ -319,6 +319,62 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
   return (
     <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="secondary" onClick={resetForNew} disabled={saving}>New</Button>
+        {records.map((record) => (
+          <Button
+            key={record.path}
+            variant={record.path === selectedPath ? "primary" : "subtle"}
+            onClick={() => selectPath(record.path)}
+            disabled={saving}
+          >
+            {record.state.slug || record.path}
+          </Button>
+        ))}
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="space-y-1">
+          <Input
+            placeholder="slug"
+            value={state.slug}
+            onChange={(event) => {
+              setSlugTouched(true);
+              setState((prev) => ({ ...prev, slug: slugify(event.target.value) }));
+            }}
+            aria-invalid={Boolean(slugError || isSlugDuplicate)}
+          />
+          <p className={`text-xs ${slugError || isSlugDuplicate ? "text-red-400" : "text-muted-text"}`}>
+            {slugError
+              ? slugError
+              : isSlugDuplicate
+                ? "Slug is already in use."
+                : "URL slug: lowercase letters, numbers, and hyphens only."}
+          </p>
+        </div>
+        <div className="space-y-1">
+          <Input
+            placeholder="title"
+            value={state.title}
+            onChange={(event) => {
+              const nextTitle = event.target.value;
+              setState((prev) => {
+                const nextSlug = !slugTouched || prev.slug === slugify(prev.title) ? slugify(nextTitle) : prev.slug;
+                return { ...prev, title: nextTitle, slug: nextSlug };
+              });
+            }}
+          />
+          <p className="text-xs text-muted-text">Slug auto-generates from title until you edit the slug field.</p>
+        </div>
+        <Input placeholder="summary" value={state.summary} onChange={(event) => setState((prev) => ({ ...prev, summary: event.target.value }))} />
+        <Input placeholder="tags (comma separated)" value={state.tags} onChange={(event) => setState((prev) => ({ ...prev, tags: event.target.value }))} />
+      </div>
+
+      <label className="inline-flex items-center gap-2 text-sm text-primary-text">
+        <input type="checkbox" checked={state.published} onChange={(event) => setState((prev) => ({ ...prev, published: event.target.checked }))} />
+        Published
+      </label>
+
       {directory === "content/case-studies" ? (
         <DocxCaseStudyImporter
           disabled={saving}
@@ -384,62 +440,6 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
           }}
         />
       ) : null}
-
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" onClick={resetForNew} disabled={saving}>New</Button>
-        {records.map((record) => (
-          <Button
-            key={record.path}
-            variant={record.path === selectedPath ? "primary" : "subtle"}
-            onClick={() => selectPath(record.path)}
-            disabled={saving}
-          >
-            {record.state.slug || record.path}
-          </Button>
-        ))}
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-2">
-        <div className="space-y-1">
-          <Input
-            placeholder="slug"
-            value={state.slug}
-            onChange={(event) => {
-              setSlugTouched(true);
-              setState((prev) => ({ ...prev, slug: slugify(event.target.value) }));
-            }}
-            aria-invalid={Boolean(slugError || isSlugDuplicate)}
-          />
-          <p className={`text-xs ${slugError || isSlugDuplicate ? "text-red-400" : "text-muted-text"}`}>
-            {slugError
-              ? slugError
-              : isSlugDuplicate
-                ? "Slug is already in use."
-                : "URL slug: lowercase letters, numbers, and hyphens only."}
-          </p>
-        </div>
-        <div className="space-y-1">
-          <Input
-            placeholder="title"
-            value={state.title}
-            onChange={(event) => {
-              const nextTitle = event.target.value;
-              setState((prev) => {
-                const nextSlug = !slugTouched || prev.slug === slugify(prev.title) ? slugify(nextTitle) : prev.slug;
-                return { ...prev, title: nextTitle, slug: nextSlug };
-              });
-            }}
-          />
-          <p className="text-xs text-muted-text">Slug auto-generates from title until you edit the slug field.</p>
-        </div>
-        <Input placeholder="summary" value={state.summary} onChange={(event) => setState((prev) => ({ ...prev, summary: event.target.value }))} />
-        <Input placeholder="tags (comma separated)" value={state.tags} onChange={(event) => setState((prev) => ({ ...prev, tags: event.target.value }))} />
-      </div>
-
-      <label className="inline-flex items-center gap-2 text-sm text-primary-text">
-        <input type="checkbox" checked={state.published} onChange={(event) => setState((prev) => ({ ...prev, published: event.target.checked }))} />
-        Published
-      </label>
 
       <MarkdownSplitEditor
         title={title}
