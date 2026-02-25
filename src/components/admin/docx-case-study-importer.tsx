@@ -820,7 +820,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
   };
 
   return (
-    <section className="space-y-4 rounded-md border border-slate-700 bg-slate-950 p-4">
+    <section className="space-y-4 rounded-md border border-border bg-card p-4 shadow-sm">
       <div className="space-y-1">
         <h3 className="h3">Case Study Import (Safe Draft Workflow)</h3>
         <p className="text-sm text-muted-text">
@@ -855,7 +855,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
         </Button>
       </div>
 
-      <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3 text-xs text-muted-text">
+      <div className="rounded-md border border-border bg-background/50 p-3 text-xs text-muted-text">
         `.docx` import: converts supported structure with warnings. `.md` / `.mdx` import: direct ingestion (no structural rewrite).
       </div>
 
@@ -875,19 +875,19 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
       {state ? (
         <div className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+            <div className="rounded-md border border-border bg-background/50 p-3">
               <p className="text-xs text-muted-text">Detected title</p>
               <p className="text-sm text-primary-text">{state.title || "(none)"}</p>
             </div>
-            <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+            <div className="rounded-md border border-border bg-background/50 p-3">
               <p className="text-xs text-muted-text">Generated slug</p>
               <p className="text-sm text-primary-text">{state.slug || "(none)"}</p>
             </div>
-            <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+            <div className="rounded-md border border-border bg-background/50 p-3">
               <p className="text-xs text-muted-text">Import mode</p>
               <p className="text-sm text-primary-text">{state.importMode}</p>
             </div>
-            <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+            <div className="rounded-md border border-border bg-background/50 p-3">
               <p className="text-xs text-muted-text">Embedded images</p>
               <p className="text-sm text-primary-text">{state.images.length}</p>
             </div>
@@ -914,7 +914,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
             </div>
           ) : null}
 
-          <div className="rounded-md border border-slate-800 bg-slate-900/50 p-3">
+          <div className="rounded-md border border-border bg-background/50 p-3">
             <p className="text-sm text-primary-text">Auto-populated fields preview</p>
             <div className="mt-2 grid gap-2 text-xs text-muted-text md:grid-cols-2">
               <p>Title: <span className="text-primary-text">{state.title || "(missing)"}</span></p>
@@ -932,7 +932,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
               <textarea
                 readOnly
                 value={displayGenerated?.markdown || state.generatedMarkdown}
-                className="min-h-[280px] w-full rounded-md border border-slate-700 bg-slate-950 p-3 text-xs text-primary-text"
+                className="min-h-[280px] w-full rounded-md border border-input bg-card p-3 text-xs text-foreground shadow-sm"
               />
             </div>
             <div className="space-y-2">
@@ -940,14 +940,14 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
               <textarea
                 readOnly
                 value={JSON.stringify({ title: state.title, slug: state.slug, summary: state.summary, blocks: state.blocks }, null, 2)}
-                className="min-h-[280px] w-full rounded-md border border-slate-700 bg-slate-950 p-3 text-xs text-primary-text"
+                className="min-h-[280px] w-full rounded-md border border-input bg-card p-3 text-xs text-foreground shadow-sm"
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <p className="text-sm text-primary-text">Preview (pre-save)</p>
-            <article className="min-h-[180px] rounded-md border border-slate-700 bg-slate-950 p-4">
+            <article className="min-h-[180px] rounded-md border border-border bg-card p-4 shadow-sm">
               <div
                 className="body-md space-y-3"
                 dangerouslySetInnerHTML={{ __html: markdownToHtml(displayGenerated?.markdown || state.generatedMarkdown) }}

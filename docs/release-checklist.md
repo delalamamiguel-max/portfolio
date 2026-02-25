@@ -52,7 +52,7 @@
    - Toggle light/dark from top-right navigation.
    - Confirm preference persists after refresh.
    - Confirm first-load theme respects system preference when localStorage is cleared.
-   - Confirm cards, inputs, tags, tables, code blocks, and toolbar controls remain readable in both themes.
+   - Confirm cards, inputs, tags, tables, code blocks, toolbar controls, and DOCX/Markdown import panels remain readable in both themes.
 11. Dynamic import resilience checks:
    - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
 12. Homepage profile image CMS checks:
