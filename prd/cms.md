@@ -51,7 +51,7 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - quotes
   - code blocks
   - links
-  - table insertion (Markdown pipe-table template)
+  - visual table builder (rows/cols, header toggle, add/remove row/column, inline cell editing)
 - Inline image support is available in the editor:
   - uploads images to repo-backed `public/images/cms/...`
   - inserts MDX-friendly image syntax into body
@@ -135,6 +135,19 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - `/admin/case-studies/preview/:slug`
 - Post-save CMS UI shows route links and route-check status.
 - Public route availability still depends on Vercel rebuild + `published: true`.
+
+### Theme + UI System (Website + CMS)
+- Global theme toggle is available in the top-right navigation and applies to both website and CMS routes.
+- Theme behavior:
+  - first visit respects `prefers-color-scheme`
+  - user preference persists in localStorage
+  - no-flicker theme initialization is applied before app boot
+- Shared UI surfaces (shell, buttons, inputs, cards, tags, tables/code blocks) are token-driven for theme adaptation.
+
+### Dynamic Import Reliability (Production)
+- Client listens for stale chunk/dynamic import failures (e.g. hashed Vite bundle no longer present after deploy).
+- On first occurrence, app performs a one-time reload to recover from cache/hash mismatch.
+- This reduces CMS/page load failures like “Failed to fetch dynamically imported module …/assets/index-*.js”.
 
 ### Markdown / MDX Import + Rendering Notes
 - `.md` / `.mdx` imports preserve body content exactly as written (no structural rewrite).

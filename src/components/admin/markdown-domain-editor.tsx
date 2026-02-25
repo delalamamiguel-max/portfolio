@@ -15,6 +15,7 @@ type MarkdownDomainEditorProps = {
   directory: "content/philosophy" | "content/case-studies" | "content/deep-dive";
   parseAndValidate: (raw: string) => MarkdownDoc;
   helper: string;
+  showBackButton?: boolean;
 };
 
 type EditorState = {
@@ -167,7 +168,14 @@ function validateCaseStudyTags(tagsInput: string, enabled: boolean) {
   return { tags, error: null, warnings };
 }
 
-export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidate, helper }: MarkdownDomainEditorProps) {
+export function MarkdownDomainEditor({
+  title,
+  rawMap,
+  directory,
+  parseAndValidate,
+  helper,
+  showBackButton = true,
+}: MarkdownDomainEditorProps) {
   const [docsByPath, setDocsByPath] = useState<Record<string, string>>(() => normalizePathMap(rawMap));
   const records = useMemo(() => {
     return Object.entries(docsByPath)
@@ -371,7 +379,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
   return (
     <div className="space-y-4">
-      <HistoryBackButton fallbackTo="/admin" label="Back" />
+      {showBackButton ? <HistoryBackButton fallbackTo="/admin" label="Back" /> : null}
 
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="secondary" onClick={resetForNew} disabled={saving}>New</Button>

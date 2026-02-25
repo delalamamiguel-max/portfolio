@@ -43,8 +43,14 @@ Private:
 ## CMS Notes (Current)
 - Content edits are GitHub-backed and versioned in-repo via Vercel Functions.
 - Public case studies/deep dives are build-time loaded; new content appears publicly after Vercel rebuild completes.
+- Theme system:
+  - global light/dark toggle in top-right navigation (website + CMS)
+  - persists user preference in localStorage
+  - first visit respects system preference
+  - no-flicker theme init script in `index.html`
 - Case Study CMS supports:
-  - rich Markdown/MDX-friendly editor toolbar (block style picker, lists, indent/outdent, table insert, links, code/quote)
+  - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
+  - visual table builder (rows/cols, header row, inline cell editing) -> inserts clean Markdown tables
   - inline image uploads (`public/images/cms/...`)
   - image insert preview with alignment and width metadata (`align`, `width`)
   - `.docx`, `.md`, `.mdx` safe-draft import workflow with warnings/preview
@@ -56,6 +62,7 @@ Private:
   - real-time validation in CMS and save blocking on violations
 - DOCX imports default to draft and require a draft save before publish.
 - Case study body Markdown/MDX headings are the source of truth for frontend section structure (dynamic rendering).
+- Chunk load recovery: client auto-reloads once when a stale hashed dynamic-import bundle is requested after deployment.
 
 ## Production Deploy (Vercel)
 1. Ensure `SITE_PASSWORD` is configured in Vercel for `Production`, `Preview`, and `Development`.

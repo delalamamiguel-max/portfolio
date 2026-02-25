@@ -216,9 +216,18 @@ Clear verification path.
 Scenario E — Owner Markdown/DOCX Import Editing
 	1.	Owner imports `.docx`, `.md`, or `.mdx` into `/admin/case-studies`.
 	2.	CMS auto-populates metadata/body, shows warnings, and applies draft.
-	3.	Owner refines content with Markdown toolbar (including tables/images) and saves.
+	3.	Owner refines content with Markdown toolbar + visual table builder (including tables/images) and saves.
 
 Editor remains Markdown/MDX-first to preserve Git-readable output.
+
+⸻
+
+Scenario F — Appearance Toggle + Reliable Reload Recovery
+	1.	User toggles Light/Dark mode from the top-right navigation.
+	2.	Preference persists and applies across website + CMS.
+	3.	If a stale deployment chunk is requested, the app performs a one-time reload recovery.
+
+This improves perceived reliability during frequent deployments.
 
 ⸻
 

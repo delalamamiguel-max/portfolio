@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 const cardVariants = cva("rounded-xl border shadow-sm transition-all duration-200", {
   variants: {
     variant: {
-      default: "border-slate-800 bg-slate-950/50 hover:border-slate-700",
-      metric: "border-slate-800 bg-slate-950/60 hover:border-slate-700",
-      "case-study": "border-slate-700 bg-slate-950/70 hover:border-systems-teal/60",
+      default: "border-border bg-card/90 hover:border-border",
+      metric: "border-border bg-card/95 hover:border-border",
+      "case-study": "border-border bg-card/95 hover:border-systems-teal/60",
     },
     padding: {
       sm: "p-6",

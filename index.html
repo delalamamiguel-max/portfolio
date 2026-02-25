@@ -15,6 +15,18 @@
       name="description"
       content="Strategic portfolio platform for Product, Data Platforms, and ML Systems leadership."
     />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("abm-theme");
+          var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored === "light" || stored === "dark" ? stored : (prefersDark ? "dark" : "light");
+          var root = document.documentElement;
+          root.classList.add(theme === "dark" ? "theme-dark" : "theme-light");
+          root.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

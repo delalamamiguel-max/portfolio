@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+html.theme-dark,
 :root {
   --background: 222 47% 11%;
   --foreground: 220 20% 91%;
@@ -18,7 +19,31 @@
   --border: 217 19% 27%;
   --input: 217 19% 27%;
   --ring: 217 91% 56%;
+  --exec-navy: 222 47% 11%;
+  --primary-text: 220 20% 91%;
+  --muted-text: 215 19% 65%;
   --radius: 0.75rem;
+}
+
+html.theme-light {
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --primary: 217 91% 56%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 40%;
+  --accent: 172 81% 34%;
+  --accent-foreground: 0 0% 100%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --ring: 217 91% 56%;
+  --exec-navy: 210 40% 98%;
+  --primary-text: 222 47% 11%;
+  --muted-text: 215 16% 40%;
 }
 
 * {
@@ -26,7 +51,7 @@
 }
 
 body {
-  @apply bg-exec-navy text-primary-text font-sans antialiased;
+  @apply bg-background text-foreground font-sans antialiased transition-colors duration-300;
   line-height: 1.6;
 }
 
@@ -73,7 +98,7 @@ body {
   }
 
   .card-case-study {
-    @apply rounded-xl border border-slate-700 bg-slate-950/70 p-6 md:p-8;
+    @apply rounded-xl border border-border bg-card/80 p-6 shadow-sm md:p-8;
   }
 }
 
@@ -85,7 +110,39 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  @apply outline-none ring-2 ring-strategic-blue ring-offset-2 ring-offset-exec-navy;
+  @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+}
+
+pre,
+code {
+  color: hsl(var(--foreground));
+}
+
+pre {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid hsl(var(--border));
+}
+
+th,
+td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
 }
 
 @media (prefers-reduced-motion: reduce) {

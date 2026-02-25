@@ -16,6 +16,12 @@ type MarkdownSplitEditorProps = {
 
 type ImageAlign = "left" | "center" | "right" | "full";
 type ImageWidth = 40 | 60 | 80 | 100;
+type TableBuilderState = {
+  rows: number;
+  cols: number;
+  headerRow: boolean;
+  cells: string[][];
+};
 
 type ToolbarAction =
   | "h1"
@@ -126,6 +132,49 @@ function insertAtCursor(value: string, selectionStart: number, selectionEnd: num
   return { nextValue, nextStart: pos, nextEnd: pos };
 }
 
+function createTableBuilder(rows = 2, cols = 3): TableBuilderState {
+  return {
+    rows,
+    cols,
+    headerRow: true,
+    cells: Array.from({ length: rows }, (_, r) =>
+      Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : `Value ${r},${c + 1}`)),
+    ),
+  };
+}
+
+function resizeTableBuilder(state: TableBuilderState, nextRows: number, nextCols: number): TableBuilderState {
+  const rows = Math.max(1, Math.min(12, nextRows));
+  const cols = Math.max(1, Math.min(8, nextCols));
+  const cells = Array.from({ length: rows }, (_, r) =>
+    Array.from({ length: cols }, (_, c) => state.cells[r]?.[c] ?? (r === 0 ? `Header ${c + 1}` : "")),
+  );
+  return { ...state, rows, cols, cells };
+}
+
+function tableBuilderToMarkdown(table: TableBuilderState): string {
+  const rows = table.cells.map((row) =>
+    row.map((cell) => cell.replace(/\|/g, "\\|").trim()).map((cell) => (cell ? cell : " ")),
+  );
+  if (!rows.length || !rows[0]?.length) return "";
+
+  const headerIndex = table.headerRow ? 0 : -1;
+  const header = headerIndex === 0 ? rows[0] : rows[0].map((_c, i) => `Column ${i + 1}`);
+  const bodyRows = table.headerRow ? rows.slice(1) : rows;
+  const separator = header.map(() => "---");
+  const toLine = (cells: string[]) => `| ${cells.join(" | ")} |`;
+
+  const lines = [toLine(header), toLine(separator)];
+  if (bodyRows.length === 0) {
+    lines.push(toLine(header.map(() => " ")));
+  } else {
+    for (const row of bodyRows) {
+      lines.push(toLine(row));
+    }
+  }
+  return lines.join("\n");
+}
+
 function indentSelectedLines(
   value: string,
   selectionStart: number,
@@ -163,6 +212,9 @@ export function MarkdownSplitEditor({
   const [imageWidth, setImageWidth] = useState<ImageWidth>(80);
   const [imageUploading, setImageUploading] = useState(false);
   const [pendingImagePreviewUrl, setPendingImagePreviewUrl] = useState<string>("");
+  const [showTableBuilder, setShowTableBuilder] = useState(false);
+  const [tableBuilder, setTableBuilder] = useState<TableBuilderState>(() => createTableBuilder());
+  const [tableGridHover, setTableGridHover] = useState<{ rows: number; cols: number } | null>(null);
   const [editorMessage, setEditorMessage] = useState<string>("");
   const [editorError, setEditorError] = useState<string>("");
 
@@ -294,6 +346,29 @@ export function MarkdownSplitEditor({
     }
   };
 
+  const insertTableFromBuilder = () => {
+    const textarea = textareaRef.current;
+    const tableMarkdown = tableBuilderToMarkdown(tableBuilder);
+    if (!tableMarkdown.trim()) {
+      setEditorError("Table is empty. Add at least one row and one column.");
+      return;
+    }
+    if (!textarea) {
+      onChange(`${markdown}\n\n${tableMarkdown}\n\n`);
+      return;
+    }
+    const { selectionStart, selectionEnd } = textarea;
+    const result = insertBlock(markdown, selectionStart, selectionEnd, tableMarkdown);
+    onChange(result.nextValue);
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(result.nextStart, result.nextEnd);
+    });
+    setEditorError("");
+    setEditorMessage("Table inserted as Markdown.");
+    setShowTableBuilder(false);
+  };
+
   return (
     <section className="space-y-4">
       <div className="space-y-2">
@@ -301,12 +376,12 @@ export function MarkdownSplitEditor({
         {helper ? <p className="text-sm text-muted-text">{helper}</p> : null}
       </div>
 
-      <div className="rounded-md border border-slate-700 bg-slate-950 p-3">
+      <div className="rounded-md border border-border bg-card p-3 shadow-sm">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <label className="text-xs text-muted-text">Block style</label>
             <select
-              className="h-10 rounded-md border border-slate-700 bg-slate-950 px-3 text-sm text-primary-text"
+              className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground"
               defaultValue=""
               disabled={disabled}
               onChange={(event) => {
@@ -327,24 +402,139 @@ export function MarkdownSplitEditor({
 
             <label className="text-xs text-muted-text">Inline</label>
             <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="secondary" onClick={() => applyAction("bold")} disabled={disabled}>Bold</Button>
-              <Button type="button" variant="secondary" onClick={() => applyAction("italic")} disabled={disabled}>Italic</Button>
-              <Button type="button" variant="secondary" onClick={() => applyAction("underline")} disabled={disabled}>Underline</Button>
-              <Button type="button" variant="secondary" onClick={() => applyAction("link")} disabled={disabled}>Link</Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("bold")} disabled={disabled} title="Bold">
+                <span aria-hidden="true" className="font-bold">B</span>
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("italic")} disabled={disabled} title="Italic">
+                <span aria-hidden="true" className="italic">I</span>
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("underline")} disabled={disabled} title="Underline">
+                <span aria-hidden="true" className="underline">U</span>
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("link")} disabled={disabled} title="Insert link">
+                <span aria-hidden="true">🔗</span>
+              </Button>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <label className="text-xs text-muted-text">Lists</label>
-            <Button type="button" variant="secondary" onClick={() => applyAction("bullet")} disabled={disabled}>Bullets</Button>
-            <Button type="button" variant="secondary" onClick={() => applyAction("numbered")} disabled={disabled}>Numbered</Button>
-            <Button type="button" variant="secondary" onClick={() => applyAction("indent")} disabled={disabled}>Indent</Button>
-            <Button type="button" variant="secondary" onClick={() => applyAction("outdent")} disabled={disabled}>Outdent</Button>
-            <Button type="button" variant="secondary" onClick={() => applyAction("table")} disabled={disabled}>Insert table</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("bullet")} disabled={disabled} title="Bulleted list">• List</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("numbered")} disabled={disabled} title="Numbered list">1. List</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("indent")} disabled={disabled} title="Indent">⇥</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("outdent")} disabled={disabled} title="Outdent">⇤</Button>
+            <Button
+              type="button"
+              variant={showTableBuilder ? "primary" : "secondary"}
+              onClick={() => setShowTableBuilder((prev) => !prev)}
+              disabled={disabled}
+              title="Visual table builder"
+            >
+              ▦ Table
+            </Button>
           </div>
         </div>
 
-        <div className="mt-3 grid gap-3 rounded-md border border-slate-800 bg-slate-900/50 p-3 md:grid-cols-[1.1fr_160px_140px_180px_auto] md:items-end">
+        {showTableBuilder ? (
+          <div className="mt-3 space-y-3 rounded-md border border-border bg-background/50 p-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-text">Quick size</p>
+                <div className="grid grid-cols-6 gap-1">
+                  {Array.from({ length: 6 }, (_, r) =>
+                    Array.from({ length: 6 }, (_, c) => {
+                      const rows = r + 1;
+                      const cols = c + 1;
+                      const active =
+                        (tableGridHover ? rows <= tableGridHover.rows && cols <= tableGridHover.cols : false) ||
+                        (!tableGridHover && rows <= tableBuilder.rows && cols <= tableBuilder.cols);
+                      return (
+                        <button
+                          key={`${rows}-${cols}`}
+                          type="button"
+                          className={`h-5 w-5 rounded-sm border ${active ? "border-strategic-blue bg-strategic-blue/30" : "border-border bg-card"}`}
+                          onMouseEnter={() => setTableGridHover({ rows, cols })}
+                          onMouseLeave={() => setTableGridHover(null)}
+                          onClick={() => setTableBuilder((prev) => resizeTableBuilder(prev, rows, cols))}
+                          title={`${rows} x ${cols}`}
+                          disabled={disabled}
+                        />
+                      );
+                    }),
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Button type="button" variant="secondary" onClick={() => setTableBuilder((prev) => resizeTableBuilder(prev, prev.rows + 1, prev.cols))} disabled={disabled}>
+                  + Row
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => setTableBuilder((prev) => resizeTableBuilder(prev, prev.rows - 1, prev.cols))} disabled={disabled || tableBuilder.rows <= 1}>
+                  - Row
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => setTableBuilder((prev) => resizeTableBuilder(prev, prev.rows, prev.cols + 1))} disabled={disabled}>
+                  + Col
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => setTableBuilder((prev) => resizeTableBuilder(prev, prev.rows, prev.cols - 1))} disabled={disabled || tableBuilder.cols <= 1}>
+                  - Col
+                </Button>
+              </div>
+
+              <label className="inline-flex items-center gap-2 text-sm text-foreground">
+                <input
+                  type="checkbox"
+                  checked={tableBuilder.headerRow}
+                  onChange={(event) => setTableBuilder((prev) => ({ ...prev, headerRow: event.target.checked }))}
+                  disabled={disabled}
+                />
+                Header row
+              </label>
+            </div>
+
+            <div className="overflow-x-auto rounded-md border border-border">
+              <table className="min-w-full border-collapse">
+                <tbody>
+                  {tableBuilder.cells.map((row, rowIndex) => (
+                    <tr key={`row-${rowIndex}`}>
+                      {row.map((cell, colIndex) => (
+                        <td key={`cell-${rowIndex}-${colIndex}`} className="border border-border p-1">
+                          <input
+                            value={cell}
+                            onChange={(event) =>
+                              setTableBuilder((prev) => {
+                                const next = prev.cells.map((r) => [...r]);
+                                next[rowIndex][colIndex] = event.target.value;
+                                return { ...prev, cells: next };
+                              })
+                            }
+                            disabled={disabled}
+                            className={`w-full rounded border px-2 py-1 text-xs ${
+                              tableBuilder.headerRow && rowIndex === 0
+                                ? "border-border bg-secondary text-foreground font-semibold"
+                                : "border-input bg-card text-foreground"
+                            }`}
+                            placeholder={tableBuilder.headerRow && rowIndex === 0 ? `Header ${colIndex + 1}` : "Value"}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" variant="primary" onClick={insertTableFromBuilder} disabled={disabled}>
+                Insert table
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => setTableBuilder(createTableBuilder())} disabled={disabled}>
+                Reset
+              </Button>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="mt-3 grid gap-3 rounded-md border border-border bg-background/50 p-3 md:grid-cols-[1.1fr_160px_140px_180px_auto] md:items-end">
           <div className="space-y-1">
             <label className="text-xs text-muted-text">Image alt text (required)</label>
             <Input
@@ -358,7 +548,7 @@ export function MarkdownSplitEditor({
           <div className="space-y-1">
             <label className="text-xs text-muted-text">Alignment</label>
             <select
-              className="h-11 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm text-primary-text"
+              className="h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground"
               value={imageAlign}
               onChange={(event) => setImageAlign(event.target.value as ImageAlign)}
               disabled={disabled || imageUploading}
@@ -373,7 +563,7 @@ export function MarkdownSplitEditor({
           <div className="space-y-1">
             <label className="text-xs text-muted-text">Width</label>
             <select
-              className="h-11 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm text-primary-text"
+              className="h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground"
               value={String(imageWidth)}
               onChange={(event) => setImageWidth(Number(event.target.value) as ImageWidth)}
               disabled={disabled || imageUploading}
@@ -412,9 +602,9 @@ export function MarkdownSplitEditor({
         </div>
 
         {pendingImagePreviewUrl ? (
-          <div className="mt-3 rounded-md border border-slate-800 bg-slate-900/40 p-3">
+          <div className="mt-3 rounded-md border border-border bg-background/50 p-3">
             <p className="text-xs text-muted-text">Pending image preview</p>
-            <div className="mt-2 max-w-md overflow-hidden rounded-md border border-slate-700 bg-slate-950 p-2">
+            <div className="mt-2 max-w-md overflow-hidden rounded-md border border-border bg-card p-2">
               <img
                 src={pendingImagePreviewUrl}
                 alt="Pending upload preview"
@@ -434,7 +624,7 @@ export function MarkdownSplitEditor({
           <p className="text-sm text-primary-text">Structured content (Markdown / MDX-friendly)</p>
           <textarea
             ref={textareaRef}
-            className="min-h-[460px] w-full rounded-md border border-slate-700 bg-slate-950 p-3 text-sm text-primary-text"
+            className="min-h-[460px] w-full rounded-md border border-input bg-card p-3 text-sm text-foreground shadow-sm"
             value={markdown}
             onChange={(event) => {
               setEditorError("");
@@ -447,7 +637,7 @@ export function MarkdownSplitEditor({
         </div>
         <div className="space-y-2">
           <p className="text-sm text-primary-text">Live preview</p>
-          <article className="min-h-[460px] rounded-md border border-slate-700 bg-slate-950 p-4">
+          <article className="min-h-[460px] rounded-md border border-border bg-card p-4 shadow-sm">
             <div className="body-md space-y-3" dangerouslySetInnerHTML={{ __html: preview }} />
           </article>
         </div>

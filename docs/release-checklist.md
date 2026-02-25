@@ -46,8 +46,16 @@
    - Add a >24-character tag in CMS and confirm real-time validation + save blocking.
 9. Back button checks:
    - Case study detail page Back button uses browser history and falls back safely.
-   - CMS editor Back button uses browser history and falls back to `/admin`.
-10. Homepage profile image CMS checks:
+   - CMS case studies page Back button appears above the title and uses browser history with `/admin` fallback.
+   - CMS editor-level Back button (other markdown domains) uses browser history and falls back to `/admin`.
+10. Theme checks (website + CMS):
+   - Toggle light/dark from top-right navigation.
+   - Confirm preference persists after refresh.
+   - Confirm first-load theme respects system preference when localStorage is cleared.
+   - Confirm cards, inputs, tags, tables, code blocks, and toolbar controls remain readable in both themes.
+11. Dynamic import resilience checks:
+   - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
+12. Homepage profile image CMS checks:
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.

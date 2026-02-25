@@ -1,4 +1,5 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
 import type { ReactNode } from "react";
@@ -19,18 +20,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-exec-navy text-primary-text">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-strategic-blue focus:px-4 focus:py-2 focus:text-primary-text"
       >
         Skip to main content
       </a>
-      <header className="border-b border-slate-800/70">
+      <header className="border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
         <div className="container flex h-16 items-center justify-between">
           <Link
             to="/"
-            className="rounded-sm text-sm font-semibold uppercase tracking-[0.08em] text-primary-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-strategic-blue focus-visible:ring-offset-2 focus-visible:ring-offset-exec-navy"
+            className="rounded-sm text-sm font-semibold uppercase tracking-[0.08em] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Architected by Miguel
           </Link>
@@ -40,14 +41,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `rounded-md px-3 py-2 text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-strategic-blue focus-visible:ring-offset-2 focus-visible:ring-offset-exec-navy ${
-                    isActive ? "text-primary-text" : "text-muted-text hover:text-primary-text"
+                  `rounded-md px-3 py-2 text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                    isActive ? "text-foreground" : "text-muted-text hover:text-foreground"
                   }`
                 }
               >
                 {item.label}
               </NavLink>
             ))}
+            <ThemeToggle />
             {location.pathname.startsWith("/case-studies") || location.pathname.startsWith("/deep-dive") ? (
               <Button variant="ghost" className="ml-2" onClick={onLogout}>
                 Logout
