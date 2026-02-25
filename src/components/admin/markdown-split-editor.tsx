@@ -132,6 +132,22 @@ function insertAtCursor(value: string, selectionStart: number, selectionEnd: num
   return { nextValue, nextStart: pos, nextEnd: pos };
 }
 
+function findImageMarkdownAtCursor(markdown: string, cursor: number) {
+  const lineStart = markdown.lastIndexOf("\n", Math.max(0, cursor - 1)) + 1;
+  const lineEndIndex = markdown.indexOf("\n", cursor);
+  const lineEnd = lineEndIndex === -1 ? markdown.length : lineEndIndex;
+  const line = markdown.slice(lineStart, lineEnd);
+  const match = line.match(/^!\[([^\]]*)\]\(([^)]+)\)(\{[^}]+\})?$/);
+  if (!match) return null;
+  return {
+    lineStart,
+    lineEnd,
+    alt: match[1] ?? "",
+    src: match[2] ?? "",
+    meta: match[3] ?? "",
+  };
+}
+
 function createTableBuilder(rows = 2, cols = 3): TableBuilderState {
   return {
     rows,
@@ -217,6 +233,7 @@ export function MarkdownSplitEditor({
   const [tableGridHover, setTableGridHover] = useState<{ rows: number; cols: number } | null>(null);
   const [editorMessage, setEditorMessage] = useState<string>("");
   const [editorError, setEditorError] = useState<string>("");
+  const imageInsertBlocked = !imageAlt.trim();
 
   const applyAction = (action: ToolbarAction) => {
     const textarea = textareaRef.current;
@@ -367,6 +384,36 @@ export function MarkdownSplitEditor({
     setEditorError("");
     setEditorMessage("Table inserted as Markdown.");
     setShowTableBuilder(false);
+  };
+
+  const updateImageAltAtCursor = () => {
+    const textarea = textareaRef.current;
+    if (!textarea || disabled) return;
+
+    setEditorError("");
+    setEditorMessage("");
+
+    if (!imageAlt.trim()) {
+      setEditorError("Alt text is required before uploading an image.");
+      return;
+    }
+
+    const found = findImageMarkdownAtCursor(markdown, textarea.selectionStart);
+    if (!found) {
+      setEditorError("Place the cursor on an inserted image markdown line to update its alt text.");
+      return;
+    }
+
+    const nextLine = `![${imageAlt.trim()}](${found.src})${found.meta}`;
+    const nextValue = `${markdown.slice(0, found.lineStart)}${nextLine}${markdown.slice(found.lineEnd)}`;
+    onChange(nextValue);
+    setEditorMessage("Image alt text updated.");
+
+    requestAnimationFrame(() => {
+      textarea.focus();
+      const pos = found.lineStart + nextLine.length;
+      textarea.setSelectionRange(pos, pos);
+    });
   };
 
   return (
@@ -536,7 +583,7 @@ export function MarkdownSplitEditor({
 
         <div className="mt-3 grid gap-3 rounded-md border border-border bg-background/50 p-3 md:grid-cols-[1.1fr_160px_140px_180px_auto] md:items-end">
           <div className="space-y-1">
-            <label className="text-xs text-muted-text">Image alt text (required)</label>
+            <label className="text-xs text-muted-text">Alt text (required for accessibility)</label>
             <Input
               value={imageAlt}
               onChange={(event) => setImageAlt(event.target.value)}
@@ -591,7 +638,7 @@ export function MarkdownSplitEditor({
                 }
                 void handleImageFile(event);
               }}
-              disabled={disabled || imageUploading}
+              disabled={disabled || imageUploading || imageInsertBlocked}
               className="block w-full text-xs text-muted-text file:mr-3 file:rounded-md file:border-0 file:bg-strategic-blue file:px-3 file:py-2 file:text-sm file:font-medium file:text-white"
             />
           </div>
@@ -599,6 +646,15 @@ export function MarkdownSplitEditor({
           <div className="pb-1 text-xs text-muted-text">
             Uploads to <code className="text-primary-text">/public/images/cms/...</code> and inserts MDX-friendly image syntax with alignment + width metadata.
           </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Button type="button" variant="secondary" onClick={updateImageAltAtCursor} disabled={disabled || imageInsertBlocked}>
+            Update image alt at cursor
+          </Button>
+          <p className="text-xs text-muted-text">
+            Place the cursor on an inserted image line to update its alt text after insert.
+          </p>
         </div>
 
         {pendingImagePreviewUrl ? (
@@ -615,6 +671,7 @@ export function MarkdownSplitEditor({
           </div>
         ) : null}
 
+        {imageInsertBlocked ? <p className="mt-2 text-sm text-red-400">Alt text is required before uploading an image.</p> : null}
         {editorError ? <p className="mt-2 text-sm text-red-400">{editorError}</p> : null}
         {editorMessage ? <p className="mt-2 text-sm text-emerald-400">{editorMessage}</p> : null}
       </div>

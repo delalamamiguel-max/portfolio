@@ -58,7 +58,8 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - supports alignment metadata (`left`, `center`, `right`, `full`)
   - supports width metadata (`width=40|60|80|100`)
   - shows a pending image preview before upload/insert
-  - requires alt text before upload (editor-level requirement)
+  - requires alt text before upload/insert (image upload control is disabled until alt text is provided)
+  - supports updating alt text after insert via editor action at the cursor image line
   - Note: editor remains Markdown-first (split editor), not a full WYSIWYG rich text canvas.
 
 ### Case Study Import (Safe Draft Workflow)
