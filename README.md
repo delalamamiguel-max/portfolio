@@ -44,11 +44,16 @@ Private:
 - Content edits are GitHub-backed and versioned in-repo via Vercel Functions.
 - Public case studies/deep dives are build-time loaded; new content appears publicly after Vercel rebuild completes.
 - Case Study CMS supports:
-  - rich Markdown/MDX-friendly editor toolbar
+  - rich Markdown/MDX-friendly editor toolbar (block style picker, lists, indent/outdent, table insert, links, code/quote)
   - inline image uploads (`public/images/cms/...`)
+  - image insert preview with alignment and width metadata (`align`, `width`)
   - `.docx`, `.md`, `.mdx` safe-draft import workflow with warnings/preview
   - optional auto-map of imported headings to known case study sections (soft warnings only)
   - post-save verification links (admin preview + public route)
+- Case study tag safeguards:
+  - max 6 tags
+  - max 24 characters per tag
+  - real-time validation in CMS and save blocking on violations
 - DOCX imports default to draft and require a draft save before publish.
 - Case study body Markdown/MDX headings are the source of truth for frontend section structure (dynamic rendering).
 

@@ -213,6 +213,15 @@ Clear verification path.
 
 ⸻
 
+Scenario E — Owner Markdown/DOCX Import Editing
+	1.	Owner imports `.docx`, `.md`, or `.mdx` into `/admin/case-studies`.
+	2.	CMS auto-populates metadata/body, shows warnings, and applies draft.
+	3.	Owner refines content with Markdown toolbar (including tables/images) and saves.
+
+Editor remains Markdown/MDX-first to preserve Git-readable output.
+
+⸻
+
 5. Primary User Journeys (3 Steps Max Each)
 
 ⸻

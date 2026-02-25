@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { DocxCaseStudyImporter } from "@/components/admin/docx-case-study-importer";
 import { MarkdownSplitEditor } from "@/components/admin/markdown-split-editor";
 import { Button } from "@/components/ui/button";
+import { HistoryBackButton } from "@/components/ui/history-back-button";
 import { Input } from "@/components/ui/input";
 import { cmsCheckRoute, cmsDeleteFile, cmsWriteFile } from "@/lib/cms-client";
 import { type MarkdownDoc, SLUG_REGEX } from "@/lib/content-schema";
@@ -60,6 +61,9 @@ const emptyState: EditorState = {
   body: "",
 };
 
+const CASE_STUDY_TAG_MAX_COUNT = 6;
+const CASE_STUDY_TAG_MAX_LENGTH = 24;
+
 function fromRaw(raw: string): EditorState {
   const parsed = parseFrontmatter(raw);
   return {
@@ -110,6 +114,14 @@ function formatUiError(error: unknown): string {
     return "Slug format is invalid. Use lowercase letters, numbers, and hyphens only.";
   }
 
+  if (/Too many tags/i.test(raw)) {
+    return `Too many tags. Use up to ${CASE_STUDY_TAG_MAX_COUNT} tags.`;
+  }
+
+  if (/Tag is too long/i.test(raw)) {
+    return `Each tag must be ${CASE_STUDY_TAG_MAX_LENGTH} characters or fewer.`;
+  }
+
   if (/Case study must include all required sections/i.test(raw)) {
     return "Case study must include all required sections in the editor body.";
   }
@@ -119,6 +131,40 @@ function formatUiError(error: unknown): string {
   }
 
   return raw;
+}
+
+function parseTagsInput(value: string): string[] {
+  return value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function validateCaseStudyTags(tagsInput: string, enabled: boolean) {
+  if (!enabled) {
+    return { tags: parseTagsInput(tagsInput), error: null as string | null, warnings: [] as string[] };
+  }
+  const tags = parseTagsInput(tagsInput);
+  const warnings: string[] = [];
+  if (tags.length > CASE_STUDY_TAG_MAX_COUNT) {
+    return {
+      tags,
+      error: `Use up to ${CASE_STUDY_TAG_MAX_COUNT} tags. You entered ${tags.length}.`,
+      warnings,
+    };
+  }
+  const tooLong = tags.filter((tag) => tag.length > CASE_STUDY_TAG_MAX_LENGTH);
+  if (tooLong.length) {
+    return {
+      tags,
+      error: `Each tag must be ${CASE_STUDY_TAG_MAX_LENGTH} characters or fewer. Too long: ${tooLong.join(", ")}`,
+      warnings,
+    };
+  }
+  if (tags.some((tag) => /\s{2,}/.test(tag))) {
+    warnings.push("Tags contain repeated spaces. They will be trimmed on save.");
+  }
+  return { tags, error: null, warnings };
 }
 
 export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidate, helper }: MarkdownDomainEditorProps) {
@@ -153,6 +199,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
   const existingSlugs = records.map((entry) => entry.state.slug).filter(Boolean);
   const slugError = slugValidationMessage(state.slug);
+  const tagValidation = validateCaseStudyTags(state.tags, directory === "content/case-studies");
   const isSlugDuplicate = existingSlugs.some(
     (slug) => slug === state.slug && (!selectedPath || !selectedPath.endsWith(`${state.slug}.md`)),
   );
@@ -222,6 +269,11 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
       return;
     }
 
+    if (tagValidation.error) {
+      setStatus({ tone: "error", message: tagValidation.error });
+      return;
+    }
+
     const conflict = existingSlugs.find((slug) => slug === state.slug && (!selectedPath || !selectedPath.endsWith(`${state.slug}.md`)));
     if (conflict) {
       setStatus({ tone: "error", message: "Slug is already in use. Choose a unique slug." });
@@ -233,7 +285,7 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
         slug: state.slug,
         title: state.title,
         summary: state.summary,
-        tags: state.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+        tags: tagValidation.tags,
         published: state.published,
       },
       state.body,
@@ -319,6 +371,8 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
 
   return (
     <div className="space-y-4">
+      <HistoryBackButton fallbackTo="/admin" label="Back" />
+
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="secondary" onClick={resetForNew} disabled={saving}>New</Button>
         {records.map((record) => (
@@ -367,7 +421,20 @@ export function MarkdownDomainEditor({ title, rawMap, directory, parseAndValidat
           <p className="text-xs text-muted-text">Slug auto-generates from title until you edit the slug field.</p>
         </div>
         <Input placeholder="summary" value={state.summary} onChange={(event) => setState((prev) => ({ ...prev, summary: event.target.value }))} />
-        <Input placeholder="tags (comma separated)" value={state.tags} onChange={(event) => setState((prev) => ({ ...prev, tags: event.target.value }))} />
+        <div className="space-y-1">
+          <Input
+            placeholder="tags (comma separated)"
+            value={state.tags}
+            onChange={(event) => setState((prev) => ({ ...prev, tags: event.target.value }))}
+            aria-invalid={Boolean(tagValidation.error)}
+          />
+          <p className={`text-xs ${tagValidation.error ? "text-red-400" : "text-muted-text"}`}>
+            {directory === "content/case-studies"
+              ? tagValidation.error ||
+                `${tagValidation.tags.length}/${CASE_STUDY_TAG_MAX_COUNT} tags. Max ${CASE_STUDY_TAG_MAX_LENGTH} chars per tag.`
+              : "Comma-separated tags."}
+          </p>
+        </div>
       </div>
 
       <label className="inline-flex items-center gap-2 text-sm text-primary-text">

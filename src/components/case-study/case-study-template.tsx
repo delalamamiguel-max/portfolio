@@ -1,5 +1,6 @@
 import { Section } from "@/components/layout/section";
 import { StickySideNav } from "@/components/layout/sticky-side-nav";
+import { HistoryBackButton } from "@/components/ui/history-back-button";
 import { TagPill } from "@/components/ui/tag-pill";
 import type { ValidatedCaseStudy } from "@/lib/content-schema";
 import { markdownToHtml } from "@/lib/markdown";
@@ -23,9 +24,10 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
 
         <div className="space-y-8">
           <header className="space-y-4">
+            <HistoryBackButton fallbackTo="/case-studies" label="Back" />
             <h1 className="h1">{study.title}</h1>
             <p className="body-lg max-w-3xl">{study.summary}</p>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex max-w-full flex-wrap items-start gap-2">
               {study.tags.map((tag) => (
                 <TagPill key={tag}>{tag}</TagPill>
               ))}

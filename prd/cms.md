@@ -47,14 +47,19 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - H1-H4
   - bold / italic / underline
   - bullets / numbered lists
+  - indent / outdent controls (Markdown indentation)
   - quotes
   - code blocks
   - links
+  - table insertion (Markdown pipe-table template)
 - Inline image support is available in the editor:
   - uploads images to repo-backed `public/images/cms/...`
   - inserts MDX-friendly image syntax into body
-  - supports alignment metadata (`left`, `center`, `full`)
+  - supports alignment metadata (`left`, `center`, `right`, `full`)
+  - supports width metadata (`width=40|60|80|100`)
+  - shows a pending image preview before upload/insert
   - requires alt text before upload (editor-level requirement)
+  - Note: editor remains Markdown-first (split editor), not a full WYSIWYG rich text canvas.
 
 ### Case Study Import (Safe Draft Workflow)
 - Case study editor includes review-first import for `.docx`, `.md`, and `.mdx` (not direct publish).
@@ -99,6 +104,9 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
 - Case study body (Markdown/MDX headings) is the source of truth for section structure.
 - Frontend renders only sections that exist; if no `##` sections are present, it renders the full body as a single article.
 - Missing canonical sections produce warnings only (no hard save/publish block).
+- Case study tag validation (CMS + server-side write endpoint):
+  - maximum 6 tags
+  - maximum 24 characters per tag
 - DOCX imported content is applied to the editor as `Published = false` by default.
 - First save after DOCX import must be a draft save.
 - Publishing is blocked if any of the following are unresolved:
@@ -142,6 +150,8 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - links
   - images
   - inline HTML passthrough for owner-authored content
+- Frontend tag pills are wrapped and overflow-safe for long tags or max-tag scenarios.
+- Case study and CMS editors include a history-based Back button with a safe fallback route.
 
 ### Logging + Error Surfacing
 - Server-side CMS write endpoint logs:

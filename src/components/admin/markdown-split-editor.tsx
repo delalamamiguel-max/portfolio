@@ -14,7 +14,8 @@ type MarkdownSplitEditorProps = {
   disabled?: boolean;
 };
 
-type ImageAlign = "left" | "center" | "full";
+type ImageAlign = "left" | "center" | "right" | "full";
+type ImageWidth = 40 | 60 | 80 | 100;
 
 type ToolbarAction =
   | "h1"
@@ -28,7 +29,10 @@ type ToolbarAction =
   | "numbered"
   | "quote"
   | "code"
-  | "link";
+  | "link"
+  | "table"
+  | "indent"
+  | "outdent";
 
 function applyPrefixToLines(value: string, selectionStart: number, selectionEnd: number, prefix: string, numbered = false) {
   const selected = value.slice(selectionStart, selectionEnd) || "";
@@ -122,6 +126,28 @@ function insertAtCursor(value: string, selectionStart: number, selectionEnd: num
   return { nextValue, nextStart: pos, nextEnd: pos };
 }
 
+function indentSelectedLines(
+  value: string,
+  selectionStart: number,
+  selectionEnd: number,
+  direction: "indent" | "outdent",
+) {
+  const selected = value.slice(selectionStart, selectionEnd) || "List item";
+  const lines = selected.split("\n");
+  const next = lines
+    .map((line) => {
+      if (!line.trim()) return line;
+      if (direction === "indent") return `  ${line}`;
+      return line.replace(/^ {1,2}/, "");
+    })
+    .join("\n");
+  return {
+    nextValue: `${value.slice(0, selectionStart)}${next}${value.slice(selectionEnd)}`,
+    nextStart: selectionStart,
+    nextEnd: selectionStart + next.length,
+  };
+}
+
 export function MarkdownSplitEditor({
   title,
   markdown,
@@ -134,7 +160,9 @@ export function MarkdownSplitEditor({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [imageAlt, setImageAlt] = useState("");
   const [imageAlign, setImageAlign] = useState<ImageAlign>("center");
+  const [imageWidth, setImageWidth] = useState<ImageWidth>(80);
   const [imageUploading, setImageUploading] = useState(false);
+  const [pendingImagePreviewUrl, setPendingImagePreviewUrl] = useState<string>("");
   const [editorMessage, setEditorMessage] = useState<string>("");
   const [editorError, setEditorError] = useState<string>("");
 
@@ -182,6 +210,15 @@ export function MarkdownSplitEditor({
       case "link":
         result = insertWrapped(markdown, selectionStart, selectionEnd, "[", "](https://example.com)", "link text");
         break;
+      case "table":
+        result = insertBlock(markdown, selectionStart, selectionEnd, "| Column 1 | Column 2 | Column 3 |\n| --- | --- | --- |\n| Value | Value | Value |\n| Value | Value | Value |");
+        break;
+      case "indent":
+        result = indentSelectedLines(markdown, selectionStart, selectionEnd, "indent");
+        break;
+      case "outdent":
+        result = indentSelectedLines(markdown, selectionStart, selectionEnd, "outdent");
+        break;
       default:
         result = null;
     }
@@ -228,7 +265,8 @@ export function MarkdownSplitEditor({
       });
 
       const textarea = textareaRef.current;
-      const markdownImage = `![${imageAlt.trim()}](${upload.publicUrl}){align=${imageAlign}}`;
+      const widthPart = imageWidth === 100 ? "" : ` width=${imageWidth}`;
+      const markdownImage = `![${imageAlt.trim()}](${upload.publicUrl}){align=${imageAlign}${widthPart}}`;
 
       if (!textarea) {
         onChange(`${markdown}\n\n${markdownImage}\n`);
@@ -244,6 +282,10 @@ export function MarkdownSplitEditor({
       }
 
       setEditorMessage(`Image uploaded and inserted: ${upload.publicUrl}`);
+      if (pendingImagePreviewUrl) {
+        URL.revokeObjectURL(pendingImagePreviewUrl);
+        setPendingImagePreviewUrl("");
+      }
     } catch (error) {
       setEditorError(error instanceof Error ? error.message : "Image upload failed.");
     } finally {
@@ -260,22 +302,49 @@ export function MarkdownSplitEditor({
       </div>
 
       <div className="rounded-md border border-slate-700 bg-slate-950 p-3">
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="secondary" size="default" onClick={() => applyAction("h1")} disabled={disabled}>H1</Button>
-          <Button type="button" variant="secondary" size="default" onClick={() => applyAction("h2")} disabled={disabled}>H2</Button>
-          <Button type="button" variant="secondary" size="default" onClick={() => applyAction("h3")} disabled={disabled}>H3</Button>
-          <Button type="button" variant="secondary" size="default" onClick={() => applyAction("h4")} disabled={disabled}>H4</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("bold")} disabled={disabled}>Bold</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("italic")} disabled={disabled}>Italic</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("underline")} disabled={disabled}>Underline</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("bullet")} disabled={disabled}>Bullets</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("numbered")} disabled={disabled}>Numbered</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("quote")} disabled={disabled}>Quote</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("code")} disabled={disabled}>Code</Button>
-          <Button type="button" variant="secondary" onClick={() => applyAction("link")} disabled={disabled}>Link</Button>
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-xs text-muted-text">Block style</label>
+            <select
+              className="h-10 rounded-md border border-slate-700 bg-slate-950 px-3 text-sm text-primary-text"
+              defaultValue=""
+              disabled={disabled}
+              onChange={(event) => {
+                const next = event.target.value as ToolbarAction | "";
+                if (next) applyAction(next);
+                event.target.value = "";
+              }}
+            >
+              <option value="">Choose…</option>
+              <option value="h1">Heading 1</option>
+              <option value="h2">Heading 2</option>
+              <option value="h3">Heading 3</option>
+              <option value="h4">Heading 4</option>
+              <option value="quote">Quote</option>
+              <option value="code">Code block</option>
+              <option value="table">Table</option>
+            </select>
+
+            <label className="text-xs text-muted-text">Inline</label>
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" variant="secondary" onClick={() => applyAction("bold")} disabled={disabled}>Bold</Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("italic")} disabled={disabled}>Italic</Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("underline")} disabled={disabled}>Underline</Button>
+              <Button type="button" variant="secondary" onClick={() => applyAction("link")} disabled={disabled}>Link</Button>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-xs text-muted-text">Lists</label>
+            <Button type="button" variant="secondary" onClick={() => applyAction("bullet")} disabled={disabled}>Bullets</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("numbered")} disabled={disabled}>Numbered</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("indent")} disabled={disabled}>Indent</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("outdent")} disabled={disabled}>Outdent</Button>
+            <Button type="button" variant="secondary" onClick={() => applyAction("table")} disabled={disabled}>Insert table</Button>
+          </div>
         </div>
 
-        <div className="mt-3 grid gap-3 rounded-md border border-slate-800 bg-slate-900/50 p-3 md:grid-cols-[1.1fr_180px_160px_auto] md:items-end">
+        <div className="mt-3 grid gap-3 rounded-md border border-slate-800 bg-slate-900/50 p-3 md:grid-cols-[1.1fr_160px_140px_180px_auto] md:items-end">
           <div className="space-y-1">
             <label className="text-xs text-muted-text">Image alt text (required)</label>
             <Input
@@ -296,7 +365,23 @@ export function MarkdownSplitEditor({
             >
               <option value="left">Left</option>
               <option value="center">Center</option>
+              <option value="right">Right</option>
               <option value="full">Full width</option>
+            </select>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-text">Width</label>
+            <select
+              className="h-11 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm text-primary-text"
+              value={String(imageWidth)}
+              onChange={(event) => setImageWidth(Number(event.target.value) as ImageWidth)}
+              disabled={disabled || imageUploading}
+            >
+              <option value="40">40%</option>
+              <option value="60">60%</option>
+              <option value="80">80%</option>
+              <option value="100">100%</option>
             </select>
           </div>
 
@@ -305,16 +390,40 @@ export function MarkdownSplitEditor({
             <input
               type="file"
               accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
-              onChange={handleImageFile}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (pendingImagePreviewUrl) {
+                  URL.revokeObjectURL(pendingImagePreviewUrl);
+                  setPendingImagePreviewUrl("");
+                }
+                if (file && file.type.startsWith("image/")) {
+                  setPendingImagePreviewUrl(URL.createObjectURL(file));
+                }
+                void handleImageFile(event);
+              }}
               disabled={disabled || imageUploading}
               className="block w-full text-xs text-muted-text file:mr-3 file:rounded-md file:border-0 file:bg-strategic-blue file:px-3 file:py-2 file:text-sm file:font-medium file:text-white"
             />
           </div>
 
           <div className="pb-1 text-xs text-muted-text">
-            Uploads to <code className="text-primary-text">/public/images/cms/...</code> and inserts MDX-friendly image syntax.
+            Uploads to <code className="text-primary-text">/public/images/cms/...</code> and inserts MDX-friendly image syntax with alignment + width metadata.
           </div>
         </div>
+
+        {pendingImagePreviewUrl ? (
+          <div className="mt-3 rounded-md border border-slate-800 bg-slate-900/40 p-3">
+            <p className="text-xs text-muted-text">Pending image preview</p>
+            <div className="mt-2 max-w-md overflow-hidden rounded-md border border-slate-700 bg-slate-950 p-2">
+              <img
+                src={pendingImagePreviewUrl}
+                alt="Pending upload preview"
+                className="h-auto max-w-full rounded"
+                style={{ width: imageWidth === 100 ? "100%" : `${imageWidth}%`, marginLeft: imageAlign === "right" ? "auto" : 0, marginRight: imageAlign === "center" ? "auto" : 0 }}
+              />
+            </div>
+          </div>
+        ) : null}
 
         {editorError ? <p className="mt-2 text-sm text-red-400">{editorError}</p> : null}
         {editorMessage ? <p className="mt-2 text-sm text-emerald-400">{editorMessage}</p> : null}

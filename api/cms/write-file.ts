@@ -78,6 +78,22 @@ function validateMarkdownCreatePayload(path: string, content: string): string | 
     return "Content body is required.";
   }
 
+  if (path.startsWith("content/case-studies/") && frontmatter.tags) {
+    const tagValues = frontmatter.tags
+      .replace(/^\[/, "")
+      .replace(/\]$/, "")
+      .split(",")
+      .map((tag) => tag.trim().replace(/^["']|["']$/g, ""))
+      .filter(Boolean);
+    if (tagValues.length > 6) {
+      return "Too many tags. Use up to 6 tags.";
+    }
+    const tooLong = tagValues.find((tag) => tag.length > 24);
+    if (tooLong) {
+      return `Tag is too long: ${tooLong}. Use 24 characters or fewer per tag.`;
+    }
+  }
+
   return null;
 }
 

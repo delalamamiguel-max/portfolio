@@ -41,7 +41,13 @@
    - Import `.md` and `.mdx` files and confirm direct body ingestion (no structural rewrite).
    - Confirm frontmatter metadata maps to title/slug/summary/tags when present.
    - Confirm tables, code blocks, links, images, and inline HTML render in preview/front-end.
-8. Homepage profile image CMS checks:
+8. Tag overflow and limits checks:
+   - Create a case study with 6 tags and confirm tags wrap inside card/detail containers (no overflow).
+   - Add a >24-character tag in CMS and confirm real-time validation + save blocking.
+9. Back button checks:
+   - Case study detail page Back button uses browser history and falls back safely.
+   - CMS editor Back button uses browser history and falls back to `/admin`.
+10. Homepage profile image CMS checks:
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.

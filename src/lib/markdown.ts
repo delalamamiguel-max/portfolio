@@ -109,17 +109,23 @@ export function markdownToHtml(markdown: string): string {
   };
 
   const renderImageLine = (line: string): string | null => {
-    const match = line.trim().match(/^!\[([^\]]+)\]\((\/[^\s)]+|https?:\/\/[^\s)]+)\)(?:\{align=(left|center|full)\})?$/);
+    const match = line
+      .trim()
+      .match(/^!\[([^\]]+)\]\((\/[^\s)]+|https?:\/\/[^\s)]+)\)(?:\{align=(left|center|right|full)(?:\s+width=(\d{1,3}))?\})?$/);
     if (!match) return null;
-    const [, alt, src, align = "center"] = match;
+    const [, alt, src, align = "center", widthRaw] = match;
+    const widthPercent = widthRaw ? Math.max(20, Math.min(100, Number(widthRaw))) : null;
     const classes =
       align === "full"
         ? "my-4 w-full overflow-hidden rounded-md"
+        : align === "right"
+          ? "my-4 ml-auto max-w-[70%] rounded-md"
         : align === "left"
           ? "my-4 max-w-[70%] rounded-md"
           : "my-4 mx-auto max-w-[85%] rounded-md";
     const imgClasses = align === "full" ? "w-full rounded-md" : "w-full rounded-md";
-    return `<figure class="${classes}" data-align="${align}"><img src="${src}" alt="${escapeHtml(alt)}" class="${imgClasses}" loading="lazy" /></figure>`;
+    const widthStyle = widthPercent ? ` style="width:${widthPercent}%;max-width:100%;"` : "";
+    return `<figure class="${classes}" data-align="${align}"${widthStyle}><img src="${src}" alt="${escapeHtml(alt)}" class="${imgClasses}" loading="lazy" /></figure>`;
   };
 
   const isTableSeparator = (value: string) => /^\s*\|?[\s:-]+\|[\s|:-]*$/.test(value);
