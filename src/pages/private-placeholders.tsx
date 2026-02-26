@@ -24,7 +24,10 @@ export function CaseStudiesIndexPage() {
                   <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
-              <Link className="mt-4 inline-block font-mono text-sm text-systems-teal hover:underline" to={`/case-studies/${study.slug}`}>
+              <Link
+                className="mt-4 inline-block font-mono text-sm text-accent transition-colors duration-200 hover:opacity-80 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                to={`/case-studies/${study.slug}`}
+              >
                 Open case study
               </Link>
             </Card>
@@ -68,7 +71,11 @@ export function DeepDiveDetailPage() {
           <HistoryBackButton fallbackTo="/deep-dive" label="Back" />
           <div className="space-y-2">
             {deepDives.map((doc) => (
-              <Link key={doc.slug} to={`/deep-dive/${doc.slug}`} className="block font-mono text-sm text-systems-teal hover:underline">
+              <Link
+                key={doc.slug}
+                to={`/deep-dive/${doc.slug}`}
+                className="block font-mono text-sm text-accent transition-colors duration-200 hover:opacity-80 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
                 {doc.title}
               </Link>
             ))}
