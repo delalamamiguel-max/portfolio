@@ -1,8 +1,8 @@
 ---
 slug: fluently-ai-case-study
-title: Fluently_AI_Case_Study
+title: Fluently AI Case Study
 summary: BACKGROUND
-tags: [ai, platform, multilingual, data, automation, product-strategy]
+tags: [ai, platform, multilingual, att.com, automation, product-strategy]
 published: true
 ---
 
