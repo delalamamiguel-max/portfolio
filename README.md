@@ -51,6 +51,10 @@ Private:
   - semantic theme tokens drive shared surfaces (`bg`, `card`, `text`, `muted`, `border`, `primary`, `accent`, `link`) across website + CMS
   - semantic status tokens (`success`, `warning`, `danger`) drive CMS warnings/errors/success states
   - Light mode primary CTA palette is intentionally softened (desaturated slate-blue) to avoid overly saturated blue while preserving contrast
+- Navigation responsiveness:
+  - mobile-first header behavior below `md` uses a Menu toggle (links move to collapsible mobile nav)
+  - inline desktop nav is only rendered at `md+`
+  - theme toggle remains available in the top-right control cluster on mobile and desktop
 - Case Study CMS supports:
   - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
   - visual table builder (rows/cols, header row, inline cell editing) -> inserts clean Markdown tables

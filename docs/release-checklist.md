@@ -60,9 +60,14 @@
    - Confirm admin preview/save verification panels, login links, and contact form textarea follow theme tokens.
    - Confirm CMS warning/error/success states (import panel, editor validation, save status) use semantic status colors consistently in both themes.
    - Confirm `/admin/pages` profile image helper cards and preview surfaces adapt correctly in Light and Dark mode.
-13. Dynamic import resilience checks:
+13. Mobile navigation checks:
+   - Verify header/nav at `320`, `375`, `390`, `414`, and `768` widths in portrait and landscape.
+   - Confirm no horizontal page scrolling from nav overflow.
+   - Confirm mobile nav items open via Menu button and do not truncate or overlap.
+   - Confirm theme toggle remains visible and aligned in mobile header.
+14. Dynamic import resilience checks:
    - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
-14. Homepage profile image CMS checks:
+15. Homepage profile image CMS checks:
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.
