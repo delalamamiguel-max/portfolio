@@ -168,6 +168,10 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - links
   - images
   - inline HTML passthrough for owner-authored content
+  - unordered and ordered lists (including nested list indentation hierarchy)
+- Rendering parity rule:
+  - CMS live preview, DOCX pre-save preview, and published pages all use the same `markdownToHtml` renderer and `.markdown-content` style scope.
+  - This avoids parser/style drift between editor and production.
 - Frontend tag pills are wrapped and overflow-safe for long tags or max-tag scenarios.
 - Case study and CMS editors include a history-based Back button with a safe fallback route.
 

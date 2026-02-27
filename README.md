@@ -63,6 +63,7 @@ Private:
   - `.docx`, `.md`, `.mdx` safe-draft import workflow with warnings/preview
   - optional auto-map of imported headings to known case study sections (soft warnings only)
   - post-save verification links (admin preview + public route)
+  - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag
@@ -84,6 +85,8 @@ Private:
 - Automated smoke checks:
   - `./scripts/qa-smoke.sh https://<your-domain>`
   - `./scripts/qa-smoke.sh https://<your-domain> "<SITE_PASSWORD>"`
+- Markdown rendering parity check:
+  - `npm run qa:markdown`
 
 ## CI Status Check
 - GitHub Actions workflow: `.github/workflows/ci.yml`

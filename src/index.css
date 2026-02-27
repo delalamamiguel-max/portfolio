@@ -183,6 +183,41 @@ th {
   color: hsl(var(--foreground));
 }
 
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.6rem 0;
+  padding-left: 1.35rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ul ul {
+  list-style-type: circle;
+}
+
+.markdown-content ul ul ul {
+  list-style-type: square;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-content li {
+  margin: 0.2rem 0;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.35rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

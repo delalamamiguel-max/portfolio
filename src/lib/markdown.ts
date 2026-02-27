@@ -136,6 +136,62 @@ export function markdownToHtml(markdown: string): string {
       .replace(/\|$/, "")
       .split("|")
       .map((cell) => cell.trim());
+  const listLinePattern = /^(\s*)(?:([-*+])|(\d+)\.)\s+(.*)$/;
+
+  const renderListBlock = (startIndex: number): { html: string; nextIndex: number } => {
+    const blockLines: string[] = [];
+    let cursor = startIndex;
+    while (cursor < lines.length && listLinePattern.test(lines[cursor])) {
+      blockLines.push(lines[cursor]);
+      cursor += 1;
+    }
+
+    type ListStackEntry = { indent: number; type: "ul" | "ol"; hasOpenLi: boolean };
+    const output: string[] = [];
+    const stack: ListStackEntry[] = [];
+
+    const openList = (type: "ul" | "ol", indent: number) => {
+      output.push(`<${type}>`);
+      stack.push({ indent, type, hasOpenLi: false });
+    };
+
+    const closeCurrentList = () => {
+      const current = stack.pop();
+      if (!current) return;
+      if (current.hasOpenLi) output.push("</li>");
+      output.push(`</${current.type}>`);
+    };
+
+    for (const rawListLine of blockLines) {
+      const match = rawListLine.match(listLinePattern);
+      if (!match) continue;
+      const [, indentRaw, unorderedMark, , itemContent] = match;
+      const normalizedIndent = indentRaw.replace(/\t/g, "  ").length;
+      const itemType: "ul" | "ol" = unorderedMark ? "ul" : "ol";
+
+      while (stack.length && normalizedIndent < stack[stack.length - 1].indent) {
+        closeCurrentList();
+      }
+
+      if (!stack.length || normalizedIndent > stack[stack.length - 1].indent) {
+        openList(itemType, normalizedIndent);
+      } else if (stack[stack.length - 1].type !== itemType) {
+        closeCurrentList();
+        openList(itemType, normalizedIndent);
+      }
+
+      const current = stack[stack.length - 1];
+      if (current.hasOpenLi) output.push("</li>");
+      output.push(`<li>${renderInline(itemContent.trim())}`);
+      current.hasOpenLi = true;
+    }
+
+    while (stack.length) {
+      closeCurrentList();
+    }
+
+    return { html: output.join(""), nextIndex: cursor };
+  };
 
   const lines = normalized.split("\n");
   const html: string[] = [];
@@ -194,23 +250,10 @@ export function markdownToHtml(markdown: string): string {
       continue;
     }
 
-    if (/^\s*[-*]\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
-        i += 1;
-      }
-      html.push(`<ul>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ul>`);
-      continue;
-    }
-
-    if (/^\s*\d+\.\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*\d+\.\s+/, ""));
-        i += 1;
-      }
-      html.push(`<ol>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`);
+    if (listLinePattern.test(line)) {
+      const { html: listHtml, nextIndex } = renderListBlock(i);
+      html.push(listHtml);
+      i = nextIndex;
       continue;
     }
 
@@ -235,7 +278,7 @@ export function markdownToHtml(markdown: string): string {
     while (
       i < lines.length &&
       lines[i].trim() &&
-      !lines[i].trim().match(/^(!\[|```|#{1,4}\s+|>|\d+\.\s+|[-*]\s+)/)
+      !lines[i].trim().match(/^(!\[|```|#{1,4}\s+|>|(?:[-*+]|\d+\.)\s+)/)
     ) {
       paragraph.push(lines[i]);
       i += 1;

@@ -23,7 +23,7 @@ export function PhilosophyPage() {
             <article key={essay.slug} className="card-case-study">
               <h2 className="h3">{essay.title}</h2>
               <p className="mt-3 body-md">{essay.summary}</p>
-              <div className="mt-4 body-md" dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }} />
+              <div className="markdown-content mt-4 body-md" dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }} />
               <div className="mt-4 flex flex-wrap gap-2">
                 {essay.tags.map((tag) => (
                   <TagPill key={`${essay.slug}-${tag}`}>{tag}</TagPill>

@@ -43,6 +43,11 @@
    - Import `.md` and `.mdx` files and confirm direct body ingestion (no structural rewrite).
    - Confirm frontmatter metadata maps to title/slug/summary/tags when present.
    - Confirm tables, code blocks, links, images, and inline HTML render in preview/front-end.
+   - Confirm unordered/ordered lists and nested lists render with bullets/numbers and indentation in:
+     - CMS structured content live preview
+     - DOCX pre-save preview
+     - Published case study/philosophy pages
+   - Run `npm run qa:markdown` to verify renderer-parity usage checks.
 10. Tag overflow and limits checks:
    - Create a case study with 6 tags and confirm tags wrap inside card/detail containers (no overflow).
    - Add a >24-character tag in CMS and confirm real-time validation + save blocking.

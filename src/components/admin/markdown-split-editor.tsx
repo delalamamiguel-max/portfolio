@@ -695,7 +695,7 @@ export function MarkdownSplitEditor({
         <div className="space-y-2">
           <p className="text-sm text-primary-text">Live preview</p>
           <article className="min-h-[460px] rounded-md border border-border bg-card p-4 shadow-sm">
-            <div className="body-md space-y-3" dangerouslySetInnerHTML={{ __html: preview }} />
+            <div className="markdown-content body-md space-y-3" dangerouslySetInnerHTML={{ __html: preview }} />
           </article>
         </div>
       </div>

@@ -949,7 +949,7 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
             <p className="text-sm text-primary-text">Preview (pre-save)</p>
             <article className="min-h-[180px] rounded-md border border-border bg-card p-4 shadow-sm">
               <div
-                className="body-md space-y-3"
+                className="markdown-content body-md space-y-3"
                 dangerouslySetInnerHTML={{ __html: markdownToHtml(displayGenerated?.markdown || state.generatedMarkdown) }}
               />
             </article>

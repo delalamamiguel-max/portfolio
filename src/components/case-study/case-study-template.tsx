@@ -39,7 +39,7 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
               <article key={section.heading} id={toId(section.heading)} className="card-case-study">
                 <h2 className="h3">{section.heading}</h2>
                 <div
-                  className="mt-4 body-md space-y-3"
+                  className="markdown-content mt-4 body-md space-y-3"
                   dangerouslySetInnerHTML={{ __html: markdownToHtml(section.content) }}
                 />
               </article>
@@ -47,7 +47,7 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
           ) : (
             <article className="card-case-study">
               <div
-                className="body-md space-y-3"
+                className="markdown-content body-md space-y-3"
                 dangerouslySetInnerHTML={{ __html: markdownToHtml(study.body) }}
               />
             </article>
