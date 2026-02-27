@@ -1,14 +1,15 @@
 ---
 slug: fluently-ai-case-study
 title: Fluently AI Case Study
-summary: BACKGROUND
+summary: Building Fluently AI: How AT&T Eliminated Outsourcing and Saved Millions
 tags: [ai, platform, multilingual, att.com, automation, product-strategy]
 published: true
 ---
 
 ## Strategic Context
 
-![Results](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-24-at-9-03-39-pm-496437.webp){align=center width=80}
+![Results](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-24-at-9-03-39-pm-496437.webp){align=center width=100}
+
 
 
 **BACKGROUND**
@@ -25,7 +26,9 @@ Fluently AI is an in-house AI-powered translation and content management platfor
 
 AT&T's reliance on outsourced vendors for Hispanic market content had created compounding operational problems. Translation turnaround times ranged from 24 to 72 hours, making it impossible to respond quickly to promotions, product changes, or time-sensitive market events. Costs were significant and growing, with no clear path to efficiency under the existing model.
 
-![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-31-43-pm-546535.webp){align=center width=80}
+
+![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-31-43-pm-546535.webp){align=center width=100}
+
 
 Key pain points included:
 
@@ -57,7 +60,9 @@ The architecture was built with future scalability in mind, enabling seamless ad
 
 The biggest challenge early on was alignment. Four distinct organizations had overlapping but sometimes conflicting priorities: CDL (Chief Data Office), MGO (Marketing Growth Organization), Mass Markets, and CTX (Consumer Technology Experience). Each had a stake in how content was managed and delivered for the Hispanic market.
 
-![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-33-11-pm-623071.webp){align=center width=80}
+
+![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-33-11-pm-623071.webp){align=center width=100}
+
 
 Key execution steps:
 
@@ -72,7 +77,9 @@ Key execution steps:
 **Measurable Wins Across Cost, Speed, and Quality**
 
 
-![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-39-57-pm-006299.webp){align=center width=80}
+
+![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-39-57-pm-006299.webp){align=center width=100}
+
 
 
 Beyond the headline metrics, Fluently AI delivered meaningful strategic outcomes:
