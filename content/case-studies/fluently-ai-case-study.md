@@ -29,10 +29,10 @@ AT&T's reliance on outsourced vendors for Hispanic market content had created co
 
 Key pain points included:
 
-- Outsourced vendor contracts drove high recurring costs with limited flexibility
-- Translation turnaround of 24 to 72 hours prevented rapid response to market needs
-- Inconsistent quality across vendors created brand and compliance risk
-- Growing demand from the Hispanic audience made the existing model increasingly unsustainable
+  - Outsourced vendor contracts drove high recurring costs with limited flexibility
+  - Translation turnaround of 24 to 72 hours prevented rapid response to market needs
+  - Inconsistent quality across vendors created brand and compliance risk
+  - Growing demand from the Hispanic audience made the existing model increasingly unsustainable
 
 **THE SOLUTION**
 
@@ -46,10 +46,10 @@ The architecture was built with future scalability in mind, enabling seamless ad
 
 **How We Built It**
 
-- Scalable language architecture. The platform was designed from the start to support multiple languages, not just Spanish, positioning AT&T for future multilingual expansion without rebuilding the core system.
-- Internal workflow ownership. By bringing translation and maintenance in-house, content teams gained direct control over update cycles, eliminating vendor coordination time entirely.
-- Standardized quality controls. Consistent translation logic replaced the variability of multiple vendor outputs, improving brand alignment and reducing compliance review overhead.
-- Integration with existing CMS. Fluently AI was built to work within the existing AT&T dot-com infrastructure, reducing deployment risk and avoiding a full platform replacement.
+  - Scalable language architecture. The platform was designed from the start to support multiple languages, not just Spanish, positioning AT&T for future multilingual expansion without rebuilding the core system.
+  - Internal workflow ownership. By bringing translation and maintenance in-house, content teams gained direct control over update cycles, eliminating vendor coordination time entirely.
+  - Standardized quality controls. Consistent translation logic replaced the variability of multiple vendor outputs, improving brand alignment and reducing compliance review overhead.
+  - Integration with existing CMS. Fluently AI was built to work within the existing AT&T dot-com infrastructure, reducing deployment risk and avoiding a full platform replacement.
 
 **EXECUTION AND COLLABORATION**
 
@@ -61,11 +61,11 @@ The biggest challenge early on was alignment. Four distinct organizations had ov
 
 Key execution steps:
 
-- Conducted structured stakeholder interviews across CDL, MGO, Mass Markets, and CTX to understand individual objectives and surface shared pain points
-- Synthesized cross-functional insights into a unified business case that reflected the priorities of all four organizations, making it easier for senior leadership to see the full value
-- Secured executive buy-in and funding by presenting a compelling vision backed by cost data, market growth projections, and a clear path to in-house capability
-- Established clear roles and accountability across teams after funding was confirmed, ensuring each group understood its contribution and how it connected to the broader initiative
-- Built and managed a prioritized roadmap focused on high-impact features first, keeping the project on track and reducing scope creep during delivery
+  - Conducted structured stakeholder interviews across CDL, MGO, Mass Markets, and CTX to understand individual objectives and surface shared pain points
+  - Synthesized cross-functional insights into a unified business case that reflected the priorities of all four organizations, making it easier for senior leadership to see the full value
+  - Secured executive buy-in and funding by presenting a compelling vision backed by cost data, market growth projections, and a clear path to in-house capability
+  - Established clear roles and accountability across teams after funding was confirmed, ensuring each group understood its contribution and how it connected to the broader initiative
+  - Built and managed a prioritized roadmap focused on high-impact features first, keeping the project on track and reducing scope creep during delivery
 
 **RESULTS AND IMPACT**
 
@@ -77,23 +77,23 @@ Key execution steps:
 
 Beyond the headline metrics, Fluently AI delivered meaningful strategic outcomes:
 
-- AT&T now owns its Hispanic market content pipeline, reducing dependency on external vendors and giving internal teams full operational control
-- The scalable language architecture positions AT&T to expand into additional multilingual markets without rebuilding the platform
-- Improved translation consistency strengthened brand integrity and reduced the compliance review burden on legal and marketing teams
-- The stakeholder alignment process became a model for how to build cross-functional buy-in for future platform initiatives
+  - AT&T now owns its Hispanic market content pipeline, reducing dependency on external vendors and giving internal teams full operational control
+  - The scalable language architecture positions AT&T to expand into additional multilingual markets without rebuilding the platform
+  - Improved translation consistency strengthened brand integrity and reduced the compliance review burden on legal and marketing teams
+  - The stakeholder alignment process became a model for how to build cross-functional buy-in for future platform initiatives
 
 **LEARNINGS AND WHAT'S NEXT**
 
 **Key Takeaways**
 
-- Listening before pitching changes the quality of the business case. The stakeholder interview process surfaced insights that made the final proposal significantly stronger than any single-team perspective would have produced.
-- Scalability has to be a first-class requirement, not an afterthought. Designing Fluently AI to support multiple languages from day one avoided a costly rebuild the moment a second language was requested.
-- Vendor dependency is a strategic risk. The transition to an in-house platform eliminated not just cost but also the operational fragility that came with relying on external parties for time-sensitive content.
+  - Listening before pitching changes the quality of the business case. The stakeholder interview process surfaced insights that made the final proposal significantly stronger than any single-team perspective would have produced.
+  - Scalability has to be a first-class requirement, not an afterthought. Designing Fluently AI to support multiple languages from day one avoided a costly rebuild the moment a second language was requested.
+  - Vendor dependency is a strategic risk. The transition to an in-house platform eliminated not just cost but also the operational fragility that came with relying on external parties for time-sensitive content.
 
 Planned next iterations:
 
-- Expand Fluently AI to support additional multilingual markets beyond Spanish
-- Integrate real-time content performance data to inform translation prioritization
-- Explore applying the platform architecture to other AT&T digital properties beyond dot-com
+  - Expand Fluently AI to support additional multilingual markets beyond Spanish
+  - Integrate real-time content performance data to inform translation prioritization
+  - Explore applying the platform architecture to other AT&T digital properties beyond dot-com
 
 *Case study prepared for portfolio use. Metrics reflect approximate outcomes from internal measurement.*
