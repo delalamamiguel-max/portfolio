@@ -406,7 +406,7 @@ export function MarkdownDomainEditor({
             }}
             aria-invalid={Boolean(slugError || isSlugDuplicate)}
           />
-          <p className={`text-xs ${slugError || isSlugDuplicate ? "text-red-400" : "text-muted-text"}`}>
+          <p className={`text-xs ${slugError || isSlugDuplicate ? "status-danger-text" : "text-muted-text"}`}>
             {slugError
               ? slugError
               : isSlugDuplicate
@@ -436,7 +436,7 @@ export function MarkdownDomainEditor({
             onChange={(event) => setState((prev) => ({ ...prev, tags: event.target.value }))}
             aria-invalid={Boolean(tagValidation.error)}
           />
-          <p className={`text-xs ${tagValidation.error ? "text-red-400" : "text-muted-text"}`}>
+          <p className={`text-xs ${tagValidation.error ? "status-danger-text" : "text-muted-text"}`}>
             {directory === "content/case-studies"
               ? tagValidation.error ||
                 `${tagValidation.tags.length}/${CASE_STUDY_TAG_MAX_COUNT} tags. Max ${CASE_STUDY_TAG_MAX_LENGTH} chars per tag.`
@@ -532,23 +532,23 @@ export function MarkdownDomainEditor({
       </div>
 
       {status.message ? (
-        <p className={`body-md ${status.tone === "error" ? "text-red-400" : status.tone === "success" ? "text-emerald-400" : "text-muted-text"}`}>
+        <p className={`body-md ${status.tone === "error" ? "status-danger-text" : status.tone === "success" ? "status-success-text" : "text-muted-text"}`}>
           {status.message}
         </p>
       ) : null}
       {lastSaveResult ? (
-        <div className="rounded-md border border-slate-700 bg-slate-950/60 p-3">
+        <div className="rounded-md border border-border bg-card/90 p-3 shadow-sm">
           <p className="text-sm text-primary-text">
             {lastSaveResult.created ? "Verification links (new case study)" : "Verification links"}
           </p>
           <div className="mt-2 flex flex-wrap gap-4 text-sm">
             {lastSaveResult.previewUrl ? (
-              <Link className="font-mono text-systems-teal hover:underline" to={lastSaveResult.previewUrl}>
+              <Link className="link-accent" to={lastSaveResult.previewUrl}>
                 Open admin preview
               </Link>
             ) : null}
             {lastSaveResult.liveUrl ? (
-              <Link className="font-mono text-systems-teal hover:underline" to={lastSaveResult.liveUrl}>
+              <Link className="link-accent" to={lastSaveResult.liveUrl}>
                 Open live route
               </Link>
             ) : null}
@@ -561,7 +561,7 @@ export function MarkdownDomainEditor({
               {lastSaveResult.previewRouteCheck ? (
                 <p>
                   Admin preview route check:{" "}
-                  <span className={lastSaveResult.previewRouteCheck.ok ? "text-emerald-400" : "text-amber-300"}>
+                  <span className={lastSaveResult.previewRouteCheck.ok ? "status-success-text" : "status-warning-text"}>
                     {lastSaveResult.previewRouteCheck.ok ? `OK (${lastSaveResult.previewRouteCheck.status})` : `Failed (${lastSaveResult.previewRouteCheck.status || "network"})`}
                   </span>
                 </p>
@@ -569,7 +569,7 @@ export function MarkdownDomainEditor({
               {lastSaveResult.liveRouteCheck ? (
                 <p>
                   Live route check:{" "}
-                  <span className={lastSaveResult.liveRouteCheck.ok ? "text-emerald-400" : "text-amber-300"}>
+                  <span className={lastSaveResult.liveRouteCheck.ok ? "status-success-text" : "status-warning-text"}>
                     {lastSaveResult.liveRouteCheck.ok ? `OK (${lastSaveResult.liveRouteCheck.status})` : `Failed (${lastSaveResult.liveRouteCheck.status || "network"})`}
                   </span>
                 </p>
@@ -599,7 +599,7 @@ export function MarkdownDomainEditor({
         </div>
       ) : null}
       {importedDraftState ? (
-        <div className="rounded-md border border-slate-700 bg-slate-950/60 p-3 space-y-2">
+        <div className="rounded-md border border-border bg-card/90 p-3 shadow-sm space-y-2">
           <p className="text-sm text-primary-text">Imported content verification</p>
           <div className="grid gap-2 text-xs text-muted-text md:grid-cols-2">
             <p>Body length: <span className="text-primary-text">{importedDraftState.bodyLength}</span></p>

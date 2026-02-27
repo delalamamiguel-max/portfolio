@@ -671,9 +671,9 @@ export function MarkdownSplitEditor({
           </div>
         ) : null}
 
-        {imageInsertBlocked ? <p className="mt-2 text-sm text-red-400">Alt text is required before uploading an image.</p> : null}
-        {editorError ? <p className="mt-2 text-sm text-red-400">{editorError}</p> : null}
-        {editorMessage ? <p className="mt-2 text-sm text-emerald-400">{editorMessage}</p> : null}
+        {imageInsertBlocked ? <p className="mt-2 text-sm status-danger-text">Alt text is required before uploading an image.</p> : null}
+        {editorError ? <p className="mt-2 text-sm status-danger-text">{editorError}</p> : null}
+        {editorMessage ? <p className="mt-2 text-sm status-success-text">{editorMessage}</p> : null}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">

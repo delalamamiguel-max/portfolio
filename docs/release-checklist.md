@@ -54,6 +54,10 @@
    - Confirm first-load theme respects system preference when localStorage is cleared.
    - Confirm cards, inputs, tags, tables, code blocks, toolbar controls, and DOCX/Markdown import panels remain readable in both themes.
    - Confirm case study index cards + tag pills + “Open case study” links all switch themes consistently (no dark-theme remnants in Light mode).
+   - Confirm homepage CTA (“Explore Case Studies”) is visually balanced in Light mode (not overly saturated) and still prominent in Dark mode.
+   - Confirm admin preview/save verification panels, login links, and contact form textarea follow theme tokens.
+   - Confirm CMS warning/error/success states (import panel, editor validation, save status) use semantic status colors consistently in both themes.
+   - Confirm `/admin/pages` profile image helper cards and preview surfaces adapt correctly in Light and Dark mode.
 11. Dynamic import resilience checks:
    - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
 12. Homepage profile image CMS checks:

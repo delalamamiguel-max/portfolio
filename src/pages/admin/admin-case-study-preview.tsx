@@ -16,7 +16,7 @@ export function AdminCaseStudyPreviewPage() {
           <p className="body-md text-muted-text">
             If you just created it, confirm the CMS save succeeded and wait for the Vercel rebuild to complete.
           </p>
-          <Link className="font-mono text-sm text-systems-teal hover:underline" to="/admin/case-studies">
+          <Link className="link-accent" to="/admin/case-studies">
             Back to case study editor
           </Link>
         </div>
@@ -27,16 +27,16 @@ export function AdminCaseStudyPreviewPage() {
   return (
     <div className="space-y-4">
       <Section density="dense">
-        <div className="max-w-4xl rounded-md border border-slate-700 bg-slate-950/60 p-4">
-          <p className="mono-label text-systems-teal">ADMIN PREVIEW</p>
+        <div className="max-w-4xl rounded-md border border-border bg-card/90 p-4 shadow-sm">
+          <p className="mono-label">ADMIN PREVIEW</p>
           <p className="mt-2 body-md">
             Preview supports drafts and unpublished content. Public route requires the case study to be published and the latest Vercel build to finish.
           </p>
           <div className="mt-3 flex flex-wrap gap-4 text-sm">
-            <Link className="font-mono text-systems-teal hover:underline" to="/admin/case-studies">
+            <Link className="link-accent" to="/admin/case-studies">
               Back to editor
             </Link>
-            <Link className="font-mono text-systems-teal hover:underline" to={`/case-studies/${study.slug}`}>
+            <Link className="link-accent" to={`/case-studies/${study.slug}`}>
               Open public route
             </Link>
           </div>
@@ -46,4 +46,3 @@ export function AdminCaseStudyPreviewPage() {
     </div>
   );
 }
-

@@ -64,7 +64,7 @@ export function LoginPage() {
               onChange={(event) => setPassword(event.target.value)}
             />
             {error ? (
-              <p role="alert" className="text-sm text-impact-green">
+              <p role="alert" className="text-sm status-danger-text">
                 {error}
               </p>
             ) : null}
@@ -74,7 +74,7 @@ export function LoginPage() {
           </form>
 
           <p className="mt-6 text-sm text-muted-text">
-            Back to <Link to="/" className="text-strategic-blue hover:underline">homepage</Link>
+            Back to <Link to="/" className="link-accent">homepage</Link>
           </p>
         </Card>
       </div>

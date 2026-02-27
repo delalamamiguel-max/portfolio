@@ -67,7 +67,7 @@ export function ResumePage() {
               <ul className="mt-4 space-y-2">
                 {entry.highlights.map((highlight) => (
                   <li key={highlight} className="body-md flex gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-systems-teal" aria-hidden="true" />
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
                     <span>{highlight}</span>
                   </li>
                 ))}
@@ -75,7 +75,7 @@ export function ResumePage() {
 
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 {entry.metrics.map((metric) => (
-                  <p key={`${entry.role}-${metric}`} className="rounded-md border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-primary-text">
+                  <p key={`${entry.role}-${metric}`} className="rounded-md border border-border bg-secondary px-3 py-1 text-sm text-foreground">
                     <strong>{metric}</strong>
                   </p>
                 ))}
@@ -164,7 +164,7 @@ export function ContactPage() {
               </label>
               <textarea
                 id="contact-message"
-                className="min-h-32 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-base text-primary-text placeholder:text-slate-500"
+                className="min-h-32 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground placeholder:text-muted-text"
                 required
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
@@ -176,7 +176,7 @@ export function ContactPage() {
             </Button>
           </form>
 
-          {status === "success" ? <p className="mt-4 body-md text-systems-teal">Message sent. Thanks for reaching out.</p> : null}
+          {status === "success" ? <p className="mt-4 body-md text-accent">Message sent. Thanks for reaching out.</p> : null}
           {status === "error" ? <p className="mt-4 body-md text-impact-green">Unable to send right now. Please try again.</p> : null}
         </Card>
       </div>

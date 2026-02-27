@@ -869,8 +869,8 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
         Auto-map imported headings into known case study sections (recommended for DOCX)
       </label>
 
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
-      {status ? <p className="text-sm text-emerald-400">{status}</p> : null}
+      {error ? <p className="text-sm status-danger-text">{error}</p> : null}
+      {status ? <p className="text-sm status-success-text">{status}</p> : null}
 
       {state ? (
         <div className="space-y-4">
@@ -894,9 +894,9 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
           </div>
 
           {(finalWarnings.length > 0 || state.messages.length > 0) ? (
-            <div className="space-y-2 rounded-md border border-amber-700/40 bg-amber-900/10 p-3">
-              <p className="text-sm text-amber-300">Import warnings / parser messages</p>
-              <ul className="list-disc space-y-1 pl-5 text-xs text-amber-200">
+            <div className="status-warning-panel space-y-2 p-3">
+              <p className="text-sm status-warning-text">Import warnings / parser messages</p>
+              <ul className="list-disc space-y-1 pl-5 text-xs text-primary-text">
                 {finalWarnings.map((warning, index) => <li key={`warning-${index}`}>{warning}</li>)}
                 {state.messages.map((message, index) => <li key={`message-${index}`}>{message}</li>)}
               </ul>
@@ -904,9 +904,9 @@ export function DocxCaseStudyImporter({ disabled = false, onApplyDraft, onAutoPo
           ) : null}
 
           {(state.blockingErrors.length > 0 || (bodyTransferCheck?.blockingErrors.length ?? 0) > 0) ? (
-            <div className="space-y-2 rounded-md border border-red-700/40 bg-red-900/10 p-3">
-              <p className="text-sm text-red-300">Structured error panel (manual correction required before apply)</p>
-              <ul className="list-disc space-y-1 pl-5 text-xs text-red-200">
+            <div className="status-danger-panel space-y-2 p-3">
+              <p className="text-sm status-danger-text">Structured error panel (manual correction required before apply)</p>
+              <ul className="list-disc space-y-1 pl-5 text-xs text-primary-text">
                 {[...state.blockingErrors, ...(bodyTransferCheck?.blockingErrors || [])].map((issue, index) => (
                   <li key={`blocking-${index}`}>{issue}</li>
                 ))}

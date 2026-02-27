@@ -35,7 +35,7 @@ export function HomePage() {
           </div>
 
           <div className="mx-auto w-full max-w-[320px] lg:mx-0">
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-slate-700 bg-slate-950/70 shadow-sm">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-card/90 shadow-sm transition-colors duration-300">
               {content.profileImage?.src ? (
                 <img
                   src={content.profileImage.src}
@@ -48,7 +48,7 @@ export function HomePage() {
                 <div className="relative flex h-full w-full items-center justify-center">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(45,212,191,0.12),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(59,130,246,0.14),transparent_50%)]" />
                   <div className="relative text-center">
-                    <p className="mono-label text-systems-teal">PROFILE IMAGE</p>
+                    <p className="mono-label">PROFILE IMAGE</p>
                     <p className="mt-2 text-sm text-muted-text">Upload from /admin/pages</p>
                   </div>
                 </div>
@@ -79,7 +79,7 @@ export function HomePage() {
                 <ul className="space-y-2">
                   {pillar.bullets.map((bullet) => (
                     <li key={bullet} className="body-md flex items-start gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-systems-teal" aria-hidden="true" />
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
                       <span>{bullet}</span>
                     </li>
                   ))}

@@ -38,7 +38,7 @@ export function StyleGuidePage() {
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {["bg-exec-navy", "bg-strategic-blue", "bg-systems-teal", "bg-impact-green", "bg-primary-text", "bg-muted-text"].map((bg) => (
                 <div key={bg} className="space-y-2">
-                  <div className={`${bg} h-14 rounded-md border border-slate-700`} />
+                  <div className={`${bg} h-14 rounded-md border border-border`} />
                   <p className="mono-label">{bg}</p>
                 </div>
               ))}

@@ -125,10 +125,10 @@ export function AdminPagesPage() {
             <Input value={home.heroHeadline} onChange={(e) => setHome((prev) => ({ ...prev, heroHeadline: e.target.value }))} placeholder="Hero headline" />
             <Input value={home.heroSubheadline} onChange={(e) => setHome((prev) => ({ ...prev, heroSubheadline: e.target.value }))} placeholder="Hero subheadline" />
           </div>
-          <div className="mt-4 rounded-md border border-slate-700 p-4">
+          <div className="mt-4 rounded-md border border-border bg-card/80 p-4 shadow-sm">
             <p className="text-sm text-muted-text">Homepage profile image (square, responsive, repo-backed)</p>
             <div className="mt-3 grid gap-4 md:grid-cols-[200px_1fr]">
-              <div className="aspect-square overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
+              <div className="aspect-square overflow-hidden rounded-lg border border-border bg-background/50">
                 {home.profileImage?.src ? (
                   <img src={home.profileImage.src} alt={home.profileImage.alt || "Homepage profile preview"} className="h-full w-full object-cover" />
                 ) : (
@@ -161,7 +161,7 @@ export function AdminPagesPage() {
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {home.proofMetrics.map((metric, i) => (
-              <div key={`${metric.label}-${i}`} className="rounded-md border border-slate-700 p-3">
+              <div key={`${metric.label}-${i}`} className="rounded-md border border-border bg-background/50 p-3">
                 <p className="mono-label">Metric block helper</p>
                 <Input className="mt-2" value={metric.value} onChange={(e) => setHome((prev) => {
                   const next = [...prev.proofMetrics];
@@ -193,7 +193,7 @@ export function AdminPagesPage() {
           />
           <div className="mt-4 space-y-4">
             {resume.sections.map((section, i) => (
-              <div key={`${section.role}-${i}`} className="rounded-md border border-slate-700 p-3">
+              <div key={`${section.role}-${i}`} className="rounded-md border border-border bg-background/50 p-3">
                 <Input value={section.role} onChange={(e) => setResume((prev) => {
                   const next = [...prev.sections];
                   next[i] = { ...next[i], role: e.target.value };

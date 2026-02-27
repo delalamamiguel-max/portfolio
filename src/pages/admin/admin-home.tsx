@@ -20,7 +20,7 @@ export function AdminHomePage() {
             <Card key={card.to} variant="case-study" padding="md">
               <h2 className="h3">{card.title}</h2>
               <p className="mt-2 body-md">{card.detail}</p>
-              <Link className="mt-4 inline-block font-mono text-sm text-systems-teal hover:underline" to={card.to}>
+              <Link className="mt-4 inline-block link-accent" to={card.to}>
                 Open
               </Link>
             </Card>
