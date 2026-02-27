@@ -80,3 +80,9 @@ Private:
 - Automated smoke checks:
   - `./scripts/qa-smoke.sh https://<your-domain>`
   - `./scripts/qa-smoke.sh https://<your-domain> "<SITE_PASSWORD>"`
+
+## CI Status Check
+- GitHub Actions workflow: `.github/workflows/ci.yml`
+- Trigger: pushes to `main` and pull requests
+- Job: `npm ci` then `npm run build`
+- This provides the branch status check shown in GitHub Branches and commit checks.

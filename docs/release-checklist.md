@@ -21,34 +21,36 @@
 4. Promote to production (`vercel --prod`).
 
 ## Post-Deploy
-1. Run smoke tests against production URL:
+1. Confirm GitHub Actions `CI` status check completed successfully on the latest `main` commit.
+2. If branch protection is enabled, verify `CI / build` is marked as a required passing check.
+3. Run smoke tests against production URL:
    - `./scripts/qa-smoke.sh https://<your-domain>`
    - `./scripts/qa-smoke.sh https://<your-domain> "<SITE_PASSWORD>"`
-2. Confirm private routes are inaccessible without session.
-3. Confirm `/resume.pdf` downloads.
-4. Confirm contact form returns success and logs intake metadata server-side.
-5. CMS verification checks:
+4. Confirm private routes are inaccessible without session.
+5. Confirm `/resume.pdf` downloads.
+6. Confirm contact form returns success and logs intake metadata server-side.
+7. CMS verification checks:
    - Create or edit a case study in `/admin/case-studies`.
    - Confirm save success panel shows `Open admin preview` and `Open live route`.
    - Confirm admin preview route resolves (`/admin/case-studies/preview/:slug`).
    - If content is intended to be public, confirm `Published` is enabled and the public route resolves after deploy.
-6. DOCX import checks (case studies):
+8. DOCX import checks (case studies):
    - Import `.docx` and review warnings/errors panel.
    - Confirm generated structured content auto-populates before save.
    - Confirm auto-map creates only detected sections (no empty section headings).
    - Confirm imported images render and alt text placeholders are reviewed before publish.
-7. Markdown/MDX import checks (case studies):
+9. Markdown/MDX import checks (case studies):
    - Import `.md` and `.mdx` files and confirm direct body ingestion (no structural rewrite).
    - Confirm frontmatter metadata maps to title/slug/summary/tags when present.
    - Confirm tables, code blocks, links, images, and inline HTML render in preview/front-end.
-8. Tag overflow and limits checks:
+10. Tag overflow and limits checks:
    - Create a case study with 6 tags and confirm tags wrap inside card/detail containers (no overflow).
    - Add a >24-character tag in CMS and confirm real-time validation + save blocking.
-9. Back button checks:
+11. Back button checks:
    - Case study detail page Back button uses browser history and falls back safely.
    - CMS case studies page Back button appears above the title and uses browser history with `/admin` fallback.
    - CMS editor-level Back button (other markdown domains) uses browser history and falls back to `/admin`.
-10. Theme checks (website + CMS):
+12. Theme checks (website + CMS):
    - Toggle light/dark from top-right navigation.
    - Confirm preference persists after refresh.
    - Confirm first-load theme respects system preference when localStorage is cleared.
@@ -58,9 +60,9 @@
    - Confirm admin preview/save verification panels, login links, and contact form textarea follow theme tokens.
    - Confirm CMS warning/error/success states (import panel, editor validation, save status) use semantic status colors consistently in both themes.
    - Confirm `/admin/pages` profile image helper cards and preview surfaces adapt correctly in Light and Dark mode.
-11. Dynamic import resilience checks:
+13. Dynamic import resilience checks:
    - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
-12. Homepage profile image CMS checks:
+14. Homepage profile image CMS checks:
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.
