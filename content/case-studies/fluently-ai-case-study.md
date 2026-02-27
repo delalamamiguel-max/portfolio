@@ -25,7 +25,7 @@ Fluently AI is an in-house AI-powered translation and content management platfor
 
 AT&T's reliance on outsourced vendors for Hispanic market content had created compounding operational problems. Translation turnaround times ranged from 24 to 72 hours, making it impossible to respond quickly to promotions, product changes, or time-sensitive market events. Costs were significant and growing, with no clear path to efficiency under the existing model.
 
-> [Unsupported DOCX content omitted in v1: Tables are not supported in DOCX import v1]
+![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-31-43-pm-546535.webp){align=center width=80}
 
 Key pain points included:
 
@@ -57,7 +57,7 @@ The architecture was built with future scalability in mind, enabling seamless ad
 
 The biggest challenge early on was alignment. Four distinct organizations had overlapping but sometimes conflicting priorities: CDL (Chief Data Office), MGO (Marketing Growth Organization), Mass Markets, and CTX (Consumer Technology Experience). Each had a stake in how content was managed and delivered for the Hispanic market.
 
-> [Unsupported DOCX content omitted in v1: Tables are not supported in DOCX import v1]
+![Core issue Fluently comment](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-33-11-pm-623071.webp){align=center width=80}
 
 Key execution steps:
 
@@ -71,7 +71,7 @@ Key execution steps:
 
 **Measurable Wins Across Cost, Speed, and Quality**
 
-> [Unsupported DOCX content omitted in v1: Tables are not supported in DOCX import v1]
+![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-34-30-pm-678780.webp){align=center width=80}
 
 Beyond the headline metrics, Fluently AI delivered meaningful strategic outcomes:
 
@@ -93,7 +93,5 @@ Planned next iterations:
 - Expand Fluently AI to support additional multilingual markets beyond Spanish
 - Integrate real-time content performance data to inform translation prioritization
 - Explore applying the platform architecture to other AT&T digital properties beyond dot-com
-
-> [Unsupported DOCX content omitted in v1: Tables are not supported in DOCX import v1]
 
 *Case study prepared for portfolio use. Metrics reflect approximate outcomes from internal measurement.*
