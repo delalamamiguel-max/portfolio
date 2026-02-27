@@ -1,7 +1,7 @@
 ---
 slug: clockero-case-study
 title: Clockero Case Study
-summary: Clockero is a B2B SaaS product built to serve industries with distributed field teams: construction, agriculture, logistics, maintenance, and similar operations. The target custome
+summary: Built solo. Shipped to production. AI-powered field workforce accountability.
 tags: [ai, B2B, SaaS, experimentation, governance, vibe coding]
 published: true
 ---
