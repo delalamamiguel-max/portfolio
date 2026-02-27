@@ -37,7 +37,7 @@ html.theme-light {
   --foreground: 222 47% 11%;
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
-  --primary: 217 72% 50%;
+  --primary: 214 52% 43%;
   --primary-foreground: 0 0% 100%;
   --secondary: 210 40% 96%;
   --secondary-foreground: 222 47% 11%;
@@ -47,11 +47,11 @@ html.theme-light {
   --accent-foreground: 0 0% 100%;
   --border: 214 20% 88%;
   --input: 214 20% 88%;
-  --ring: 217 91% 56%;
+  --ring: 214 52% 43%;
   --exec-navy: 210 40% 98%;
   --primary-text: 222 47% 11%;
   --muted-text: 215 16% 40%;
-  --strategic-blue: 217 72% 50%;
+  --strategic-blue: 214 52% 43%;
   --systems-teal: 172 70% 34%;
   --impact-green: 142 66% 38%;
   --link: 172 70% 34%;

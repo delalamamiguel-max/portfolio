@@ -50,7 +50,7 @@ Private:
   - no-flicker theme init script in `index.html`
   - semantic theme tokens drive shared surfaces (`bg`, `card`, `text`, `muted`, `border`, `primary`, `accent`, `link`) across website + CMS
   - semantic status tokens (`success`, `warning`, `danger`) drive CMS warnings/errors/success states
-  - Light mode primary CTA palette is intentionally softened to avoid overly saturated blue while preserving contrast
+  - Light mode primary CTA palette is intentionally softened (desaturated slate-blue) to avoid overly saturated blue while preserving contrast
 - Case Study CMS supports:
   - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
   - visual table builder (rows/cols, header row, inline cell editing) -> inserts clean Markdown tables

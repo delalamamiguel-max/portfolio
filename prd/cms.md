@@ -145,7 +145,7 @@ A password-gated owner-only CMS that lets Miguel update homepage, philosophy, re
   - no-flicker theme initialization is applied before app boot
 - Shared UI surfaces (shell, buttons, inputs, cards, tags, tables/code blocks) are token-driven for theme adaptation.
 - CMS status messaging and import warning/error panels use semantic theme tokens (`success`, `warning`, `danger`) instead of hardcoded color values.
-- Primary CTA palette in Light mode is intentionally softened to avoid an overly saturated “super blue” appearance while preserving contrast and hierarchy.
+- Primary CTA palette in Light mode is intentionally softened to a desaturated slate-blue to avoid an overly saturated “super blue” appearance while preserving contrast and hierarchy.
 - Shared link styling is token-based (`link-accent`) to keep link prominence consistent across themes.
 - Admin pages/profile image helpers and verification panels are theme-token driven (no dark-only hardcoded panel colors).
 
