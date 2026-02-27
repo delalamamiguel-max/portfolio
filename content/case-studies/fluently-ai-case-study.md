@@ -71,7 +71,9 @@ Key execution steps:
 
 **Measurable Wins Across Cost, Speed, and Quality**
 
-![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-34-30-pm-678780.webp){align=center width=80}
+
+![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-39-57-pm-006299.webp){align=center width=80}
+
 
 Beyond the headline metrics, Fluently AI delivered meaningful strategic outcomes:
 
