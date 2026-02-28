@@ -1,6 +1,6 @@
 {
-  "heroHeadline": "Senior Product Leader - Strategy, Data Platforms & ML Systems",
-  "heroSubheadline": "I concept, architect, and scale intelligent systems that drive measurable business outcomes.",
+  "heroHeadline": "Product Leader. Data Platforms & ML Systems.",
+  "heroSubheadline": "Architecting intelligent systems from strategy to scale.",
   "profileImage": {
     "src": "/images/cms/home-profile/2026/02/headshot-692603.webp",
     "alt": "Homepage profile image"
@@ -8,18 +8,18 @@
   "proofMetrics": [
     {
       "value": "+8%",
-      "label": "CTR lift",
-      "context": "Delivered through ML modernization and model-serving improvements."
+      "label": "CTR Lift via ML Modernization",
+      "context": "z"
     },
     {
       "value": "+12%",
-      "label": "Engagement",
-      "context": "Gained by scaling experimentation systems across product surfaces."
+      "label": "Engagement Lift via Experimentation",
+      "context": "z"
     },
     {
       "value": "$8M+",
-      "label": "OPEX reduced",
-      "context": "Achieved with platform strategy and architecture simplification."
+      "label": "OPEX Reduction via Platform Simplification",
+      "context": "z"
     }
   ],
   "strategicPillars": [
