@@ -9,17 +9,17 @@
     {
       "value": "+8%",
       "label": "CTR Lift via ML Modernization",
-      "context": "z"
+      "context": "+8% CTR Lift ML modernization and model-serving improvements."
     },
     {
       "value": "+12%",
       "label": "Engagement Lift via Experimentation",
-      "context": "z"
+      "context": "+12% Engagement Scaled experimentation across product surfaces."
     },
     {
       "value": "$8M+",
       "label": "OPEX Reduction via Platform Simplification",
-      "context": "z"
+      "context": "$8M+ OPEX Reduced Platform consolidation and architecture simplification."
     }
   ],
   "strategicPillars": [
