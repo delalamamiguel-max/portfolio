@@ -76,3 +76,6 @@
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.
+16. Homepage strategic pillars CMS checks:
+   - Edit all pillar titles and bullets in `/admin/pages`.
+   - Save JSON pages and confirm homepage pillar cards update with edited values.

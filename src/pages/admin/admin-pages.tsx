@@ -181,6 +181,46 @@ export function AdminPagesPage() {
               </div>
             ))}
           </div>
+          <div className="mt-4 space-y-3">
+            <p className="text-sm text-muted-text">Strategic pillars</p>
+            <div className="grid gap-3 md:grid-cols-2">
+              {home.strategicPillars.map((pillar, i) => (
+                <div key={`${pillar.title}-${i}`} className="rounded-md border border-border bg-background/50 p-3">
+                  <p className="mono-label">Pillar helper</p>
+                  <Input
+                    className="mt-2"
+                    value={pillar.title}
+                    onChange={(e) =>
+                      setHome((prev) => {
+                        const next = [...prev.strategicPillars];
+                        next[i] = { ...next[i], title: e.target.value };
+                        return { ...prev, strategicPillars: next };
+                      })
+                    }
+                    placeholder="Pillar title"
+                  />
+                  <div className="mt-2 space-y-2">
+                    {pillar.bullets.map((bullet, bulletIndex) => (
+                      <Input
+                        key={`${pillar.title}-${bulletIndex}`}
+                        value={bullet}
+                        onChange={(e) =>
+                          setHome((prev) => {
+                            const next = [...prev.strategicPillars];
+                            const nextBullets = [...next[i].bullets];
+                            nextBullets[bulletIndex] = e.target.value;
+                            next[i] = { ...next[i], bullets: nextBullets };
+                            return { ...prev, strategicPillars: next };
+                          })
+                        }
+                        placeholder={`Bullet ${bulletIndex + 1}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </Card>
 
         <Card variant="case-study" padding="md">

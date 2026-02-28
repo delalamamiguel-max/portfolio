@@ -64,6 +64,7 @@ Private:
   - optional auto-map of imported headings to known case study sections (soft warnings only)
   - post-save verification links (admin preview + public route)
   - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
+- Admin pages CMS supports homepage `strategicPillars` editing (pillar titles + bullet lines) from `/admin/pages`.
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag

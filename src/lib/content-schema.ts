@@ -87,19 +87,23 @@ export function validateHomeContent(input: unknown): HomeContent {
     throw new Error("profileImage.alt is required when profileImage.src is set");
   }
 
+  const validatedProofMetrics = data.proofMetrics.map((entry, index) => ({
+    value: asString(entry?.value, `proofMetrics[${index}].value`),
+    label: asString(entry?.label, `proofMetrics[${index}].label`),
+    context: asString(entry?.context, `proofMetrics[${index}].context`),
+  }));
+
+  const validatedStrategicPillars = data.strategicPillars.map((entry, index) => ({
+    title: asString(entry?.title, `strategicPillars[${index}].title`),
+    bullets: asStringArray(entry?.bullets, `strategicPillars[${index}].bullets`),
+  }));
+
   return {
     heroHeadline: asString(data.heroHeadline, "heroHeadline"),
     heroSubheadline: asString(data.heroSubheadline, "heroSubheadline"),
     profileImage,
-    proofMetrics: data.proofMetrics.map((entry) => ({
-      value: asString(entry.value, "proofMetrics.value"),
-      label: asString(entry.label, "proofMetrics.label"),
-      context: asString(entry.context, "proofMetrics.context"),
-    })),
-    strategicPillars: data.strategicPillars.map((entry) => ({
-      title: asString(entry.title, "strategicPillars.title"),
-      bullets: asStringArray(entry.bullets, "strategicPillars.bullets"),
-    })),
+    proofMetrics: validatedProofMetrics,
+    strategicPillars: validatedStrategicPillars,
     primaryCTA: {
       label: asString(data.primaryCTA?.label, "primaryCTA.label"),
       href: asString(data.primaryCTA?.href, "primaryCTA.href"),
