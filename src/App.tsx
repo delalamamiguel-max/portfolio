@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { SiteShell } from "@/components/layout/site-shell";
+import { V2Shell } from "@/components/v2/v2-shell";
 import { verifySession } from "@/lib/auth";
 
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
@@ -33,6 +34,16 @@ const AdminCaseStudyPreviewPage = lazy(() =>
 const AdminDeepDivePage = lazy(() =>
   import("@/pages/admin/admin-deep-dive").then((module) => ({ default: module.AdminDeepDivePage })),
 );
+const V2HomePage = lazy(() => import("@/pages/v2/v2-home-page").then((module) => ({ default: module.V2HomePage })));
+const V2CaseStudiesIndexPage = lazy(() =>
+  import("@/pages/v2/v2-case-studies-index-page").then((module) => ({ default: module.V2CaseStudiesIndexPage })),
+);
+const V2CaseStudyDetailPage = lazy(() =>
+  import("@/pages/v2/v2-case-study-detail-page").then((module) => ({ default: module.V2CaseStudyDetailPage })),
+);
+const V2PhilosophyPage = lazy(() => import("@/pages/v2/v2-philosophy-page").then((module) => ({ default: module.V2PhilosophyPage })));
+const V2ResumePage = lazy(() => import("@/pages/v2/v2-resume-page").then((module) => ({ default: module.V2ResumePage })));
+const V2ContactPage = lazy(() => import("@/pages/v2/v2-contact-page").then((module) => ({ default: module.V2ContactPage })));
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const location = useLocation();
@@ -63,11 +74,19 @@ function PrivateRoute({ children }: { children: JSX.Element }) {
   return children;
 }
 
+function V2Layout() {
+  return (
+    <V2Shell>
+      <Outlet />
+    </V2Shell>
+  );
+}
+
 export default function App() {
   return (
-    <SiteShell>
-      <Suspense fallback={<div className="container py-12 text-muted-text">Loading page...</div>}>
-        <Routes>
+    <Suspense fallback={<div className="container py-12 text-muted-text">Loading page...</div>}>
+      <Routes>
+        <Route element={<SiteShell />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/philosophy" element={<PhilosophyPage />} />
@@ -154,10 +173,19 @@ export default function App() {
               </PrivateRoute>
             }
           />
+        </Route>
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </SiteShell>
+        <Route path="/v2" element={<V2Layout />}>
+          <Route index element={<V2HomePage />} />
+          <Route path="case-studies" element={<V2CaseStudiesIndexPage />} />
+          <Route path="case-studies/:slug" element={<V2CaseStudyDetailPage />} />
+          <Route path="philosophy" element={<V2PhilosophyPage />} />
+          <Route path="resume" element={<V2ResumePage />} />
+          <Route path="contact" element={<V2ContactPage />} />
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 }

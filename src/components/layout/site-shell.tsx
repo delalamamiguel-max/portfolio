@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
@@ -11,7 +11,7 @@ const navItems = [
   { to: "/contact", label: "Contact" },
 ];
 
-export function SiteShell({ children }: { children: ReactNode }) {
+export function SiteShell({ children }: { children?: ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -105,7 +105,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <main id="main-content">{children}</main>
+      <main id="main-content">{children ?? <Outlet />}</main>
     </div>
   );
 }

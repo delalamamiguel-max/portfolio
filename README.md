@@ -27,6 +27,12 @@ Public:
 - `/resume`
 - `/contact`
 - `/login`
+- `/v2`
+- `/v2/case-studies`
+- `/v2/case-studies/:slug`
+- `/v2/philosophy`
+- `/v2/resume`
+- `/v2/contact`
 
 Private:
 - `/case-studies`
@@ -65,6 +71,10 @@ Private:
   - post-save verification links (admin preview + public route)
   - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
 - Admin pages CMS supports homepage `strategicPillars` editing (section heading/subtext, pillar titles + bullet lines) from `/admin/pages`.
+- `/v2` includes a structural wireframe + typography pass only:
+  - semantic HTML layout/components
+  - spacing/typographic hierarchy validation
+  - intentionally no brand color system, gradients, shadows, or motion styling
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag

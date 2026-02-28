@@ -79,3 +79,8 @@
 16. Homepage strategic pillars CMS checks:
    - Edit all pillar titles and bullets in `/admin/pages`.
    - Save JSON pages and confirm homepage pillar cards update with edited values.
+17. `/v2` wireframe/typography checks:
+   - Verify `/v2`, `/v2/case-studies`, `/v2/case-studies/:slug`, `/v2/philosophy`, `/v2/resume`, `/v2/contact` routes load.
+   - Confirm global frame exists on all `/v2` pages (sticky 64px header, left brand, right nav, rightmost theme toggle).
+   - Confirm max-width containers (`1120px`) and long-form text column (`780px`) behavior.
+   - Confirm typography hierarchy is applied without brand color/motion effects.
