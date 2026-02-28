@@ -5,6 +5,8 @@ export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export type HomeContent = {
   heroHeadline: string;
   heroSubheadline: string;
+  strategicPillarsHeading: string;
+  strategicPillarsSubtext: string;
   profileImage: { src: string; alt: string };
   proofMetrics: Array<{ value: string; label: string; context: string }>;
   strategicPillars: Array<{ title: string; bullets: string[] }>;
@@ -101,6 +103,8 @@ export function validateHomeContent(input: unknown): HomeContent {
   return {
     heroHeadline: asString(data.heroHeadline, "heroHeadline"),
     heroSubheadline: asString(data.heroSubheadline, "heroSubheadline"),
+    strategicPillarsHeading: asString(data.strategicPillarsHeading, "strategicPillarsHeading"),
+    strategicPillarsSubtext: asString(data.strategicPillarsSubtext, "strategicPillarsSubtext"),
     profileImage,
     proofMetrics: validatedProofMetrics,
     strategicPillars: validatedStrategicPillars,

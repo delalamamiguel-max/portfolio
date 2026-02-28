@@ -68,8 +68,8 @@ export function HomePage() {
 
       <Section ariaLabel="Strategic pillars">
         <div className="mb-8 max-w-2xl space-y-3">
-          <h2 className="h2">Strategic Pillars</h2>
-          <p className="body-md">Executive calm on the surface, systems depth in the operating model.</p>
+          <h2 className="h2">{content.strategicPillarsHeading}</h2>
+          <p className="body-md">{content.strategicPillarsSubtext}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {content.strategicPillars.map((pillar) => (

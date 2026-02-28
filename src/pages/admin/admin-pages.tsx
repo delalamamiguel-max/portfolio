@@ -125,6 +125,18 @@ export function AdminPagesPage() {
             <Input value={home.heroHeadline} onChange={(e) => setHome((prev) => ({ ...prev, heroHeadline: e.target.value }))} placeholder="Hero headline" />
             <Input value={home.heroSubheadline} onChange={(e) => setHome((prev) => ({ ...prev, heroSubheadline: e.target.value }))} placeholder="Hero subheadline" />
           </div>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <Input
+              value={home.strategicPillarsHeading}
+              onChange={(e) => setHome((prev) => ({ ...prev, strategicPillarsHeading: e.target.value }))}
+              placeholder="Strategic pillars heading"
+            />
+            <Input
+              value={home.strategicPillarsSubtext}
+              onChange={(e) => setHome((prev) => ({ ...prev, strategicPillarsSubtext: e.target.value }))}
+              placeholder="Strategic pillars subtext"
+            />
+          </div>
           <div className="mt-4 rounded-md border border-border bg-card/80 p-4 shadow-sm">
             <p className="text-sm text-muted-text">Homepage profile image (square, responsive, repo-backed)</p>
             <div className="mt-3 grid gap-4 md:grid-cols-[200px_1fr]">
