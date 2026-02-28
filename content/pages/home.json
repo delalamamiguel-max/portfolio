@@ -26,33 +26,33 @@
     {
       "title": "Strategy",
       "bullets": [
-        "Vision framing tied to measurable outcomes",
-        "TAM and sequencing for portfolio choices",
-        "Roadmap clarity under governance constraints"
+        "Vision tied to measurable outcomes",
+        "Portfolio sequencing and TAM prioritization",
+        "Roadmap clarity within governance constraints"
       ]
     },
     {
       "title": "Architecture",
       "bullets": [
         "Platform-first operating model design",
-        "Governance-aware data and ML lifecycle decisions",
-        "System trade-offs made explicit early"
+        "Governance-aware data and ML lifecycle",
+        "Trade-offs surfaced early, not deferred"
       ]
     },
     {
       "title": "Execution",
       "bullets": [
-        "Cross-functional delivery cadence at scale",
-        "Experimentation loops connected to business metrics",
-        "Operational discipline from concept to launch"
+        "Cross-functional delivery at scale",
+        "Experimentation loops tied to business metrics",
+        "Disciplined from concept to launch"
       ]
     },
     {
       "title": "Leadership",
       "bullets": [
         "Alignment across product, engineering, data, and compliance",
-        "Executive communication without technical dilution",
-        "Teams organized around durable system outcomes"
+        "Technical depth communicated at the executive level",
+        "Teams structured around durable system outcomes"
       ]
     }
   ],
