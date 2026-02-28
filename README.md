@@ -75,6 +75,7 @@ Private:
   - semantic HTML layout/components
   - spacing/typographic hierarchy validation
   - intentionally no brand color system, gradients, shadows, or motion styling
+  - legacy static `/public/v2` files were removed so `/v2` resolves to React routes
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag
