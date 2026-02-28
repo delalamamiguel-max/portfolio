@@ -70,7 +70,7 @@ Key execution steps:
 
 **Measurable Wins Across the Board**
 
-![Image](/images/cms/case-studies-signalai-case-study/2026/02/screenshot-2026-02-27-at-6-32-44-pm-803460.webp){align=center width=80}
+![Image](/images/cms/case-studies-signalai-case-study/2026/02/screenshot-2026-02-27-at-6-32-44-pm-803460.webp){align=center width=100}
 
 
 Beyond the headline metrics, the project delivered meaningful qualitative outcomes:
