@@ -76,6 +76,7 @@ Private:
   - neutral light/dark token palette with one subtle accent
   - minimal visual depth and soft hover/focus transitions
   - reduced-motion support for motion-safe behavior
+  - low-noise flow pass: unnecessary boxed containers removed in favor of whitespace + subtle dividers; card framing kept only where it improves clarity (case study cards)
   - legacy static `/public/v2` files were removed so `/v2` resolves to React routes
 - Case study tag safeguards:
   - max 6 tags

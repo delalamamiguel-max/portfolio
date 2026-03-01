@@ -89,3 +89,7 @@
    - Confirm accent usage is sparse and consistent (links/primary actions only).
    - Confirm motion remains subtle (soft fade/hover transitions) and no distracting animation exists.
    - Confirm `prefers-reduced-motion` disables decorative transitions on `/v2`.
+19. `/v2` flow/noise checks:
+   - Confirm non-essential boxed containers are removed and replaced by spacing rhythm and subtle section dividers.
+   - Confirm case study cards remain the only clearly framed card pattern unless a block has explicit structural purpose.
+   - Confirm CTA blocks read as intentional actions, not embedded heavy cards.

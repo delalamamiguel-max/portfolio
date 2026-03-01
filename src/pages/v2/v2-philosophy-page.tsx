@@ -11,7 +11,7 @@ export function V2PhilosophyPage() {
 
         <div className="v2-stack-16">
           {v2Essays.map((essay) => (
-            <article key={essay.slug} className="v2-card v2-stack-8">
+            <article key={essay.slug} className="v2-list-entry v2-stack-8">
               <h2 className="v2-h3">{essay.title}</h2>
               <p className="v2-body">{essay.summary}</p>
               <div className="v2-tags">

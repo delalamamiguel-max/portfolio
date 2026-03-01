@@ -40,7 +40,7 @@ export function V2CaseStudyDetailPage() {
         </div>
 
         {showAnchorNav ? (
-          <nav className="v2-anchor-nav" aria-label="Section anchors">
+          <nav className="v2-flow-item" aria-label="Section anchors">
             <ul className="v2-list">
               {study.sections.map((section) => (
                 <li key={section.heading}>
@@ -53,7 +53,7 @@ export function V2CaseStudyDetailPage() {
 
         <div className="v2-stack-24 v2-text-column">
           {study.sections.map((section, index) => (
-            <section key={section.heading} id={toAnchorId(section.heading)} className="v2-block v2-stack-16">
+            <section key={section.heading} id={toAnchorId(section.heading)} className="v2-flow-section v2-stack-16">
               <h2 className="v2-h2">{section.heading}</h2>
               <p className="v2-body">{section.body}</p>
               {index === 1 ? (

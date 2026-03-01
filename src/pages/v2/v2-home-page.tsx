@@ -27,17 +27,17 @@ export function V2HomePage() {
 
       <SectionWrapper ariaLabel="Proof strip">
         <div className="v2-grid-3">
-          <article className="v2-card v2-stack-8">
+          <article className="v2-metric v2-stack-8">
             <p className="v2-h3">+8%</p>
             <p className="v2-h4">CTR lift</p>
             <p className="v2-body">Delivered through model-serving modernization.</p>
           </article>
-          <article className="v2-card v2-stack-8">
+          <article className="v2-metric v2-stack-8">
             <p className="v2-h3">+12%</p>
             <p className="v2-h4">Engagement</p>
             <p className="v2-body">Gained by scaling experimentation systems.</p>
           </article>
-          <article className="v2-card v2-stack-8">
+          <article className="v2-metric v2-stack-8">
             <p className="v2-h3">$8M+</p>
             <p className="v2-h4">OPEX reduction</p>
             <p className="v2-body">Achieved with platform simplification.</p>
@@ -49,11 +49,11 @@ export function V2HomePage() {
         <div className="v2-stack-24">
           <HeadingBlock level={2} title="Selected Highlights" subtext="Work samples focused on strategy-to-execution continuity." />
           <div className="v2-grid-2">
-            <article className="v2-card v2-stack-8">
+            <article className="v2-flow-item v2-stack-8">
               <h3 className="v2-h3">Experimentation Platform</h3>
               <p className="v2-body">Standardized experimentation operations for faster decision quality.</p>
             </article>
-            <article className="v2-card v2-stack-8">
+            <article className="v2-flow-item v2-stack-8">
               <h3 className="v2-h3">ML Modernization</h3>
               <p className="v2-body">Reframed architecture trade-offs around reliability and operating cost.</p>
             </article>
@@ -65,10 +65,10 @@ export function V2HomePage() {
         <div className="v2-stack-24">
           <HeadingBlock level={2} title="Strategic Pillars" subtext="Compact operating principles for decision quality." />
           <div className="v2-grid-4">
-            <article className="v2-card v2-stack-8"><h3 className="v2-h3">Strategy</h3><p className="v2-body">Portfolio framing tied to measurable outcomes.</p></article>
-            <article className="v2-card v2-stack-8"><h3 className="v2-h3">Architecture</h3><p className="v2-body">Platform choices aligned to governance constraints.</p></article>
-            <article className="v2-card v2-stack-8"><h3 className="v2-h3">Execution</h3><p className="v2-body">Delivery cadence with explicit trade-offs.</p></article>
-            <article className="v2-card v2-stack-8"><h3 className="v2-h3">Leadership</h3><p className="v2-body">Cross-functional alignment around system outcomes.</p></article>
+            <article className="v2-flow-item v2-stack-8"><h3 className="v2-h3">Strategy</h3><p className="v2-body">Portfolio framing tied to measurable outcomes.</p></article>
+            <article className="v2-flow-item v2-stack-8"><h3 className="v2-h3">Architecture</h3><p className="v2-body">Platform choices aligned to governance constraints.</p></article>
+            <article className="v2-flow-item v2-stack-8"><h3 className="v2-h3">Execution</h3><p className="v2-body">Delivery cadence with explicit trade-offs.</p></article>
+            <article className="v2-flow-item v2-stack-8"><h3 className="v2-h3">Leadership</h3><p className="v2-body">Cross-functional alignment around system outcomes.</p></article>
           </div>
         </div>
       </SectionWrapper>

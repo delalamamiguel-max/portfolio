@@ -8,6 +8,7 @@
   --v2-accent: #0f766e;
   --v2-accent-soft: #ecfeff;
   --v2-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --v2-divider: color-mix(in srgb, var(--v2-border) 65%, transparent);
   min-height: 100vh;
   background: var(--v2-bg);
   color: var(--v2-text);
@@ -23,6 +24,7 @@ html.theme-dark .v2-root {
   --v2-accent: #2dd4bf;
   --v2-accent-soft: rgba(45, 212, 191, 0.12);
   --v2-shadow: 0 1px 2px rgba(2, 6, 23, 0.45);
+  --v2-divider: color-mix(in srgb, var(--v2-border) 55%, transparent);
 }
 
 .v2-root * {
@@ -188,8 +190,12 @@ html.theme-dark .v2-root {
 }
 
 .v2-section {
-  padding: 56px 0;
+  padding: 64px 0;
   animation: v2-fade-up 260ms ease both;
+}
+
+.v2-section + .v2-section {
+  border-top: 1px solid var(--v2-divider);
 }
 
 .v2-eyebrow {
@@ -267,29 +273,74 @@ html.theme-dark .v2-root {
 .v2-card,
 .v2-quote,
 .v2-cta,
-.v2-form,
-.v2-block,
-.v2-anchor-nav {
-  border: 1px solid var(--v2-border);
-  background: var(--v2-surface);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: var(--v2-shadow);
+.v2-block {
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
-.v2-card,
-.v2-quote,
-.v2-cta,
-.v2-block {
+.v2-flow-item {
+  padding: 12px 0;
+}
+
+.v2-flow-item + .v2-flow-item {
+  border-top: 1px solid var(--v2-divider);
+}
+
+.v2-flow-section {
+  padding: 20px 0;
+  border-top: 1px solid var(--v2-divider);
+}
+
+.v2-flow-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.v2-metric {
+  padding: 8px 0 8px 14px;
+  border-left: 2px solid color-mix(in srgb, var(--v2-border) 55%, var(--v2-accent));
+}
+
+.v2-record {
+  padding: 20px 0;
+  border-top: 1px solid var(--v2-divider);
+}
+
+.v2-record:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.v2-case-study-card {
+  border: 1px solid var(--v2-border);
+  background: var(--v2-surface);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: var(--v2-shadow);
   transition: border-color 180ms ease, transform 180ms ease;
 }
 
-.v2-card:hover,
-.v2-quote:hover,
-.v2-cta:hover,
-.v2-block:hover {
+.v2-case-study-card:hover {
   border-color: color-mix(in srgb, var(--v2-border) 60%, var(--v2-accent));
   transform: translateY(-1px);
+}
+
+.v2-quote {
+  padding-left: 16px;
+  border-left: 2px solid color-mix(in srgb, var(--v2-border) 40%, var(--v2-accent));
+}
+
+.v2-cta {
+  padding-top: 8px;
+}
+
+.v2-form {
+  border: 1px solid var(--v2-divider);
+  background: var(--v2-surface);
+  padding: 16px;
+  border-radius: 12px;
 }
 
 .v2-tags {
@@ -405,7 +456,7 @@ html.theme-dark .v2-root {
 
 @media (min-width: 1024px) {
   .v2-section {
-    padding: 72px 0;
+    padding: 88px 0;
   }
 }
 

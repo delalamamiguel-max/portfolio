@@ -9,7 +9,7 @@ type CaseStudyCardProps = {
 
 export function CaseStudyCard({ slug, title, summary, tags }: CaseStudyCardProps) {
   return (
-    <article className="v2-card v2-stack-16">
+    <article className="v2-case-study-card v2-stack-16">
       <h3 className="v2-h3">{title}</h3>
       <p className="v2-body">{summary}</p>
       <div className="v2-tags">

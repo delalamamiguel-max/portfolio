@@ -19,7 +19,7 @@ export function V2ContactPage() {
           subtext="Direct path to conversation."
         />
 
-        <section className="v2-block v2-stack-8" aria-label="Contact methods">
+        <section className="v2-flow-item v2-stack-8" aria-label="Contact methods">
           <h2 className="v2-h3">Contact methods</h2>
           <p className="v2-body">Email: <a href="mailto:hello@migueldelalama.com">hello@migueldelalama.com</a></p>
           <p className="v2-body">LinkedIn: <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">Profile</a></p>
@@ -37,7 +37,7 @@ export function V2ContactPage() {
           <button className="v2-btn" type="submit">Submit</button>
         </form>
 
-        <div className="v2-block" aria-live="polite" aria-atomic="true">
+        <div className="v2-flow-item" aria-live="polite" aria-atomic="true">
           <p className="v2-body">{status || "Status: idle"}</p>
         </div>
       </div>

@@ -15,7 +15,7 @@ export function V2ResumePage() {
 
         <div className="v2-stack-16">
           {v2Resume.experience.map((entry) => (
-            <article key={`${entry.role}-${entry.company}`} className="v2-card v2-stack-16">
+            <article key={`${entry.role}-${entry.company}`} className="v2-record v2-stack-16">
               <header className="v2-stack-8">
                 <h2 className="v2-h3">{entry.role}</h2>
                 <p className="v2-body">{entry.company}</p>
