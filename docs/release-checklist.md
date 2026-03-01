@@ -84,3 +84,8 @@
    - Confirm global frame exists on all `/v2` pages (sticky 64px header, left brand, right nav, rightmost theme toggle).
    - Confirm max-width containers (`1120px`) and long-form text column (`780px`) behavior.
    - Confirm typography hierarchy is applied without brand color/motion effects.
+18. `/v2` color/motion checks:
+   - Verify light/dark token palette updates all `/v2` surfaces consistently (header, cards, links, tags, controls).
+   - Confirm accent usage is sparse and consistent (links/primary actions only).
+   - Confirm motion remains subtle (soft fade/hover transitions) and no distracting animation exists.
+   - Confirm `prefers-reduced-motion` disables decorative transitions on `/v2`.

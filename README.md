@@ -71,10 +71,11 @@ Private:
   - post-save verification links (admin preview + public route)
   - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
 - Admin pages CMS supports homepage `strategicPillars` editing (section heading/subtext, pillar titles + bullet lines) from `/admin/pages`.
-- `/v2` includes a structural wireframe + typography pass only:
-  - semantic HTML layout/components
-  - spacing/typographic hierarchy validation
-  - intentionally no brand color system, gradients, shadows, or motion styling
+- `/v2` now includes structure + typography + restrained color/motion pass:
+  - semantic HTML layout/components with reusable primitives
+  - neutral light/dark token palette with one subtle accent
+  - minimal visual depth and soft hover/focus transitions
+  - reduced-motion support for motion-safe behavior
   - legacy static `/public/v2` files were removed so `/v2` resolves to React routes
 - Case study tag safeguards:
   - max 6 tags
