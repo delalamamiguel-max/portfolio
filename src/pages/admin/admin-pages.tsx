@@ -121,6 +121,13 @@ export function AdminPagesPage() {
 
         <Card variant="case-study" padding="md">
           <h2 className="h3">Homepage</h2>
+          <div className="mt-4">
+            <Input
+              value={home.heroEyebrow}
+              onChange={(e) => setHome((prev) => ({ ...prev, heroEyebrow: e.target.value }))}
+              placeholder="Hero eyebrow (e.g., Strategy x Systems x Scaled Execution)"
+            />
+          </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <Input value={home.heroHeadline} onChange={(e) => setHome((prev) => ({ ...prev, heroHeadline: e.target.value }))} placeholder="Hero headline" />
             <Input value={home.heroSubheadline} onChange={(e) => setHome((prev) => ({ ...prev, heroSubheadline: e.target.value }))} placeholder="Hero subheadline" />

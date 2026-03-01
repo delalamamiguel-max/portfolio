@@ -3,6 +3,7 @@ import { extractSections, parseFrontmatter } from "@/lib/markdown";
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export type HomeContent = {
+  heroEyebrow: string;
   heroHeadline: string;
   heroSubheadline: string;
   strategicPillarsHeading: string;
@@ -101,6 +102,7 @@ export function validateHomeContent(input: unknown): HomeContent {
   }));
 
   return {
+    heroEyebrow: asString(data.heroEyebrow, "heroEyebrow"),
     heroHeadline: asString(data.heroHeadline, "heroHeadline"),
     heroSubheadline: asString(data.heroSubheadline, "heroSubheadline"),
     strategicPillarsHeading: asString(data.strategicPillarsHeading, "strategicPillarsHeading"),

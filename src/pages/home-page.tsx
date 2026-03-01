@@ -21,7 +21,7 @@ export function HomePage() {
       <Section>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
           <div className="max-w-3xl space-y-6">
-            <p className="mono-label">Strategy x Systems x Scaled Execution</p>
+            <p className="mono-label">{content.heroEyebrow}</p>
             <h1 className="h1 text-balance">{content.heroHeadline}</h1>
             <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
             <div className="flex flex-wrap items-center gap-3 pt-2">

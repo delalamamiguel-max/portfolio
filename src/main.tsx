@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import App from "./App";
 import "./index.css";
-import "./v2.css";
 
 const CHUNK_RELOAD_KEY = "abm-chunk-reload-once";
 
