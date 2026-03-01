@@ -2,26 +2,41 @@ import { CTABlock } from "@/components/v2/cta-block";
 import { HeadingBlock } from "@/components/v2/heading-block";
 import { QuoteBlock } from "@/components/v2/quote-block";
 import { SectionWrapper } from "@/components/v2/section-wrapper";
+import { getHomeContent } from "@/lib/content-loader";
 
 export function V2HomePage() {
+  const { profileImage } = getHomeContent();
+
   return (
     <>
       <SectionWrapper ariaLabel="Hero">
-        <div className="v2-stack-24 v2-text-column">
-          <HeadingBlock
-            level={1}
-            eyebrow="Positioning"
-            title="Senior Product Leader — Strategy, Data Platforms, and ML Systems"
-            subtext="I architect operating systems for product teams that need strategic clarity and measurable outcomes."
-          />
-          <div className="v2-inline-actions">
-            <a className="v2-btn" href="/v2/case-studies">
-              Explore Case Studies
-            </a>
-            <a className="v2-btn" href="/v2/contact">
-              Contact
-            </a>
+        <div className="v2-hero-layout">
+          <div className="v2-stack-24 v2-text-column">
+            <HeadingBlock
+              level={1}
+              eyebrow="Positioning"
+              title="Senior Product Leader — Strategy, Data Platforms, and ML Systems"
+              subtext="I architect operating systems for product teams that need strategic clarity and measurable outcomes."
+            />
+            <div className="v2-inline-actions">
+              <a className="v2-btn" href="/v2/case-studies">
+                Explore Case Studies
+              </a>
+              <a className="v2-btn" href="/v2/contact">
+                Contact
+              </a>
+            </div>
           </div>
+          <figure className="v2-hero-image-wrap">
+            <img
+              className="v2-hero-image"
+              src={profileImage.src}
+              alt={profileImage.alt || "Profile image"}
+              decoding="async"
+              loading="eager"
+              fetchPriority="high"
+            />
+          </figure>
         </div>
       </SectionWrapper>
 

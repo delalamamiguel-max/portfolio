@@ -77,6 +77,8 @@ Private:
   - minimal visual depth and soft hover/focus transitions
   - reduced-motion support for motion-safe behavior
   - low-noise flow pass: unnecessary boxed containers removed in favor of whitespace + subtle dividers; card framing kept only where it improves clarity (case study cards)
+  - hero reuses CMS-backed profile image from `content/pages/home.json` (`profileImage.src`) to avoid duplicate assets
+  - hero image is responsive by breakpoint and intentionally constrained so hierarchy stays text-first
   - legacy static `/public/v2` files were removed so `/v2` resolves to React routes
 - Case study tag safeguards:
   - max 6 tags

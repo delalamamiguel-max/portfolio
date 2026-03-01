@@ -93,3 +93,7 @@
    - Confirm non-essential boxed containers are removed and replaced by spacing rhythm and subtle section dividers.
    - Confirm case study cards remain the only clearly framed card pattern unless a block has explicit structural purpose.
    - Confirm CTA blocks read as intentional actions, not embedded heavy cards.
+20. `/v2` hero profile image checks:
+   - Confirm `/v2` hero image source reuses homepage CMS asset (`content/pages/home.json` -> `profileImage.src`), with no duplicate upload.
+   - Confirm desktop placement balances with hero copy and does not dominate headline hierarchy.
+   - Confirm tablet/mobile image stacks cleanly and remains visually secondary above the fold.

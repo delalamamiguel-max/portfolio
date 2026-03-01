@@ -40,6 +40,29 @@ html.theme-dark .v2-root {
   max-width: 780px;
 }
 
+.v2-hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  align-items: center;
+  gap: 40px;
+}
+
+.v2-hero-image-wrap {
+  margin: 0;
+  width: 100%;
+  max-width: 320px;
+  justify-self: end;
+}
+
+.v2-hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
 .v2-header {
   position: sticky;
   top: 0;
@@ -424,6 +447,16 @@ html.theme-dark .v2-root {
   .v2-grid-4 {
     grid-template-columns: 1fr;
   }
+
+  .v2-hero-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .v2-hero-image-wrap {
+    justify-self: start;
+    max-width: 240px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -451,6 +484,10 @@ html.theme-dark .v2-root {
 
   .v2-section {
     padding: 40px 0;
+  }
+
+  .v2-hero-image-wrap {
+    max-width: 180px;
   }
 }
 
