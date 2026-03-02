@@ -6,6 +6,7 @@ import { isRateLimited } from "./rate-limit.js";
 
 const ALLOWED_PATHS = [
   "content/pages/home.json",
+  "content/pages/home-structure.json",
   "content/pages/resume.json",
   "content/pages/contact.json",
   "content/case-studies/",
