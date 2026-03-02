@@ -3,7 +3,7 @@ import { Section } from "@/components/layout/section";
 import { Card } from "@/components/ui/card";
 
 const cards = [
-  { to: "/admin/pages", title: "Pages", detail: "Edit home, resume, and contact JSON content." },
+  { to: "/admin/pages", title: "Homepage Structure", detail: "Manage one-page section order, IDs, and all homepage content blocks." },
   { to: "/admin/philosophy", title: "Philosophy", detail: "Create and edit published/draft philosophy essays." },
   { to: "/admin/case-studies", title: "Case Studies", detail: "Manage private case studies with structure validation." },
   { to: "/admin/deep-dive", title: "Deep Dive", detail: "Manage deep-dive markdown content with same schema." },

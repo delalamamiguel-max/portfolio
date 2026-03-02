@@ -23,14 +23,9 @@ Copy local env:
 ## Routes
 Public:
 - `/`
-- `/philosophy`
-- `/resume`
-- `/contact`
 - `/login`
 
 Private:
-- `/case-studies`
-- `/case-studies/:slug`
 - `/deep-dive/:slug`
 - `/style-guide`
 - `/admin`
@@ -55,6 +50,11 @@ Private:
   - mobile-first header behavior below `md` uses a Menu toggle (links move to collapsible mobile nav)
   - inline desktop nav is only rendered at `md+`
   - theme toggle remains available in the top-right control cluster on mobile and desktop
+  - primary nav is hash-anchor based (`/#case-studies`, `/#philosophy`, `/#resume`, `/#contact`) for single-page flow
+- Homepage architecture:
+  - single-page section composition driven by `content/pages/home-structure.json`
+  - ordered block rendering on `/` with semantic section IDs and scroll offset handling
+  - old public routes (`/case-studies`, `/philosophy`, `/resume`, `/contact`) now redirect to section anchors on `/`
 - Case Study CMS supports:
   - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
   - visual table builder (rows/cols, header row, inline cell editing) -> inserts clean Markdown tables
@@ -64,8 +64,17 @@ Private:
   - optional auto-map of imported headings to known case study sections (soft warnings only)
   - post-save verification links (admin preview + public route)
   - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
-- Admin pages CMS supports homepage `strategicPillars` editing (section heading/subtext, pillar titles + bullet lines) from `/admin/pages`.
-- Admin pages CMS supports homepage hero eyebrow editing (`heroEyebrow`, e.g. `Strategy x Systems x Scaled Execution`) from `/admin/pages`.
+- Admin pages CMS supports single-page homepage structure management from `/admin/pages`:
+  - drag-and-drop section reordering
+  - editable section IDs + nav labels
+  - duplicate/format validation before save
+  - unified save for `home-structure.json`, `home.json`, `resume.json`, and `contact.json`
+  - CMS-only labels for all major editorial groups (internal only, never rendered publicly)
+  - `Selected Impact (Repeatable)` builder with unlimited items (`metric`, `descriptor`, optional `description`)
+  - `Strategic Pillars (Repeatable)` builder with unlimited pillars (`headline`, `subheadline`, repeatable bullets)
+  - `Custom Content Sections (Flexible Blocks)` builder with unlimited sections and layout toggle:
+    - `Narrative` (`body`, optional bullets, optional closing statement)
+    - `Credential Stack` (repeatable `programTitle`, `institution`, `appliedContext`, optional closing statement)
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag

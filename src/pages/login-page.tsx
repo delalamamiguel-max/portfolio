@@ -14,8 +14,8 @@ export function LoginPage() {
 
   const next = useMemo(() => {
     const params = new URLSearchParams(location.search);
-    const value = params.get("next") || "/case-studies";
-    return value.startsWith("/") ? value : "/case-studies";
+    const value = params.get("next") || "/admin";
+    return value.startsWith("/") ? value : "/admin";
   }, [location.search]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

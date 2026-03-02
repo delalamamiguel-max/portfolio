@@ -2,6 +2,8 @@
   "heroEyebrow": "Strategy x Systems x Scaled Execution",
   "heroHeadline": "Product Leader. Data Platforms & ML Systems.",
   "heroSubheadline": "Architecting intelligent systems from strategy to scale.",
+  "selectedImpactHeading": "Selected Impact",
+  "selectedImpactSubtext": "Measured operating outcomes across platform strategy and execution.",
   "strategicPillarsHeading": "Strategic Pillars",
   "strategicPillarsSubtext": "Where vision meets operating model.",
   "profileImage": {
@@ -10,61 +12,77 @@
   },
   "proofMetrics": [
     {
-      "value": "+8%",
-      "label": "CTR Lift via ML Modernization",
-      "context": "+8% CTR Lift ML modernization and model-serving improvements."
+      "metric": "+8%",
+      "descriptor": "CTR Lift via ML Modernization",
+      "description": "+8% CTR Lift ML modernization and model-serving improvements."
     },
     {
-      "value": "+12%",
-      "label": "Engagement Lift via Experimentation",
-      "context": "+12% Engagement Scaled experimentation across product surfaces."
+      "metric": "+12%",
+      "descriptor": "Engagement Lift via Experimentation",
+      "description": "+12% Engagement Scaled experimentation across product surfaces."
     },
     {
-      "value": "$8M+",
-      "label": "OPEX Reduction via Platform Simplification",
-      "context": "$8M+ OPEX Reduced Platform consolidation and architecture simplification."
+      "metric": "$8M+",
+      "descriptor": "OPEX Reduction via Platform Simplification",
+      "description": "$8M+ OPEX Reduced Platform consolidation and architecture simplification."
     }
   ],
   "strategicPillars": [
     {
-      "title": "Strategy",
+      "headline": "Strategy",
+      "subheadline": "I design decision systems, not feature roadmaps.",
       "bullets": [
-        "Vision tied to measurable outcomes",
-        "Portfolio sequencing and TAM prioritization",
-        "Roadmap clarity within governance constraints"
+        "Tie AI capability to measurable business outcomes",
+        "Sequence platform investments against scale and governance constraints",
+        "Build business cases that unlock executive funding"
       ]
     },
     {
-      "title": "Architecture",
+      "headline": "Architecture",
+      "subheadline": "Platform choices are aligned to risk posture and execution cadence.",
       "bullets": [
-        "Platform-first operating model design",
-        "Governance-aware data and ML lifecycle",
-        "Trade-offs surfaced early, not deferred"
+        "Define operating model boundaries before implementation",
+        "Surface system trade-offs early with cost and reliability framing",
+        "Standardize integration contracts to reduce delivery friction"
       ]
+    }
+  ],
+  "customSections": [
+    {
+      "cmsLabel": "Narrative - Thread Across Work",
+      "publicTitle": "The Thread Across All Work",
+      "layoutType": "narrative",
+      "body": "I focus on systems that turn strategic intent into repeatable execution across product, data, and ML operations.",
+      "bullets": [
+        "Executive alignment through operating-model clarity",
+        "Architecture decisions grounded in business constraints",
+        "Cross-functional delivery with measurable impact"
+      ],
+      "closingStatement": "Clarity compounds when strategy and systems are designed together.",
+      "credentials": []
     },
     {
-      "title": "Execution",
-      "bullets": [
-        "Cross-functional delivery at scale",
-        "Experimentation loops tied to business metrics",
-        "Disciplined from concept to launch"
-      ]
-    },
-    {
-      "title": "Leadership",
-      "bullets": [
-        "Alignment across product, engineering, data, and compliance",
-        "Technical depth communicated at the executive level",
-        "Teams structured around durable system outcomes"
+      "cmsLabel": "Learning - Continuous Learning",
+      "publicTitle": "Continuous Learning",
+      "layoutType": "credential-stack",
+      "body": "",
+      "bullets": [],
+      "closingStatement": "Learning is useful only when it improves decision quality in real systems.",
+      "credentials": [
+        {
+          "programTitle": "Artificial Intelligence & Machine Learning",
+          "institution": "UT Austin McCombs",
+          "appliedContext": "Applied to platform strategy, model governance, and product operating cadence."
+        }
       ]
     }
   ],
   "primaryCTA": {
     "label": "Explore Case Studies",
-    "href": "/case-studies"
+    "href": "/#case-studies"
   },
   "secondaryCTA": {
-    "label": "Download Resume",
-    "href": "/resume"
+    "label": "Contact",
+    "href": "/#contact"
   }
 }

@@ -7,16 +7,18 @@ type SectionProps = {
   density?: "default" | "dense";
   as?: "section" | "div";
   ariaLabel?: string;
+  id?: string;
 };
 
-export function Section({ children, className, density = "default", as = "section", ariaLabel }: SectionProps) {
+export function Section({ children, className, density = "default", as = "section", ariaLabel, id }: SectionProps) {
   const Component = as;
 
   return (
     <Component
+      id={id}
       aria-label={ariaLabel}
       className={cn(
-        "container",
+        "container scroll-mt-24",
         density === "default" ? "py-12 md:py-16 lg:py-24" : "py-12 md:py-14 lg:py-20",
         className,
       )}

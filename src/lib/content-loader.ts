@@ -1,17 +1,20 @@
 import {
   type ContactContent,
   type HomeContent,
+  type HomepageStructureBlock,
   type MarkdownDoc,
   type ResumeContent,
   type ValidatedCaseStudy,
   validateCaseStudyDoc,
   validateContactContent,
   validateHomeContent,
+  validateHomepageStructure,
   validatePhilosophyDoc,
   validateResumeContent,
 } from "@/lib/content-schema";
 
 const homeJson = import.meta.glob("/content/pages/home.json", { eager: true, import: "default" }) as Record<string, unknown>;
+const homepageStructureJson = import.meta.glob("/content/pages/home-structure.json", { eager: true, import: "default" }) as Record<string, unknown>;
 const resumeJson = import.meta.glob("/content/pages/resume.json", { eager: true, import: "default" }) as Record<string, unknown>;
 const contactJson = import.meta.glob("/content/pages/contact.json", { eager: true, import: "default" }) as Record<string, unknown>;
 
@@ -40,6 +43,10 @@ export function getHomeContent(): HomeContent {
 
 export function getResumeContent(): ResumeContent {
   return validateResumeContent(firstValue(resumeJson));
+}
+
+export function getHomepageStructure(): HomepageStructureBlock[] {
+  return validateHomepageStructure(firstValue(homepageStructureJson));
 }
 
 export function getContactContent(): ContactContent {

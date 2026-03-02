@@ -1,16 +1,52 @@
 import { extractSections, parseFrontmatter } from "@/lib/markdown";
 
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SECTION_ID_REGEX = /^[a-z][a-z0-9-]*$/;
+
+export const HOMEPAGE_BLOCK_TYPES = [
+  "hero",
+  "proof-metrics",
+  "case-studies",
+  "strategic-pillars",
+  "custom-sections",
+  "philosophy",
+  "resume",
+  "contact",
+] as const;
+
+export type HomepageBlockType = (typeof HOMEPAGE_BLOCK_TYPES)[number];
+
+export type HomepageStructureBlock = {
+  id: string;
+  type: HomepageBlockType;
+  navLabel: string;
+  enabled: boolean;
+};
 
 export type HomeContent = {
+  selectedImpactHeading: string;
+  selectedImpactSubtext: string;
   heroEyebrow: string;
   heroHeadline: string;
   heroSubheadline: string;
   strategicPillarsHeading: string;
   strategicPillarsSubtext: string;
   profileImage: { src: string; alt: string };
-  proofMetrics: Array<{ value: string; label: string; context: string }>;
-  strategicPillars: Array<{ title: string; bullets: string[] }>;
+  proofMetrics: Array<{ metric: string; descriptor: string; description?: string }>;
+  strategicPillars: Array<{ headline: string; subheadline: string; bullets: string[] }>;
+  customSections: Array<{
+    cmsLabel: string;
+    publicTitle: string;
+    layoutType: "narrative" | "credential-stack";
+    body?: string;
+    bullets: string[];
+    closingStatement?: string;
+    credentials: Array<{
+      programTitle: string;
+      institution: string;
+      appliedContext: string;
+    }>;
+  }>;
   primaryCTA: { label: string; href: string };
   secondaryCTA: { label: string; href: string };
 };
@@ -70,6 +106,12 @@ function asBoolean(value: unknown, field: string): boolean {
   return value;
 }
 
+function asOptionalString(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : undefined;
+}
+
 export function validateHomeContent(input: unknown): HomeContent {
   const data = input as Partial<HomeContent>;
 
@@ -77,7 +119,7 @@ export function validateHomeContent(input: unknown): HomeContent {
     throw new Error("Invalid home content");
   }
 
-  if (!Array.isArray(data.proofMetrics) || !Array.isArray(data.strategicPillars)) {
+  if (!Array.isArray(data.proofMetrics) || !Array.isArray(data.strategicPillars) || !Array.isArray(data.customSections)) {
     throw new Error("Invalid home arrays");
   }
 
@@ -90,18 +132,73 @@ export function validateHomeContent(input: unknown): HomeContent {
     throw new Error("profileImage.alt is required when profileImage.src is set");
   }
 
-  const validatedProofMetrics = data.proofMetrics.map((entry, index) => ({
-    value: asString(entry?.value, `proofMetrics[${index}].value`),
-    label: asString(entry?.label, `proofMetrics[${index}].label`),
-    context: asString(entry?.context, `proofMetrics[${index}].context`),
-  }));
+  const validatedProofMetrics = data.proofMetrics.map((entry, index) => {
+    const legacy = entry as { value?: unknown; label?: unknown; context?: unknown };
+    return {
+      metric: asString(entry?.metric ?? legacy.value, `proofMetrics[${index}].metric`),
+      descriptor: asString(entry?.descriptor ?? legacy.label, `proofMetrics[${index}].descriptor`),
+      description: asOptionalString(entry?.description ?? legacy.context),
+    };
+  });
 
-  const validatedStrategicPillars = data.strategicPillars.map((entry, index) => ({
-    title: asString(entry?.title, `strategicPillars[${index}].title`),
-    bullets: asStringArray(entry?.bullets, `strategicPillars[${index}].bullets`),
-  }));
+  const validatedStrategicPillars = data.strategicPillars.map((entry, index) => {
+    const legacy = entry as { title?: unknown };
+    return {
+      headline: asString(entry?.headline ?? legacy.title, `strategicPillars[${index}].headline`),
+      subheadline: asString(entry?.subheadline, `strategicPillars[${index}].subheadline`),
+      bullets: asStringArray(entry?.bullets, `strategicPillars[${index}].bullets`),
+    };
+  });
+  const validatedCustomSections = data.customSections.map((entry, index) => {
+    const rawLayoutType = asString(entry?.layoutType, `customSections[${index}].layoutType`);
+    if (rawLayoutType !== "narrative" && rawLayoutType !== "credential-stack") {
+      throw new Error(`Invalid customSections[${index}].layoutType`);
+    }
+    const layoutType: "narrative" | "credential-stack" = rawLayoutType;
+
+    const bullets = Array.isArray(entry?.bullets)
+      ? asStringArray(entry?.bullets, `customSections[${index}].bullets`)
+      : [];
+
+    const credentials = Array.isArray(entry?.credentials)
+      ? entry.credentials.map((credential, credentialIndex) => ({
+        programTitle: asString(
+          credential?.programTitle,
+          `customSections[${index}].credentials[${credentialIndex}].programTitle`,
+        ),
+        institution: asString(
+          credential?.institution,
+          `customSections[${index}].credentials[${credentialIndex}].institution`,
+        ),
+        appliedContext: asString(
+          credential?.appliedContext,
+          `customSections[${index}].credentials[${credentialIndex}].appliedContext`,
+        ),
+      }))
+      : [];
+
+    const body = asOptionalString(entry?.body);
+    if (layoutType === "narrative" && !body) {
+      throw new Error(`customSections[${index}].body is required for narrative layout`);
+    }
+    if (layoutType === "credential-stack" && credentials.length === 0) {
+      throw new Error(`customSections[${index}].credentials requires at least one entry`);
+    }
+
+    return {
+      cmsLabel: asString(entry?.cmsLabel, `customSections[${index}].cmsLabel`),
+      publicTitle: asString(entry?.publicTitle, `customSections[${index}].publicTitle`),
+      layoutType,
+      body,
+      bullets,
+      closingStatement: asOptionalString(entry?.closingStatement),
+      credentials,
+    };
+  });
 
   return {
+    selectedImpactHeading: asString(data.selectedImpactHeading, "selectedImpactHeading"),
+    selectedImpactSubtext: asString(data.selectedImpactSubtext, "selectedImpactSubtext"),
     heroEyebrow: asString(data.heroEyebrow, "heroEyebrow"),
     heroHeadline: asString(data.heroHeadline, "heroHeadline"),
     heroSubheadline: asString(data.heroSubheadline, "heroSubheadline"),
@@ -110,6 +207,7 @@ export function validateHomeContent(input: unknown): HomeContent {
     profileImage,
     proofMetrics: validatedProofMetrics,
     strategicPillars: validatedStrategicPillars,
+    customSections: validatedCustomSections,
     primaryCTA: {
       label: asString(data.primaryCTA?.label, "primaryCTA.label"),
       href: asString(data.primaryCTA?.href, "primaryCTA.href"),
@@ -119,6 +217,39 @@ export function validateHomeContent(input: unknown): HomeContent {
       href: asString(data.secondaryCTA?.href, "secondaryCTA.href"),
     },
   };
+}
+
+export function validateHomepageStructure(input: unknown): HomepageStructureBlock[] {
+  if (!Array.isArray(input)) {
+    throw new Error("Invalid homepage structure");
+  }
+
+  const normalized = input.map((entry, index) => {
+    const id = asString((entry as { id?: unknown })?.id, `homepageStructure[${index}].id`);
+    if (!SECTION_ID_REGEX.test(id)) {
+      throw new Error(`Invalid homepageStructure[${index}].id`);
+    }
+
+    const type = asString((entry as { type?: unknown })?.type, `homepageStructure[${index}].type`) as HomepageBlockType;
+    if (!HOMEPAGE_BLOCK_TYPES.includes(type)) {
+      throw new Error(`Invalid homepageStructure[${index}].type`);
+    }
+
+    return {
+      id,
+      type,
+      navLabel: asString((entry as { navLabel?: unknown })?.navLabel, `homepageStructure[${index}].navLabel`),
+      enabled: asBoolean((entry as { enabled?: unknown })?.enabled, `homepageStructure[${index}].enabled`),
+    };
+  });
+
+  const ids = normalized.map((entry) => entry.id);
+  const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicateIds.length > 0) {
+    throw new Error(`Duplicate section id: ${duplicateIds[0]}`);
+  }
+
+  return normalized;
 }
 
 export function validateResumeContent(input: unknown): ResumeContent {

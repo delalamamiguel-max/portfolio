@@ -6,15 +6,6 @@ import { verifySession } from "@/lib/auth";
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
 const LoginPage = lazy(() => import("@/pages/login-page").then((module) => ({ default: module.LoginPage })));
 const NotFoundPage = lazy(() => import("@/pages/not-found-page").then((module) => ({ default: module.NotFoundPage })));
-const PhilosophyPage = lazy(() => import("@/pages/public-placeholders").then((module) => ({ default: module.PhilosophyPage })));
-const ResumePage = lazy(() => import("@/pages/public-placeholders").then((module) => ({ default: module.ResumePage })));
-const ContactPage = lazy(() => import("@/pages/public-placeholders").then((module) => ({ default: module.ContactPage })));
-const CaseStudiesIndexPage = lazy(() =>
-  import("@/pages/private-placeholders").then((module) => ({ default: module.CaseStudiesIndexPage })),
-);
-const CaseStudyDetailPage = lazy(() =>
-  import("@/pages/private-placeholders").then((module) => ({ default: module.CaseStudyDetailPage })),
-);
 const DeepDiveDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.DeepDiveDetailPage })),
 );
@@ -70,26 +61,11 @@ export default function App() {
         <Route element={<SiteShell />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/philosophy" element={<PhilosophyPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/contact" element={<ContactPage />} />
-
-          <Route
-            path="/case-studies"
-            element={
-              <PrivateRoute>
-                <CaseStudiesIndexPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/case-studies/:slug"
-            element={
-              <PrivateRoute>
-                <CaseStudyDetailPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/case-studies" element={<Navigate to="/#case-studies" replace />} />
+          <Route path="/case-studies/:slug" element={<Navigate to="/#case-studies" replace />} />
+          <Route path="/philosophy" element={<Navigate to="/#philosophy" replace />} />
+          <Route path="/resume" element={<Navigate to="/#resume" replace />} />
+          <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route
             path="/deep-dive/:slug"
             element={

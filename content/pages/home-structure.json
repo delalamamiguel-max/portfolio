@@ -1,0 +1,50 @@
+[
+  {
+    "id": "hero",
+    "type": "hero",
+    "navLabel": "Top",
+    "enabled": true
+  },
+  {
+    "id": "proof",
+    "type": "proof-metrics",
+    "navLabel": "Proof",
+    "enabled": true
+  },
+  {
+    "id": "strategic-pillars",
+    "type": "strategic-pillars",
+    "navLabel": "Pillars",
+    "enabled": true
+  },
+  {
+    "id": "custom-sections",
+    "type": "custom-sections",
+    "navLabel": "Insights",
+    "enabled": true
+  },
+  {
+    "id": "case-studies",
+    "type": "case-studies",
+    "navLabel": "Case Studies",
+    "enabled": true
+  },
+  {
+    "id": "philosophy",
+    "type": "philosophy",
+    "navLabel": "Philosophy",
+    "enabled": true
+  },
+  {
+    "id": "resume",
+    "type": "resume",
+    "navLabel": "Resume",
+    "enabled": true
+  },
+  {
+    "id": "contact",
+    "type": "contact",
+    "navLabel": "Contact",
+    "enabled": true
+  }
+]
