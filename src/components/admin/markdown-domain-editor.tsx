@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { HistoryBackButton } from "@/components/ui/history-back-button";
 import { Input } from "@/components/ui/input";
 import { cmsCheckRoute, cmsDeleteFile, cmsWriteFile } from "@/lib/cms-client";
-import { type MarkdownDoc, SLUG_REGEX } from "@/lib/content-schema";
+import {
+  CASE_STUDY_CATEGORIES,
+  CASE_STUDY_CATEGORY_LABELS,
+  type CaseStudyCategory,
+  type MarkdownDoc,
+  SLUG_REGEX,
+} from "@/lib/content-schema";
 import { buildMarkdown, parseFrontmatter } from "@/lib/markdown";
 
 type MarkdownDomainEditorProps = {
@@ -23,6 +29,7 @@ type EditorState = {
   title: string;
   summary: string;
   tags: string;
+  category: CaseStudyCategory;
   published: boolean;
   body: string;
 };
@@ -58,9 +65,19 @@ const emptyState: EditorState = {
   title: "",
   summary: "",
   tags: "",
+  category: "both",
   published: false,
   body: "",
 };
+
+function normalizeCaseStudyCategory(value: unknown): CaseStudyCategory {
+  if (typeof value !== "string") return "both";
+  const normalized = value.trim().toLowerCase();
+  if (CASE_STUDY_CATEGORIES.includes(normalized as CaseStudyCategory)) {
+    return normalized as CaseStudyCategory;
+  }
+  return "both";
+}
 
 const CASE_STUDY_TAG_MAX_COUNT = 6;
 const CASE_STUDY_TAG_MAX_LENGTH = 24;
@@ -72,6 +89,7 @@ function fromRaw(raw: string): EditorState {
     title: String(parsed.frontmatter.title || ""),
     summary: String(parsed.frontmatter.summary || ""),
     tags: Array.isArray(parsed.frontmatter.tags) ? (parsed.frontmatter.tags as string[]).join(", ") : "",
+    category: normalizeCaseStudyCategory(parsed.frontmatter.category),
     published: Boolean(parsed.frontmatter.published),
     body: parsed.body,
   };
@@ -282,6 +300,11 @@ export function MarkdownDomainEditor({
       return;
     }
 
+    if (directory === "content/case-studies" && !CASE_STUDY_CATEGORIES.includes(state.category)) {
+      setStatus({ tone: "error", message: "Case study category is required." });
+      return;
+    }
+
     const conflict = existingSlugs.find((slug) => slug === state.slug && (!selectedPath || !selectedPath.endsWith(`${state.slug}.md`)));
     if (conflict) {
       setStatus({ tone: "error", message: "Slug is already in use. Choose a unique slug." });
@@ -294,6 +317,7 @@ export function MarkdownDomainEditor({
         title: state.title,
         summary: state.summary,
         tags: tagValidation.tags,
+        ...(directory === "content/case-studies" ? { category: state.category } : {}),
         published: state.published,
       },
       state.body,
@@ -451,6 +475,26 @@ export function MarkdownDomainEditor({
       </label>
 
       {directory === "content/case-studies" ? (
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-medium text-primary-text">Case study category (required)</legend>
+          <div className="flex flex-wrap gap-3">
+            {CASE_STUDY_CATEGORIES.map((category) => (
+              <label key={category} className="inline-flex items-center gap-2 text-sm text-primary-text">
+                <input
+                  type="radio"
+                  name="case-study-category"
+                  value={category}
+                  checked={state.category === category}
+                  onChange={() => setState((prev) => ({ ...prev, category }))}
+                />
+                {CASE_STUDY_CATEGORY_LABELS[category]}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {directory === "content/case-studies" ? (
         <DocxCaseStudyImporter
           disabled={saving}
           onAutoPopulateParsedDraft={(draft) => {
@@ -460,6 +504,7 @@ export function MarkdownDomainEditor({
               title: draft.title || prev.title,
               summary: draft.summary || prev.summary,
               tags: draft.tags.join(", "),
+              category: prev.category || "both",
               body: draft.body,
               published: false,
             }));
@@ -490,6 +535,7 @@ export function MarkdownDomainEditor({
               title: draft.title || prev.title,
               summary: draft.summary || prev.summary,
               tags: draft.tags.join(", "),
+              category: prev.category || "both",
               body: draft.body,
               published: false,
             }));

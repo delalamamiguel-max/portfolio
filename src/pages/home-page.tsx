@@ -13,7 +13,13 @@ import {
   getHomepageStructure,
   getResumeContent,
 } from "@/lib/content-loader";
-import type { HomeContent, HomepageStructureBlock } from "@/lib/content-schema";
+import {
+  CASE_STUDY_CATEGORIES,
+  CASE_STUDY_CATEGORY_LABELS,
+  type CaseStudyCategory,
+  type HomeContent,
+  type HomepageStructureBlock,
+} from "@/lib/content-schema";
 
 function scrollToSection(sectionId: string) {
   document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -171,6 +177,12 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
 
 function CaseStudiesSection({ id }: { id: string }) {
   const studies = getCaseStudies(false);
+  const [selectedCategory, setSelectedCategory] = useState<CaseStudyCategory>("both");
+  const filteredStudies = useMemo(
+    () => studies.filter((study) => study.category === selectedCategory),
+    [selectedCategory, studies],
+  );
+
   return (
     <Section id={id} ariaLabel="Case studies">
       <div data-reveal className="max-w-5xl space-y-6">
@@ -178,8 +190,21 @@ function CaseStudiesSection({ id }: { id: string }) {
           <h2 className="h2">Case Studies</h2>
           <p className="body-lg">Selected strategic product systems work.</p>
         </header>
+        <div className="flex flex-wrap gap-2">
+          {CASE_STUDY_CATEGORIES.map((category) => (
+            <Button
+              key={category}
+              type="button"
+              variant={selectedCategory === category ? "primary" : "subtle"}
+            className="h-9 px-4 text-sm"
+            onClick={() => setSelectedCategory(category)}
+          >
+              {CASE_STUDY_CATEGORY_LABELS[category]}
+            </Button>
+          ))}
+        </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {studies.map((study) => (
+          {filteredStudies.map((study) => (
             <Card key={study.slug} variant="case-study">
               <h3 className="h4">{study.title}</h3>
               <p className="mt-2 min-w-0 break-words text-muted-text [overflow-wrap:anywhere]">{study.summary}</p>
@@ -195,6 +220,9 @@ function CaseStudiesSection({ id }: { id: string }) {
             </Card>
           ))}
         </div>
+        {filteredStudies.length === 0 ? (
+          <p className="body-md text-muted-text">No case studies in this category yet.</p>
+        ) : null}
       </div>
     </Section>
   );

@@ -2,6 +2,17 @@ import { extractSections, parseFrontmatter } from "@/lib/markdown";
 
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SECTION_ID_REGEX = /^[a-z][a-z0-9-]*$/;
+export const CASE_STUDY_CATEGORIES = [
+  "company-products",
+  "personal-entrepreneurship",
+  "both",
+] as const;
+export type CaseStudyCategory = (typeof CASE_STUDY_CATEGORIES)[number];
+export const CASE_STUDY_CATEGORY_LABELS: Record<CaseStudyCategory, string> = {
+  "company-products": "Company Products",
+  "personal-entrepreneurship": "Personal / Entrepreneurship",
+  both: "Both",
+};
 
 export const HOMEPAGE_BLOCK_TYPES = [
   "hero",
@@ -75,12 +86,22 @@ export type MarkdownDoc = {
   summary: string;
   tags: string[];
   published: boolean;
+  category: CaseStudyCategory;
   body: string;
 };
 
 export type ValidatedCaseStudy = MarkdownDoc & {
   sections: Array<{ heading: string; content: string }>;
 };
+
+function normalizeCaseStudyCategory(value: unknown): CaseStudyCategory {
+  if (typeof value !== "string") return "both";
+  const normalized = value.trim().toLowerCase();
+  if (CASE_STUDY_CATEGORIES.includes(normalized as CaseStudyCategory)) {
+    return normalized as CaseStudyCategory;
+  }
+  return "both";
+}
 
 function asString(value: unknown, field: string): string {
   if (typeof value !== "string" || !value.trim()) {
@@ -304,6 +325,7 @@ export function parseMarkdownDoc(raw: string): MarkdownDoc {
       ? asStringArray(parsed.frontmatter.tags, "tags")
       : [],
     published: typeof parsed.frontmatter.published === "boolean" ? asBoolean(parsed.frontmatter.published, "published") : false,
+    category: normalizeCaseStudyCategory(parsed.frontmatter.category),
     body: parsed.body,
   };
 }

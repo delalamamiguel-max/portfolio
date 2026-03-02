@@ -57,6 +57,11 @@ Private:
   - old public routes (`/case-studies`, `/resume`, `/contact`) now redirect to section anchors on `/`
   - `Philosophy` section is removed from the live homepage flow
   - case-study cards on homepage open private detail routes (`/case-studies/:slug`) protected by existing session middleware flow
+  - case-study filter controls on homepage support three categories:
+    - `Company Products`
+    - `Personal / Entrepreneurship`
+    - `Both` (default selected on page load)
+  - filter changes update case-study cards client-side without route reload
   - resume block on homepage is intentionally CTA-only (`Download PDF`, opens in new tab)
   - footer includes direct LinkedIn and email contact links
   - hero profile image uses an editorial treatment (larger, unframed, high-contrast monochrome)
@@ -70,6 +75,11 @@ Private:
   - `.docx`, `.md`, `.mdx` safe-draft import workflow with warnings/preview
   - optional auto-map of imported headings to known case study sections (soft warnings only)
   - post-save verification links (admin preview + public route)
+  - required category radio per case study:
+    - `Company Products`
+    - `Personal / Entrepreneurship`
+    - `Both`
+  - selected category is stored in frontmatter (`category`) and drives homepage filter visibility
   - list rendering parity: editor preview/import preview/published pages all use the same shared Markdown renderer + `.markdown-content` styles (bullets/numbers/nested indentation)
 - Admin pages CMS supports single-page homepage structure management from `/admin/pages`:
   - drag-and-drop section reordering

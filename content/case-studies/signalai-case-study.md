@@ -3,6 +3,7 @@ slug: signalai-case-study
 title: SignalAI Case Study
 summary: Thirty million users. One smarter engine. Real results.
 tags: [ML Personalization, Real-Time Engagement, A/B Testing, CTR Optimization, Enterprise AI, MarTech]
+category: company-products
 published: true
 ---
 
