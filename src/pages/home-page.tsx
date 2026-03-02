@@ -205,10 +205,10 @@ function ResumeSection({ id }: { id: string }) {
   const hasPdf = Boolean(resume.downloadablePdfUrl?.trim());
   return (
     <Section id={id} ariaLabel="Resume" density="dense">
-      <div data-reveal className="mx-auto max-w-3xl space-y-6 text-center">
+      <div data-reveal className="mx-auto max-w-3xl space-y-8 text-center">
         <h2 className="h3">Resume</h2>
         {hasPdf ? (
-          <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer">
+          <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex">
             <Button variant="primary" size="lg">Download PDF</Button>
           </a>
         ) : (
