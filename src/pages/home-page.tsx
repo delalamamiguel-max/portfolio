@@ -83,7 +83,7 @@ function SelectedImpactSection({ id, content }: { id: string; content: HomeConte
         <h2 className="h2">{content.selectedImpactHeading}</h2>
         <p className="body-md">{content.selectedImpactSubtext}</p>
       </div>
-      <div data-reveal className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div data-reveal className="grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-3">
         {content.proofMetrics.map((metric) => (
           <MetricBlock
             key={`${metric.metric}-${metric.descriptor}`}
@@ -128,7 +128,7 @@ function StrategicPillarsSection({ id, content }: { id: string; content: HomeCon
 function CustomSectionsSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Custom content sections">
-      <div data-reveal className="space-y-8">
+      <div data-reveal className="space-y-12 md:space-y-14">
         {content.customSections.map((entry) => (
           <article key={`${entry.cmsLabel}-${entry.publicTitle}`} className="space-y-4">
             <h2 className="h2">{entry.publicTitle}</h2>
@@ -160,7 +160,7 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
               </div>
             )}
             {entry.closingStatement ? (
-              <p className="mt-5 border-l-2 border-border pl-4 text-base font-semibold italic text-foreground">{entry.closingStatement}</p>
+              <p className="section-closing-statement">{entry.closingStatement}</p>
             ) : null}
           </article>
         ))}
@@ -202,13 +202,20 @@ function CaseStudiesSection({ id }: { id: string }) {
 
 function ResumeSection({ id }: { id: string }) {
   const resume = getResumeContent();
+  const hasPdf = Boolean(resume.downloadablePdfUrl?.trim());
   return (
     <Section id={id} ariaLabel="Resume" density="dense">
-      <div data-reveal className="mx-auto max-w-3xl space-y-4 text-center">
+      <div data-reveal className="mx-auto max-w-3xl space-y-6 text-center">
         <h2 className="h3">Resume</h2>
-        <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer">
-          <Button variant="primary" size="lg">Download PDF</Button>
-        </a>
+        {hasPdf ? (
+          <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer">
+            <Button variant="primary" size="lg">Download PDF</Button>
+          </a>
+        ) : (
+          <Button variant="secondary" size="lg" disabled>
+            Resume unavailable
+          </Button>
+        )}
       </div>
     </Section>
   );

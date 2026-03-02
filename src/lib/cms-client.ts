@@ -12,6 +12,7 @@ type CmsWriteResponse = {
 type CmsRouteCheckResult = { ok: boolean; status: number; url: string };
 type CmsDeleteResponse = { ok: true; path: string };
 type CmsUploadImageResponse = { ok: true; path: string; publicUrl: string; message?: string };
+type CmsUploadFileResponse = { ok: true; path: string; publicUrl: string; message?: string };
 
 export async function getCsrfToken(): Promise<string> {
   if (csrfTokenCache) {
@@ -115,6 +116,37 @@ export async function cmsUploadImage(input: {
   const payload = (await response.json()) as Partial<CmsUploadImageResponse>;
   if (!payload.publicUrl || !payload.path) {
     throw new Error("Image upload failed");
+  }
+
+  return { ok: true, path: payload.path, publicUrl: payload.publicUrl, message: payload.message };
+}
+
+export async function cmsUploadFile(input: {
+  fileName: string;
+  mimeType: string;
+  dataBase64: string;
+  folder: string;
+}): Promise<CmsUploadFileResponse> {
+  const csrfToken = await getCsrfToken();
+
+  const response = await fetch("/api/cms/upload-file", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "x-cms-csrf": csrfToken,
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => ({ error: "File upload failed" }))) as { error?: string };
+    throw new Error(payload.error || "File upload failed");
+  }
+
+  const payload = (await response.json()) as Partial<CmsUploadFileResponse>;
+  if (!payload.publicUrl || !payload.path) {
+    throw new Error("File upload failed");
   }
 
   return { ok: true, path: payload.path, publicUrl: payload.publicUrl, message: payload.message };

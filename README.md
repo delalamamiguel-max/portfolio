@@ -82,6 +82,11 @@ Private:
   - `Custom Content Sections (Flexible Blocks)` builder with unlimited sections and layout toggle:
     - `Narrative` (`body`, optional bullets, optional closing statement)
     - `Credential Stack` (repeatable `programTitle`, `institution`, `appliedContext`, optional closing statement)
+  - Resume PDF upload support:
+    - `/admin/pages` includes `Upload Resume (PDF)` control (PDF-only)
+    - uploaded file is committed to repo under `public/files/cms/resume/...`
+    - `downloadablePdfUrl` updates automatically to uploaded file URL
+    - homepage Resume CTA falls back to disabled state if URL is missing
 - Case study tag safeguards:
   - max 6 tags
   - max 24 characters per tag

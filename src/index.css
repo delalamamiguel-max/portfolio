@@ -122,6 +122,18 @@ html {
   .card-case-study {
     @apply rounded-xl border border-border bg-card/80 p-6 shadow-sm md:p-8;
   }
+
+  .metric-two-line {
+    @apply grid grid-rows-2 gap-1;
+  }
+
+  .metric-two-line > span {
+    @apply block overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+
+  .section-closing-statement {
+    @apply mt-8 border-l-2 border-border pl-4 text-[1.24rem] font-semibold italic leading-[1.45] tracking-[0.01em] text-foreground;
+  }
 }
 
 .link-accent {

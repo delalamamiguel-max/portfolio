@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TagPill } from "@/components/ui/tag-pill";
-import { cmsUploadImage, cmsWriteFile } from "@/lib/cms-client";
+import { cmsUploadFile, cmsUploadImage, cmsWriteFile } from "@/lib/cms-client";
 import { getContactContent, getHomeContent, getHomepageStructure, getResumeContent } from "@/lib/content-loader";
 import type { HomeContent } from "@/lib/content-schema";
 import { validateContactContent, validateHomeContent, validateHomepageStructure, validateResumeContent } from "@/lib/content-schema";
@@ -63,6 +63,17 @@ async function squareCropAndOptimizeImage(file: File): Promise<{ mimeType: strin
   };
 }
 
+async function encodeFileToBase64(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.slice(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+
 export function AdminPagesPage() {
   const [home, setHome] = useState<HomeContent>(getHomeContent());
   const [structure, setStructure] = useState(getHomepageStructure());
@@ -71,6 +82,7 @@ export function AdminPagesPage() {
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploadingHomeImage, setUploadingHomeImage] = useState(false);
+  const [uploadingResumePdf, setUploadingResumePdf] = useState(false);
   const [draggingStructureIndex, setDraggingStructureIndex] = useState<number | null>(null);
   const [draggingImpactIndex, setDraggingImpactIndex] = useState<number | null>(null);
   const [draggingPillarIndex, setDraggingPillarIndex] = useState<number | null>(null);
@@ -115,6 +127,37 @@ export function AdminPagesPage() {
       setStatus(message);
     } finally {
       setUploadingHomeImage(false);
+    }
+  };
+
+  const uploadResumePdf = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      setStatus("Resume upload failed: only PDF files are allowed.");
+      return;
+    }
+
+    try {
+      setStatus("");
+      setUploadingResumePdf(true);
+      const dataBase64 = await encodeFileToBase64(file);
+      const upload = await cmsUploadFile({
+        fileName: file.name,
+        mimeType: "application/pdf",
+        dataBase64,
+        folder: "resume",
+      });
+
+      setResume((prev) => ({ ...prev, downloadablePdfUrl: upload.publicUrl }));
+      setStatus("Resume PDF uploaded. Click “Save Homepage Structure” to persist.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Resume upload failed";
+      setStatus(message);
+    } finally {
+      setUploadingResumePdf(false);
     }
   };
 
@@ -695,12 +738,23 @@ export function AdminPagesPage() {
           <div className="mt-6 border-t border-border pt-6">
             <CmsLabel text="Resume (Read-only summary + source fields)" />
             <h3 className="h4 mt-2">Resume</h3>
-            <Input
-              className="mt-3"
-              value={resume.downloadablePdfUrl}
-              onChange={(e) => setResume((prev) => ({ ...prev, downloadablePdfUrl: e.target.value }))}
-              placeholder="Download PDF URL"
-            />
+            <div className="mt-3 space-y-3 rounded-md border border-border bg-background/50 p-3">
+              <Input
+                value={resume.downloadablePdfUrl}
+                onChange={(e) => setResume((prev) => ({ ...prev, downloadablePdfUrl: e.target.value }))}
+                placeholder="/files/cms/resume/...pdf"
+              />
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  onChange={uploadResumePdf}
+                  disabled={saving || uploadingResumePdf}
+                  className="block text-xs text-muted-text file:mr-3 file:rounded-md file:border-0 file:bg-strategic-blue file:px-3 file:py-2 file:text-sm file:font-medium file:text-white"
+                />
+                <p className="text-xs text-muted-text">Upload Resume (PDF). Stored in repo and linked automatically.</p>
+              </div>
+            </div>
             <div className="mt-3 space-y-4">
               {resume.sections.map((entry, i) => (
                 <div key={`${entry.role}-${i}`} className="rounded-md border border-border bg-background/50 p-3">
@@ -752,7 +806,11 @@ export function AdminPagesPage() {
         </Card>
 
         <div className="flex items-center gap-2">
-          <Button variant="primary" onClick={saveAll} disabled={saving || uploadingHomeImage || duplicateIds.length > 0 || invalidIds}>
+          <Button
+            variant="primary"
+            onClick={saveAll}
+            disabled={saving || uploadingHomeImage || uploadingResumePdf || duplicateIds.length > 0 || invalidIds}
+          >
             {saving ? "Saving..." : "Save Homepage Structure"}
           </Button>
           {status ? <p className="body-md text-muted-text">{status}</p> : null}
