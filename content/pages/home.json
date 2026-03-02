@@ -1,30 +1,35 @@
 {
-  "heroEyebrow": "Strategy x Systems x Scaled Execution",
-  "heroHeadline": "Product Leader. Data Platforms & ML Systems.",
-  "heroSubheadline": "Architecting intelligent systems from strategy to scale.",
   "selectedImpactHeading": "Selected Impact",
   "selectedImpactSubtext": "Measured operating outcomes across platform strategy and execution.",
-  "strategicPillarsHeading": "Strategic Pillars",
-  "strategicPillarsSubtext": "Where vision meets operating model.",
+  "heroEyebrow": "Intelligent Systems. Measurable Impact.",
+  "heroHeadline": "Senior Product Leader building AI-driven platforms, personalization engines, and experimentation systems at enterprise scale.",
+  "heroSubheadline": "I operate at the intersection of product strategy, ML systems, and cross-functional execution turning emerging technology into durable business outcomes.",
+  "strategicPillarsHeading": "How I Operate",
+  "strategicPillarsSubtext": "Where strategic intent becomes engineered outcome.",
   "profileImage": {
     "src": "/images/cms/home-profile/2026/02/headshot-692603.webp",
     "alt": "Homepage profile image"
   },
   "proofMetrics": [
     {
-      "metric": "+8%",
-      "descriptor": "CTR Lift via ML Modernization",
-      "description": "+8% CTR Lift ML modernization and model-serving improvements."
+      "metric": "+8% CTR / +12% Engagement",
+      "descriptor": "ML-powered personalization platform serving 30M+ monthly users."
     },
     {
-      "metric": "+12%",
-      "descriptor": "Engagement Lift via Experimentation",
-      "description": "+12% Engagement Scaled experimentation across product surfaces."
+      "metric": "$7.6M Annual Savings",
+      "descriptor": "In-house TaaS AI platform replacing outsourced vendor ecosystem."
     },
     {
-      "metric": "$8M+",
-      "descriptor": "OPEX Reduction via Platform Simplification",
-      "description": "$8M+ OPEX Reduced Platform consolidation and architecture simplification."
+      "metric": "60–70% Operational Efficiency",
+      "descriptor": "Predictive resource allocation model adopted enterprise-wide."
+    },
+    {
+      "metric": "+60% Engagement Lift",
+      "descriptor": "First WebAR automotive launch experience (2017 Toyota Corolla Hatchback)."
+    },
+    {
+      "metric": "AI-Powered B2B SaaS (Solo Build)",
+      "descriptor": "End-to-end product design, architecture, and deployment of a multi-tenant field workforce platform."
     }
   ],
   "strategicPillars": [
@@ -38,41 +43,70 @@
       ]
     },
     {
-      "headline": "Architecture",
-      "subheadline": "Platform choices are aligned to risk posture and execution cadence.",
+      "headline": "Systems Architecture",
+      "subheadline": "I treat platforms as operating models.",
       "bullets": [
-        "Define operating model boundaries before implementation",
-        "Surface system trade-offs early with cost and reliability framing",
-        "Standardize integration contracts to reduce delivery friction"
+        "Data as product (internal and third-party integration)",
+        "ML lifecycle design (telemetry → retraining → deployment)",
+        "Security and governance embedded from day one"
+      ]
+    },
+    {
+      "headline": "Execution at Scale",
+      "subheadline": "Complex systems require structured alignment.",
+      "bullets": [
+        "Lead cross-functional teams across Product, Engineering, Data Science, and Legal",
+        "Launch via experimentation, not opinion",
+        "MVPs used to de-risk investment and accelerate adoption"
       ]
     }
   ],
   "customSections": [
     {
-      "cmsLabel": "Narrative - Thread Across Work",
+      "cmsLabel": "Narrative",
       "publicTitle": "The Thread Across All Work",
       "layoutType": "narrative",
-      "body": "I focus on systems that turn strategic intent into repeatable execution across product, data, and ML operations.",
+      "body": "Across enterprise platforms and independent builds, the approach is consistent:",
       "bullets": [
-        "Executive alignment through operating-model clarity",
-        "Architecture decisions grounded in business constraints",
-        "Cross-functional delivery with measurable impact"
+        " AI embedded into workflow, not layered on top.",
+        "Experimentation before scale.",
+        "Architecture that anticipates governance.",
+        "Adoption engineered, not assumed."
       ],
-      "closingStatement": "Clarity compounds when strategy and systems are designed together.",
+      "closingStatement": "The result is systems organizations can trust and grow on.",
       "credentials": []
     },
     {
       "cmsLabel": "Learning - Continuous Learning",
       "publicTitle": "Continuous Learning",
       "layoutType": "credential-stack",
-      "body": "",
       "bullets": [],
-      "closingStatement": "Learning is useful only when it improves decision quality in real systems.",
+      "closingStatement": "Curiosity is the only skill that never stops scaling.",
       "credentials": [
         {
-          "programTitle": "Artificial Intelligence & Machine Learning",
-          "institution": "UT Austin McCombs",
-          "appliedContext": "Applied to platform strategy, model governance, and product operating cadence."
+          "programTitle": "Bachelor of Business Administration, Marketing",
+          "institution": "University of Texas at El Paso",
+          "appliedContext": "The business and consumer lens behind every product decision."
+        },
+        {
+          "programTitle": "Post-Graduate Program in Artificial Intelligence & Machine Learning",
+          "institution": "UT Austin McCombs School of Business",
+          "appliedContext": "Applied in production: AT&T personalization, Fluently translation infrastructure, and Clockero voice AI"
+        },
+        {
+          "programTitle": "Product Strategy",
+          "institution": "Northwestern Kellogg School of Management",
+          "appliedContext": "How I build executive business cases and sequence platform investments that get funded."
+        },
+        {
+          "programTitle": "Artificial Intelligence: Implications for Business Strategy",
+          "institution": "MIT Sloan & MIT CSAIL",
+          "appliedContext": "Shaped the mindset that AI belongs in the foundation not the feature list. Visible in every platform decision since."
+        },
+        {
+          "programTitle": "UX Research & Strategy",
+          "institution": "UCLA Extension",
+          "appliedContext": "How I engineer adoption, not just functionality."
         }
       ]
     }
