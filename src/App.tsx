@@ -73,7 +73,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/philosophy" element={<Navigate to="/#philosophy" replace />} />
+          <Route path="/philosophy" element={<Navigate to="/" replace />} />
           <Route path="/resume" element={<Navigate to="/#resume" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route

@@ -50,13 +50,15 @@ Private:
   - mobile-first header behavior below `md` uses a Menu toggle (links move to collapsible mobile nav)
   - inline desktop nav is only rendered at `md+`
   - theme toggle remains available in the top-right control cluster on mobile and desktop
-  - primary nav is hash-anchor based (`/#case-studies`, `/#philosophy`, `/#resume`, `/#contact`) for single-page flow
+  - primary nav is hash-anchor based (`/#case-studies`, `/#resume`, `/#contact`) for single-page flow
 - Homepage architecture:
   - single-page section composition driven by `content/pages/home-structure.json`
   - ordered block rendering on `/` with semantic section IDs and scroll offset handling
-  - old public routes (`/case-studies`, `/philosophy`, `/resume`, `/contact`) now redirect to section anchors on `/`
+  - old public routes (`/case-studies`, `/resume`, `/contact`) now redirect to section anchors on `/`
+  - `Philosophy` section is removed from the live homepage flow
   - case-study cards on homepage open private detail routes (`/case-studies/:slug`) protected by existing session middleware flow
   - resume block on homepage is intentionally CTA-only (`Download PDF`, opens in new tab)
+  - footer includes direct LinkedIn and email contact links
   - hero profile image uses an editorial treatment (larger, unframed, high-contrast monochrome)
   - floating `Top` button appears after first viewport and smooth-scrolls upward
   - subtle scroll-reveal animation is applied to homepage blocks and respects `prefers-reduced-motion`

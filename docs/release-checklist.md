@@ -46,7 +46,7 @@
    - Confirm unordered/ordered lists and nested lists render with bullets/numbers and indentation in:
      - CMS structured content live preview
      - DOCX pre-save preview
-     - Published case study/philosophy pages
+     - Published case-study pages
    - Run `npm run qa:markdown` to verify renderer-parity usage checks.
 10. Tag overflow and limits checks:
    - Create a case study with 6 tags and confirm tags wrap inside card/detail containers (no overflow).
@@ -73,13 +73,15 @@
 14. Single-page anchor navigation checks:
    - Confirm top nav items scroll to sections on `/` without full page reload.
    - Confirm sticky header offset is respected (section heading is not hidden under header).
-   - Confirm active nav state updates while scrolling through `#case-studies`, `#philosophy`, `#resume`, and `#contact`.
+   - Confirm active nav state updates while scrolling through `#case-studies`, `#resume`, and `#contact`.
    - Confirm deep-linking works (open `/#resume` directly and verify scroll lands in Resume section).
    - Confirm browser Back/Forward navigation steps through hash anchors correctly.
 15. Homepage interaction quality checks:
    - Confirm hero profile image appears larger/editorial and remains balanced on mobile.
    - Confirm resume section renders only one action button (`Download PDF`) and opens PDF in a new tab.
    - Confirm floating `Top` button appears after first viewport and does not obstruct core content.
+   - Confirm `Philosophy` section is absent and layout collapses without empty spacing.
+   - Confirm footer renders LinkedIn and email links with correct targets.
    - Confirm homepage reveal animations are subtle, staggered, and disabled when reduced-motion is enabled.
 16. Case studies detail access checks:
    - Confirm homepage case-study cards navigate to `/case-studies/:slug`.

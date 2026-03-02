@@ -11,10 +11,8 @@ import {
   getContactContent,
   getHomeContent,
   getHomepageStructure,
-  getPhilosophyDocs,
   getResumeContent,
 } from "@/lib/content-loader";
-import { markdownToHtml } from "@/lib/markdown";
 import type { HomeContent, HomepageStructureBlock } from "@/lib/content-schema";
 
 function scrollToSection(sectionId: string) {
@@ -28,13 +26,13 @@ function resolveSectionTarget(href: string, fallbackId: string): string {
 
 function HeroSection({ id, content }: { id: string; content: HomeContent }) {
   return (
-    <Section id={id} ariaLabel="Hero">
-      <div data-reveal className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
-        <div className="max-w-3xl space-y-5">
+    <Section id={id} ariaLabel="Hero" className="pt-10 md:pt-12 lg:pt-14">
+      <div data-reveal className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch lg:gap-12">
+        <div className="flex h-full max-w-3xl flex-col justify-center space-y-6 lg:min-h-[520px]">
           <p className="mono-label">{content.heroEyebrow}</p>
-          <h1 className="h1 text-balance">{content.heroHeadline}</h1>
+          <h1 className="h1 max-w-4xl text-balance">{content.heroHeadline}</h1>
           <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-3 pt-1">
             <Button
               variant="primary"
               size="lg"
@@ -52,8 +50,8 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[340px] lg:mx-0 lg:max-w-[380px]">
-          <div className="relative aspect-square overflow-hidden rounded-xl">
+        <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:max-w-[420px]">
+          <div className="relative h-full min-h-[420px] overflow-hidden rounded-lg lg:min-h-[520px]">
             {content.profileImage?.src ? (
               <img
                 src={content.profileImage.src}
@@ -81,11 +79,11 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
 function SelectedImpactSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Selected impact">
-      <div data-reveal className="mb-6 max-w-2xl space-y-2">
+      <div data-reveal className="mb-7 max-w-2xl space-y-3">
         <h2 className="h2">{content.selectedImpactHeading}</h2>
         <p className="body-md">{content.selectedImpactSubtext}</p>
       </div>
-      <div data-reveal className="grid gap-4 md:grid-cols-3">
+      <div data-reveal className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {content.proofMetrics.map((metric) => (
           <MetricBlock
             key={`${metric.metric}-${metric.descriptor}`}
@@ -102,17 +100,17 @@ function SelectedImpactSection({ id, content }: { id: string; content: HomeConte
 function StrategicPillarsSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Strategic pillars">
-      <div data-reveal className="mb-6 max-w-2xl space-y-2">
+      <div data-reveal className="mb-6 max-w-2xl space-y-2.5">
         <h2 className="h2">{content.strategicPillarsHeading}</h2>
         <p className="body-md">{content.strategicPillarsSubtext}</p>
       </div>
-      <div data-reveal className="grid items-stretch gap-4 md:grid-cols-2">
+      <div data-reveal className="grid items-stretch gap-5 md:grid-cols-2">
         {content.strategicPillars.map((pillar) => (
           <Card key={pillar.headline} variant="case-study" padding="md" className="h-full">
             <CardHeader className="space-y-3">
               <CardTitle>{pillar.headline}</CardTitle>
-              <p className="body-md">{pillar.subheadline}</p>
-              <ul className="list-disc space-y-2 pl-5">
+              <p className="body-md font-medium text-muted-text">{pillar.subheadline}</p>
+              <ul className="list-disc space-y-3 pl-6">
                 {pillar.bullets.map((bullet) => (
                   <li key={bullet} className="body-md leading-relaxed">
                     {bullet}
@@ -138,13 +136,13 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
               <>
                 {entry.body ? <p className="body-md max-w-4xl">{entry.body}</p> : null}
                 {entry.bullets.length > 0 ? (
-                  <ol className="list-decimal space-y-1 pl-5">
-                    {entry.bullets.map((bullet, index) => (
-                      <li key={bullet} className="body-md">
-                        {bullet || `Point ${index + 1}`}
+                  <ul className="list-disc space-y-2.5 pl-6">
+                    {entry.bullets.map((bullet) => (
+                      <li key={bullet} className="body-md leading-relaxed">
+                        {bullet}
                       </li>
                     ))}
-                  </ol>
+                  </ul>
                 ) : null}
               </>
             ) : (
@@ -161,7 +159,9 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
                 ))}
               </div>
             )}
-            {entry.closingStatement ? <p className="text-base font-semibold italic text-foreground">{entry.closingStatement}</p> : null}
+            {entry.closingStatement ? (
+              <p className="mt-5 border-l-2 border-border pl-4 text-base font-semibold italic text-foreground">{entry.closingStatement}</p>
+            ) : null}
           </article>
         ))}
       </div>
@@ -173,7 +173,7 @@ function CaseStudiesSection({ id }: { id: string }) {
   const studies = getCaseStudies(false);
   return (
     <Section id={id} ariaLabel="Case studies">
-      <div data-reveal className="max-w-4xl space-y-6">
+      <div data-reveal className="max-w-5xl space-y-6">
         <header className="space-y-2">
           <h2 className="h2">Case Studies</h2>
           <p className="body-lg">Selected strategic product systems work.</p>
@@ -188,42 +188,11 @@ function CaseStudiesSection({ id }: { id: string }) {
                   <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
-              <Link to={`/case-studies/${study.slug}`} className="mt-4 inline-block link-accent">
+              <Link to={`/case-studies/${study.slug}`} className="mt-5 inline-flex items-center gap-1 link-accent">
                 Open case study
+                <span aria-hidden>→</span>
               </Link>
             </Card>
-          ))}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-function PhilosophySection({ id }: { id: string }) {
-  const essays = getPhilosophyDocs(false);
-  return (
-    <Section id={id} ariaLabel="Philosophy">
-      <div data-reveal className="max-w-4xl space-y-6">
-        <header className="space-y-3">
-          <h2 className="h2">Philosophy</h2>
-          <p className="body-lg max-w-3xl">Short strategy essays on product systems, governance, and intelligent platform scale.</p>
-        </header>
-
-        <div className="space-y-5">
-          {essays.map((essay) => (
-            <article key={essay.slug} id={`essay-${essay.slug}`} className="card-case-study space-y-3">
-              <h3 className="h3">{essay.title}</h3>
-              <p className="body-md font-medium text-foreground">{essay.summary}</p>
-              <div
-                className="markdown-content body-md space-y-2"
-                dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }}
-              />
-              <div className="mt-4 flex flex-wrap gap-2">
-                {essay.tags.map((tag) => (
-                  <TagPill key={`${essay.slug}-${tag}`}>{tag}</TagPill>
-                ))}
-              </div>
-            </article>
           ))}
         </div>
       </div>
@@ -234,9 +203,9 @@ function PhilosophySection({ id }: { id: string }) {
 function ResumeSection({ id }: { id: string }) {
   const resume = getResumeContent();
   return (
-    <Section id={id} ariaLabel="Resume">
-      <div data-reveal className="max-w-5xl">
-        <h2 className="sr-only">Resume</h2>
+    <Section id={id} ariaLabel="Resume" density="dense">
+      <div data-reveal className="mx-auto max-w-3xl space-y-4 text-center">
+        <h2 className="h3">Resume</h2>
         <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer">
           <Button variant="primary" size="lg">Download PDF</Button>
         </a>
@@ -280,14 +249,14 @@ function ContactSection({ id }: { id: string }) {
 
   return (
     <Section id={id} ariaLabel="Contact">
-      <div data-reveal className="max-w-3xl space-y-6">
+      <div data-reveal className="max-w-5xl space-y-6">
         <header className="space-y-3">
           <h2 className="h2">Contact</h2>
           <p className="body-lg">{contact.headline}</p>
           <p className="body-md">{contact.subtext}</p>
         </header>
 
-        <Card variant="case-study" padding="md">
+        <Card variant="case-study" padding="md" className="max-w-4xl">
           <div className="mb-4 space-y-2">
             {contact.contactMethods.map((method) => (
               <a key={method.value} className="mono-label block hover:underline" href={method.value}>{method.label}</a>
@@ -323,7 +292,7 @@ function ContactSection({ id }: { id: string }) {
               />
             </div>
 
-            <Button variant="primary" size="lg" type="submit" disabled={submitting}>
+            <Button variant="primary" size="lg" type="submit" disabled={submitting} className="min-w-[112px]">
               {submitting ? "Sending..." : "Send"}
             </Button>
           </form>
@@ -338,21 +307,44 @@ function ContactSection({ id }: { id: string }) {
   );
 }
 
+function FooterSection() {
+  return (
+    <footer className="container border-t border-border/60 py-8">
+      <div className="flex flex-col gap-2 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
+        <a
+          href="https://www.linkedin.com/in/migueldelalama/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground hover:underline"
+        >
+          LinkedIn
+        </a>
+        <a href="mailto:delalama.miguel@gmail.com" className="hover:text-foreground hover:underline">
+          delalama.miguel@gmail.com
+        </a>
+      </div>
+    </footer>
+  );
+}
+
 const sectionRenderers: Record<HomepageStructureBlock["type"], (id: string, content: HomeContent) => JSX.Element> = {
   hero: (id, content) => <HeroSection id={id} content={content} />,
   "proof-metrics": (id, content) => <SelectedImpactSection id={id} content={content} />,
   "strategic-pillars": (id, content) => <StrategicPillarsSection id={id} content={content} />,
   "custom-sections": (id, content) => <CustomSectionsSection id={id} content={content} />,
   "case-studies": (id) => <CaseStudiesSection id={id} />,
-  philosophy: (id) => <PhilosophySection id={id} />,
   resume: (id) => <ResumeSection id={id} />,
   contact: (id) => <ContactSection id={id} />,
+  philosophy: () => <></>,
 };
 
 export function HomePage() {
   const location = useLocation();
   const content = useMemo(() => getHomeContent(), []);
-  const structure = useMemo(() => getHomepageStructure().filter((block) => block.enabled), []);
+  const structure = useMemo(
+    () => getHomepageStructure().filter((block) => block.enabled && block.type !== "philosophy"),
+    [],
+  );
 
   useEffect(() => {
     if (!location.hash.startsWith("#")) return;
@@ -385,5 +377,10 @@ export function HomePage() {
     return () => observer.disconnect();
   }, [structure]);
 
-  return <div>{structure.map((block) => sectionRenderers[block.type](block.id, content))}</div>;
+  return (
+    <div>
+      {structure.map((block) => sectionRenderers[block.type](block.id, content))}
+      <FooterSection />
+    </div>
+  );
 }

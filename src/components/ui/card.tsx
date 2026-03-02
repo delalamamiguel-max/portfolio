@@ -6,7 +6,7 @@ const cardVariants = cva("rounded-xl border shadow-sm transition-all duration-20
   variants: {
     variant: {
       default: "border-border bg-card/90 hover:border-border",
-      metric: "border-border bg-card/95 hover:border-border",
+      metric: "border-border bg-card/95 hover:-translate-y-0.5 hover:border-border hover:shadow-md",
       "case-study": "border-border bg-card/95 hover:border-systems-teal/60",
     },
     padding: {

@@ -6,7 +6,7 @@ import { logout } from "@/lib/auth";
 import { useEffect, useState, type ReactNode } from "react";
 import { getHomepageStructure } from "@/lib/content-loader";
 
-const NAV_BLOCK_TYPES = new Set(["case-studies", "philosophy", "resume", "contact"]);
+const NAV_BLOCK_TYPES = new Set(["case-studies", "resume", "contact"]);
 const navItems = getHomepageStructure()
   .filter((block) => block.enabled && NAV_BLOCK_TYPES.has(block.type))
   .map((block) => ({ hash: `#${block.id}`, sectionId: block.id, label: block.navLabel }));
