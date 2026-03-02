@@ -6,6 +6,9 @@ import { verifySession } from "@/lib/auth";
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
 const LoginPage = lazy(() => import("@/pages/login-page").then((module) => ({ default: module.LoginPage })));
 const NotFoundPage = lazy(() => import("@/pages/not-found-page").then((module) => ({ default: module.NotFoundPage })));
+const CaseStudyDetailPage = lazy(() =>
+  import("@/pages/private-placeholders").then((module) => ({ default: module.CaseStudyDetailPage })),
+);
 const DeepDiveDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.DeepDiveDetailPage })),
 );
@@ -62,7 +65,14 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/case-studies" element={<Navigate to="/#case-studies" replace />} />
-          <Route path="/case-studies/:slug" element={<Navigate to="/#case-studies" replace />} />
+          <Route
+            path="/case-studies/:slug"
+            element={
+              <PrivateRoute>
+                <CaseStudyDetailPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="/philosophy" element={<Navigate to="/#philosophy" replace />} />
           <Route path="/resume" element={<Navigate to="/#resume" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />

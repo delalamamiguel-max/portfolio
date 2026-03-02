@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { ScrollTopButton } from "@/components/ui/scroll-top-button";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
 import { useEffect, useState, type ReactNode } from "react";
@@ -97,7 +98,10 @@ export function SiteShell({ children }: { children?: ReactNode }) {
               </Link>
             ))}
             <ThemeToggle />
-            {location.pathname.startsWith("/admin") || location.pathname.startsWith("/deep-dive") || location.pathname === "/style-guide" ? (
+            {location.pathname.startsWith("/admin") ||
+            location.pathname.startsWith("/deep-dive") ||
+            location.pathname.startsWith("/case-studies/") ||
+            location.pathname === "/style-guide" ? (
               <Button variant="ghost" className="ml-2" onClick={onLogout}>
                 Logout
               </Button>
@@ -137,7 +141,10 @@ export function SiteShell({ children }: { children?: ReactNode }) {
                   {item.label}
                 </Link>
               ))}
-              {location.pathname.startsWith("/admin") || location.pathname.startsWith("/deep-dive") || location.pathname === "/style-guide" ? (
+              {location.pathname.startsWith("/admin") ||
+              location.pathname.startsWith("/deep-dive") ||
+              location.pathname.startsWith("/case-studies/") ||
+              location.pathname === "/style-guide" ? (
                 <Button variant="ghost" className="mt-1 h-10 justify-start px-3 text-base" onClick={onLogout}>
                   Logout
                 </Button>
@@ -147,6 +154,7 @@ export function SiteShell({ children }: { children?: ReactNode }) {
         </div>
       </header>
       <main id="main-content">{children ?? <Outlet />}</main>
+      {location.pathname === "/" ? <ScrollTopButton /> : null}
     </div>
   );
 }

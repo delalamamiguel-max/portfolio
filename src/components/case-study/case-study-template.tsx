@@ -24,7 +24,7 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
 
         <div className="space-y-8">
           <header className="space-y-4">
-            <HistoryBackButton fallbackTo="/case-studies" label="Back" />
+            <HistoryBackButton fallbackTo="/" label="Back to Home" />
             <h1 className="h1">{study.title}</h1>
             <p className="body-lg max-w-3xl">{study.summary}</p>
             <div className="flex max-w-full flex-wrap items-start gap-2">

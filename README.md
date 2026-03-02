@@ -55,6 +55,11 @@ Private:
   - single-page section composition driven by `content/pages/home-structure.json`
   - ordered block rendering on `/` with semantic section IDs and scroll offset handling
   - old public routes (`/case-studies`, `/philosophy`, `/resume`, `/contact`) now redirect to section anchors on `/`
+  - case-study cards on homepage open private detail routes (`/case-studies/:slug`) protected by existing session middleware flow
+  - resume block on homepage is intentionally CTA-only (`Download PDF`, opens in new tab)
+  - hero profile image uses an editorial treatment (larger, unframed, high-contrast monochrome)
+  - floating `Top` button appears after first viewport and smooth-scrolls upward
+  - subtle scroll-reveal animation is applied to homepage blocks and respects `prefers-reduced-motion`
 - Case Study CMS supports:
   - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
   - visual table builder (rows/cols, header row, inline cell editing) -> inserts clean Markdown tables

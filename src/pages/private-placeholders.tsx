@@ -45,7 +45,7 @@ export function CaseStudyDetailPage() {
         <div className="max-w-2xl space-y-4">
           <h1 className="h1">Case study not available.</h1>
           <p className="body-md">This case study is not published.</p>
-          <HistoryBackButton fallbackTo="/case-studies" label="Back" />
+          <HistoryBackButton fallbackTo="/" label="Back to Home" />
         </div>
       </Section>
     );

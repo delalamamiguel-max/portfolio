@@ -88,27 +88,27 @@ html {
 
 @layer components {
   .h1 {
-    @apply text-4xl font-semibold tracking-[-0.02em] text-primary-text md:text-5xl;
+    @apply text-4xl font-semibold tracking-[-0.02em] text-primary-text md:text-5xl lg:text-6xl;
   }
 
   .h2 {
-    @apply text-3xl font-semibold tracking-tight text-primary-text;
+    @apply text-[30px] font-semibold tracking-tight text-primary-text md:text-[34px];
   }
 
   .h3 {
-    @apply text-[22px] font-semibold tracking-tight text-primary-text;
+    @apply text-2xl font-semibold tracking-tight text-primary-text;
   }
 
   .h4 {
     @apply text-xl font-semibold tracking-tight text-primary-text;
   }
 
-.body-lg {
-    @apply text-lg text-muted-text;
+  .body-lg {
+    @apply text-xl leading-8 text-muted-text;
   }
 
   .body-md {
-    @apply text-base text-muted-text;
+    @apply text-[17px] leading-7 text-muted-text;
   }
 
   .mono-label {
@@ -122,6 +122,18 @@ html {
 
 .link-accent {
   @apply font-mono text-sm text-accent transition-colors duration-200 hover:opacity-80 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 420ms ease, transform 420ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .status-success-text {
@@ -230,5 +242,10 @@ th {
   * {
     animation: none !important;
     transition-duration: 0ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

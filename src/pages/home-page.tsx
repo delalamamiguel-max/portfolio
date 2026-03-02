@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
@@ -28,8 +29,8 @@ function resolveSectionTarget(href: string, fallbackId: string): string {
 function HeroSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Hero">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-        <div className="max-w-3xl space-y-6">
+      <div data-reveal className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
+        <div className="max-w-3xl space-y-5">
           <p className="mono-label">{content.heroEyebrow}</p>
           <h1 className="h1 text-balance">{content.heroHeadline}</h1>
           <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
@@ -51,13 +52,13 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[320px] lg:mx-0">
-          <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-card/90 shadow-sm transition-colors duration-300">
+        <div className="mx-auto w-full max-w-[340px] lg:mx-0 lg:max-w-[380px]">
+          <div className="relative aspect-square overflow-hidden rounded-xl">
             {content.profileImage?.src ? (
               <img
                 src={content.profileImage.src}
                 alt={content.profileImage.alt || "Homepage profile image"}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover grayscale contrast-125"
                 loading="eager"
                 decoding="async"
               />
@@ -80,11 +81,11 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
 function SelectedImpactSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Selected impact">
-      <div className="mb-8 max-w-2xl space-y-3">
+      <div data-reveal className="mb-6 max-w-2xl space-y-2">
         <h2 className="h2">{content.selectedImpactHeading}</h2>
         <p className="body-md">{content.selectedImpactSubtext}</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div data-reveal className="grid gap-4 md:grid-cols-3">
         {content.proofMetrics.map((metric) => (
           <MetricBlock
             key={`${metric.metric}-${metric.descriptor}`}
@@ -101,19 +102,19 @@ function SelectedImpactSection({ id, content }: { id: string; content: HomeConte
 function StrategicPillarsSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Strategic pillars">
-      <div className="mb-8 max-w-2xl space-y-3">
+      <div data-reveal className="mb-6 max-w-2xl space-y-2">
         <h2 className="h2">{content.strategicPillarsHeading}</h2>
         <p className="body-md">{content.strategicPillarsSubtext}</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div data-reveal className="grid items-stretch gap-4 md:grid-cols-2">
         {content.strategicPillars.map((pillar) => (
-          <Card key={pillar.headline} variant="case-study" padding="md">
+          <Card key={pillar.headline} variant="case-study" padding="md" className="h-full">
             <CardHeader className="space-y-3">
               <CardTitle>{pillar.headline}</CardTitle>
               <p className="body-md">{pillar.subheadline}</p>
-              <ul className="space-y-2">
+              <ul className="list-disc space-y-2 pl-5">
                 {pillar.bullets.map((bullet) => (
-                  <li key={bullet} className="body-md truncate-none break-normal">
+                  <li key={bullet} className="body-md leading-relaxed">
                     {bullet}
                   </li>
                 ))}
@@ -129,7 +130,7 @@ function StrategicPillarsSection({ id, content }: { id: string; content: HomeCon
 function CustomSectionsSection({ id, content }: { id: string; content: HomeContent }) {
   return (
     <Section id={id} ariaLabel="Custom content sections">
-      <div className="space-y-8">
+      <div data-reveal className="space-y-8">
         {content.customSections.map((entry) => (
           <article key={`${entry.cmsLabel}-${entry.publicTitle}`} className="space-y-4">
             <h2 className="h2">{entry.publicTitle}</h2>
@@ -137,27 +138,30 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
               <>
                 {entry.body ? <p className="body-md max-w-4xl">{entry.body}</p> : null}
                 {entry.bullets.length > 0 ? (
-                  <ul className="space-y-1">
-                    {entry.bullets.map((bullet) => (
+                  <ol className="list-decimal space-y-1 pl-5">
+                    {entry.bullets.map((bullet, index) => (
                       <li key={bullet} className="body-md">
-                        {bullet}
+                        {bullet || `Point ${index + 1}`}
                       </li>
                     ))}
-                  </ul>
+                  </ol>
                 ) : null}
               </>
             ) : (
               <div className="space-y-4">
                 {entry.credentials.map((credential) => (
                   <div key={`${credential.programTitle}-${credential.institution}`} className="rounded-lg border border-border/70 bg-card/60 p-4">
-                    <h3 className="h4">{credential.programTitle}</h3>
+                    <p className="mono-label opacity-70">Program</p>
+                    <h3 className="h4 mt-1">{credential.programTitle}</h3>
+                    <p className="mono-label mt-3 opacity-70">Institution</p>
                     <p className="body-md mt-1">{credential.institution}</p>
-                    <p className="body-md mt-2">{credential.appliedContext}</p>
+                    <p className="mono-label mt-3 opacity-70">Applied Context</p>
+                    <p className="body-md mt-1">{credential.appliedContext}</p>
                   </div>
                 ))}
               </div>
             )}
-            {entry.closingStatement ? <p className="text-base font-medium text-foreground">{entry.closingStatement}</p> : null}
+            {entry.closingStatement ? <p className="text-base font-semibold italic text-foreground">{entry.closingStatement}</p> : null}
           </article>
         ))}
       </div>
@@ -169,8 +173,8 @@ function CaseStudiesSection({ id }: { id: string }) {
   const studies = getCaseStudies(false);
   return (
     <Section id={id} ariaLabel="Case studies">
-      <div className="max-w-4xl space-y-6">
-        <header className="space-y-3">
+      <div data-reveal className="max-w-4xl space-y-6">
+        <header className="space-y-2">
           <h2 className="h2">Case Studies</h2>
           <p className="body-lg">Selected strategic product systems work.</p>
         </header>
@@ -184,6 +188,9 @@ function CaseStudiesSection({ id }: { id: string }) {
                   <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
+              <Link to={`/case-studies/${study.slug}`} className="mt-4 inline-block link-accent">
+                Open case study
+              </Link>
             </Card>
           ))}
         </div>
@@ -196,23 +203,26 @@ function PhilosophySection({ id }: { id: string }) {
   const essays = getPhilosophyDocs(false);
   return (
     <Section id={id} ariaLabel="Philosophy">
-      <div className="max-w-4xl space-y-8">
-        <header className="space-y-4">
+      <div data-reveal className="max-w-4xl space-y-6">
+        <header className="space-y-3">
           <h2 className="h2">Philosophy</h2>
           <p className="body-lg max-w-3xl">Short strategy essays on product systems, governance, and intelligent platform scale.</p>
         </header>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           {essays.map((essay) => (
-            <article key={essay.slug} id={`essay-${essay.slug}`} className="card-case-study">
+            <article key={essay.slug} id={`essay-${essay.slug}`} className="card-case-study space-y-3">
               <h3 className="h3">{essay.title}</h3>
-              <p className="mt-3 body-md">{essay.summary}</p>
+              <p className="body-md font-medium text-foreground">{essay.summary}</p>
+              <div
+                className="markdown-content body-md space-y-2"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }}
+              />
               <div className="mt-4 flex flex-wrap gap-2">
                 {essay.tags.map((tag) => (
                   <TagPill key={`${essay.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
-              <div className="markdown-content mt-4 body-md" dangerouslySetInnerHTML={{ __html: markdownToHtml(essay.body) }} />
             </article>
           ))}
         </div>
@@ -225,53 +235,11 @@ function ResumeSection({ id }: { id: string }) {
   const resume = getResumeContent();
   return (
     <Section id={id} ariaLabel="Resume">
-      <div className="max-w-5xl space-y-8">
-        <header className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-3">
-            <h2 className="h2">Resume</h2>
-            <p className="body-lg max-w-3xl">Metrics-forward timeline optimized for fast recruiter and executive skim.</p>
-          </div>
-          <a href={resume.downloadablePdfUrl} download>
-            <Button variant="secondary" size="lg">Download PDF</Button>
-          </a>
-        </header>
-
-        <div className="space-y-4">
-          {resume.sections.map((entry) => (
-            <Card key={`${entry.role}-${entry.company}`} variant="case-study" padding="md">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 className="h3">{entry.role}</h3>
-                  <p className="body-md mt-1">{entry.company}</p>
-                </div>
-                <p className="mono-label">{entry.timeline}</p>
-              </div>
-
-              <ul className="mt-4 space-y-2">
-                {entry.highlights.map((highlight) => (
-                  <li key={highlight} className="body-md flex gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                {entry.metrics.map((metric) => (
-                  <p key={`${entry.role}-${metric}`} className="rounded-md border border-border bg-secondary px-3 py-1 text-sm text-foreground">
-                    <strong>{metric}</strong>
-                  </p>
-                ))}
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {entry.tags.map((tag) => (
-                  <TagPill key={`${entry.role}-${tag}`}>{tag}</TagPill>
-                ))}
-              </div>
-            </Card>
-          ))}
-        </div>
+      <div data-reveal className="max-w-5xl">
+        <h2 className="sr-only">Resume</h2>
+        <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer">
+          <Button variant="primary" size="lg">Download PDF</Button>
+        </a>
       </div>
     </Section>
   );
@@ -312,8 +280,8 @@ function ContactSection({ id }: { id: string }) {
 
   return (
     <Section id={id} ariaLabel="Contact">
-      <div className="max-w-3xl space-y-8">
-        <header className="space-y-4">
+      <div data-reveal className="max-w-3xl space-y-6">
+        <header className="space-y-3">
           <h2 className="h2">Contact</h2>
           <p className="body-lg">{contact.headline}</p>
           <p className="body-md">{contact.subtext}</p>
@@ -393,6 +361,29 @@ export function HomePage() {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, [location.hash]);
+
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    targets.forEach((target, index) => {
+      target.style.setProperty("--reveal-delay", `${Math.min(index * 40, 220)}ms`);
+      observer.observe(target);
+    });
+
+    return () => observer.disconnect();
+  }, [structure]);
 
   return <div>{structure.map((block) => sectionRenderers[block.type](block.id, content))}</div>;
 }

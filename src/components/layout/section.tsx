@@ -19,7 +19,7 @@ export function Section({ children, className, density = "default", as = "sectio
       aria-label={ariaLabel}
       className={cn(
         "container scroll-mt-24",
-        density === "default" ? "py-12 md:py-16 lg:py-24" : "py-12 md:py-14 lg:py-20",
+        density === "default" ? "py-10 md:py-12 lg:py-16" : "py-8 md:py-10 lg:py-12",
         className,
       )}
     >

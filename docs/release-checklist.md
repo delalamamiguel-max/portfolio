@@ -76,22 +76,32 @@
    - Confirm active nav state updates while scrolling through `#case-studies`, `#philosophy`, `#resume`, and `#contact`.
    - Confirm deep-linking works (open `/#resume` directly and verify scroll lands in Resume section).
    - Confirm browser Back/Forward navigation steps through hash anchors correctly.
-15. Dynamic import resilience checks:
+15. Homepage interaction quality checks:
+   - Confirm hero profile image appears larger/editorial and remains balanced on mobile.
+   - Confirm resume section renders only one action button (`Download PDF`) and opens PDF in a new tab.
+   - Confirm floating `Top` button appears after first viewport and does not obstruct core content.
+   - Confirm homepage reveal animations are subtle, staggered, and disabled when reduced-motion is enabled.
+16. Case studies detail access checks:
+   - Confirm homepage case-study cards navigate to `/case-studies/:slug`.
+   - Confirm unauthenticated users are redirected to `/login?next=...`.
+   - Confirm authenticated users open detail pages directly without re-prompt.
+   - Confirm detail page back button returns to home (`/`) safely.
+17. Dynamic import resilience checks:
    - After a new deployment, reload an older open tab and confirm stale bundle errors recover with a one-time reload.
-16. Homepage profile image CMS checks:
+18. Homepage profile image CMS checks:
    - Upload square profile image from `/admin/pages`.
    - Confirm `home.json` saves.
    - Confirm homepage hero renders the profile image responsively.
-17. Homepage repeatable impact checks:
+19. Homepage repeatable impact checks:
    - Add 4+ `Selected Impact` items in `/admin/pages`.
    - Confirm cards wrap into additional rows without overflow in both themes.
-18. Homepage strategic pillars CMS checks:
+20. Homepage strategic pillars CMS checks:
    - Edit pillar `headline`, `subheadline`, and bullets in `/admin/pages`.
    - Save JSON pages and confirm homepage pillar cards update with edited values.
-19. Homepage flexible custom section checks:
+21. Homepage flexible custom section checks:
    - Add one `Narrative` custom section and one `Credential Stack` section in `/admin/pages`.
    - Confirm CMS labels are visible only in admin and never rendered on the public homepage.
    - Confirm custom sections respect layout type and render consistently in light/dark mode.
-20. Homepage drag-and-drop order checks:
+22. Homepage drag-and-drop order checks:
    - Reorder `Selected Impact`, `Strategic Pillars`, and `Custom Content Sections` items in CMS.
    - Save and confirm published order matches CMS order.
