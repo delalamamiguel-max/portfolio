@@ -236,9 +236,9 @@ function ResumeSection({ id }: { id: string }) {
       <div data-reveal className="mx-auto max-w-3xl space-y-8 text-center">
         <h2 className="h3">Resume</h2>
         {hasPdf ? (
-          <a href={resume.downloadablePdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex">
+          <Link to="/resume-download" className="inline-flex">
             <Button variant="primary" size="lg">Download PDF</Button>
-          </a>
+          </Link>
         ) : (
           <Button variant="secondary" size="lg" disabled>
             Resume unavailable

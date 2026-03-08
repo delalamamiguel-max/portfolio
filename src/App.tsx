@@ -9,6 +9,9 @@ const NotFoundPage = lazy(() => import("@/pages/not-found-page").then((module) =
 const CaseStudyDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.CaseStudyDetailPage })),
 );
+const ResumeDownloadPage = lazy(() =>
+  import("@/pages/private-placeholders").then((module) => ({ default: module.ResumeDownloadPage })),
+);
 const DeepDiveDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.DeepDiveDetailPage })),
 );
@@ -75,6 +78,14 @@ export default function App() {
           />
           <Route path="/philosophy" element={<Navigate to="/" replace />} />
           <Route path="/resume" element={<Navigate to="/#resume" replace />} />
+          <Route
+            path="/resume-download"
+            element={
+              <PrivateRoute>
+                <ResumeDownloadPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route
             path="/deep-dive/:slug"
