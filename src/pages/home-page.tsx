@@ -179,7 +179,7 @@ function CaseStudiesSection({ id }: { id: string }) {
   const studies = getCaseStudies(false);
   const [selectedCategory, setSelectedCategory] = useState<CaseStudyCategory>("both");
   const filteredStudies = useMemo(
-    () => studies.filter((study) => study.category === selectedCategory),
+    () => (selectedCategory === "both" ? studies : studies.filter((study) => study.category === selectedCategory)),
     [selectedCategory, studies],
   );
 
@@ -196,9 +196,9 @@ function CaseStudiesSection({ id }: { id: string }) {
               key={category}
               type="button"
               variant={selectedCategory === category ? "primary" : "subtle"}
-            className="h-9 px-4 text-sm"
-            onClick={() => setSelectedCategory(category)}
-          >
+              className="h-9 px-4 text-sm"
+              onClick={() => setSelectedCategory(category)}
+            >
               {CASE_STUDY_CATEGORY_LABELS[category]}
             </Button>
           ))}

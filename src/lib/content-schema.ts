@@ -3,9 +3,9 @@ import { extractSections, parseFrontmatter } from "@/lib/markdown";
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SECTION_ID_REGEX = /^[a-z][a-z0-9-]*$/;
 export const CASE_STUDY_CATEGORIES = [
+  "both",
   "company-products",
   "personal-entrepreneurship",
-  "both",
 ] as const;
 export type CaseStudyCategory = (typeof CASE_STUDY_CATEGORIES)[number];
 export const CASE_STUDY_CATEGORY_LABELS: Record<CaseStudyCategory, string> = {

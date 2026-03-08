@@ -5,8 +5,7 @@ export function ScrollTopButton() {
 
   useEffect(() => {
     const onScroll = () => {
-      const threshold = window.innerHeight;
-      setVisible(window.scrollY > threshold);
+      setVisible(window.scrollY > 8);
     };
 
     onScroll();

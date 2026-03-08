@@ -58,14 +58,17 @@ Private:
   - `Philosophy` section is removed from the live homepage flow
   - case-study cards on homepage open private detail routes (`/case-studies/:slug`) protected by existing session middleware flow
   - case-study filter controls on homepage support three categories:
+    - ordered as: `Both`, `Company Products`, `Personal / Entrepreneurship`
     - `Company Products`
     - `Personal / Entrepreneurship`
     - `Both` (default selected on page load)
+  - `Both` filter always returns the full case-study list (all categories)
   - filter changes update case-study cards client-side without route reload
   - resume block on homepage is intentionally CTA-only (`Download PDF`, opens in new tab)
   - footer includes direct LinkedIn and email contact links
   - hero profile image uses an editorial treatment (larger, unframed, high-contrast monochrome)
   - floating `Top` button appears after first viewport and smooth-scrolls upward
+  - floating `Top` button appears as soon as user starts scrolling and remains fixed in lower-right
   - subtle scroll-reveal animation is applied to homepage blocks and respects `prefers-reduced-motion`
 - Case Study CMS supports:
   - rich Markdown/MDX-friendly editor toolbar (block style picker, icon-style controls, lists, indent/outdent, links, code/quote)
