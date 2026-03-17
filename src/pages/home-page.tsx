@@ -36,7 +36,14 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
       <div data-reveal className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch lg:gap-12">
         <div className="flex h-full max-w-3xl flex-col justify-center space-y-6 lg:min-h-[520px]">
           <p className="mono-label">{content.heroEyebrow}</p>
-          <h1 className="h1 max-w-4xl text-balance">{content.heroHeadline}</h1>
+          <div className="max-w-4xl">
+            <h1 className="h1 text-balance sm:hidden">{content.heroHeadline}</h1>
+            <h1 className="h1 hidden text-balance sm:block">
+              <span className="block whitespace-nowrap">Senior Product Leader.</span>
+              <span className="block">Complex systems,</span>
+              <span className="block">simple experiences.</span>
+            </h1>
+          </div>
           <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <Button
