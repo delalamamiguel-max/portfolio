@@ -4,24 +4,24 @@
 
 html.theme-dark,
 :root {
-  --background: 222 47% 11%;
-  --foreground: 220 20% 91%;
-  --card: 222 50% 8%;
-  --card-foreground: 220 20% 91%;
+  --background: 226 42% 10%;
+  --foreground: 220 23% 94%;
+  --card: 220 28% 14%;
+  --card-foreground: 220 23% 94%;
   --primary: 217 91% 56%;
   --primary-foreground: 220 20% 91%;
   --secondary: 222 20% 16%;
   --secondary-foreground: 220 20% 91%;
   --muted: 222 18% 20%;
-  --muted-foreground: 215 19% 65%;
+  --muted-foreground: 214 18% 73%;
   --accent: 172 81% 40%;
   --accent-foreground: 220 20% 91%;
-  --border: 217 19% 27%;
-  --input: 217 19% 27%;
+  --border: 213 26% 32%;
+  --input: 213 26% 32%;
   --ring: 217 91% 56%;
   --exec-navy: 222 47% 11%;
   --primary-text: 220 20% 91%;
-  --muted-text: 215 19% 65%;
+  --muted-text: 214 18% 73%;
   --strategic-blue: 217 91% 56%;
   --systems-teal: 172 81% 40%;
   --impact-green: 142 71% 45%;
@@ -29,11 +29,17 @@ html.theme-dark,
   --success: 160 84% 39%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
-  --radius: 0.75rem;
+  --radius: 0.5rem;
+  --glass-surface: rgba(255, 255, 255, 0.08);
+  --glass-surface-strong: rgba(255, 255, 255, 0.12);
+  --glass-surface-inset: rgba(2, 6, 23, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-border-soft: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 24px 80px rgba(3, 7, 18, 0.34);
 }
 
 html.theme-light {
-  --background: 210 40% 98%;
+  --background: 208 44% 96%;
   --foreground: 222 47% 11%;
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
@@ -45,8 +51,8 @@ html.theme-light {
   --muted-foreground: 215 16% 40%;
   --accent: 172 70% 34%;
   --accent-foreground: 0 0% 100%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
+  --border: 214 22% 84%;
+  --input: 214 22% 84%;
   --ring: 214 52% 43%;
   --exec-navy: 210 40% 98%;
   --primary-text: 222 47% 11%;
@@ -58,6 +64,13 @@ html.theme-light {
   --success: 160 72% 32%;
   --warning: 38 92% 42%;
   --danger: 0 72% 46%;
+  --radius: 0.5rem;
+  --glass-surface: rgba(255, 255, 255, 0.62);
+  --glass-surface-strong: rgba(255, 255, 255, 0.76);
+  --glass-surface-inset: rgba(255, 255, 255, 0.46);
+  --glass-border: rgba(15, 23, 42, 0.13);
+  --glass-border-soft: rgba(15, 23, 42, 0.09);
+  --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.13);
 }
 
 * {
@@ -66,7 +79,48 @@ html.theme-light {
 
 body {
   @apply bg-background text-foreground font-sans antialiased transition-colors duration-300;
+  min-height: 100vh;
   line-height: 1.65;
+}
+
+html.theme-dark body {
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(18, 34, 57, 0.9) 42%, rgba(28, 44, 40, 0.88) 100%),
+    linear-gradient(90deg, rgba(20, 184, 166, 0.18), rgba(37, 99, 235, 0.14) 42%, rgba(245, 158, 11, 0.12)),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+
+html.theme-light body {
+  background:
+    linear-gradient(135deg, rgba(248, 250, 252, 0.88) 0%, rgba(226, 241, 255, 0.88) 44%, rgba(225, 246, 241, 0.82) 100%),
+    linear-gradient(90deg, rgba(20, 184, 166, 0.15), rgba(37, 99, 235, 0.1) 48%, rgba(245, 158, 11, 0.1)),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 78%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: auto -10% 0 -10%;
+  z-index: -1;
+  height: 42vh;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(20, 184, 166, 0.13), rgba(255, 255, 255, 0.08), rgba(245, 158, 11, 0.1));
+  filter: blur(70px);
 }
 
 html {
@@ -88,22 +142,22 @@ html {
 
 @layer components {
   .h1 {
-    @apply text-[clamp(2.45rem,5.3vw,4.55rem)] font-semibold tracking-[-0.018em] text-primary-text;
+    @apply text-[clamp(2.45rem,5.3vw,4.55rem)] font-semibold tracking-normal text-primary-text;
     line-height: 1.08;
   }
 
   .h2 {
-    @apply text-[clamp(2.05rem,3.8vw,2.85rem)] font-semibold tracking-tight text-primary-text;
+    @apply text-[clamp(2.05rem,3.8vw,2.85rem)] font-semibold tracking-normal text-primary-text;
     line-height: 1.18;
   }
 
   .h3 {
-    @apply text-[clamp(1.65rem,2.5vw,2.2rem)] font-semibold tracking-tight text-primary-text;
+    @apply text-[clamp(1.65rem,2.5vw,2.2rem)] font-semibold tracking-normal text-primary-text;
     line-height: 1.22;
   }
 
   .h4 {
-    @apply text-[clamp(1.28rem,1.8vw,1.7rem)] font-semibold tracking-tight text-primary-text;
+    @apply text-[clamp(1.28rem,1.8vw,1.7rem)] font-semibold tracking-normal text-primary-text;
     line-height: 1.3;
   }
 
@@ -116,11 +170,31 @@ html {
   }
 
   .mono-label {
-    @apply font-mono text-sm text-systems-teal;
+    @apply font-mono text-sm tracking-normal text-systems-teal;
   }
 
   .card-case-study {
-    @apply rounded-xl border border-border bg-card/80 p-6 shadow-sm md:p-8;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    background: var(--glass-surface);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(22px);
+    @apply p-6 md:p-8;
+  }
+
+  .glass-panel {
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    background: var(--glass-surface);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(28px);
+  }
+
+  .glass-inset {
+    border: 1px solid var(--glass-border-soft);
+    border-radius: var(--radius);
+    background: var(--glass-surface-inset);
+    backdrop-filter: blur(14px);
   }
 
   .metric-two-line {
@@ -173,7 +247,7 @@ html {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.25);
+  background: rgba(20, 184, 166, 0.28);
 }
 
 a:focus-visible,

@@ -35,7 +35,9 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
     <Section id={id} ariaLabel="Hero" className="pt-10 md:pt-12 lg:pt-14">
       <div data-reveal className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch lg:gap-12">
         <div className="flex h-full max-w-3xl flex-col justify-center space-y-6 lg:min-h-[520px]">
-          <p className="mono-label">{content.heroEyebrow}</p>
+          <p className="mono-label inline-flex w-fit rounded-full border border-systems-teal/25 bg-systems-teal/10 px-3 py-1 text-accent backdrop-blur-md">
+            {content.heroEyebrow}
+          </p>
           <div className="max-w-4xl">
             <h1 className="h1 text-balance sm:hidden">{content.heroHeadline}</h1>
             <h1 className="h1 hidden text-balance sm:block">
@@ -63,18 +65,18 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:max-w-[420px]">
-          <div className="relative h-full min-h-[420px] overflow-hidden rounded-lg lg:min-h-[520px]">
+        <aside className="glass-panel mx-auto flex w-full max-w-[360px] flex-col gap-3 p-3 lg:mx-0 lg:max-w-[420px]" aria-label="Profile and operating model">
+          <div className="relative min-h-[360px] overflow-hidden rounded-lg border border-[color:var(--glass-border-soft)] lg:min-h-[432px]">
             {content.profileImage?.src ? (
               <img
                 src={content.profileImage.src}
                 alt={content.profileImage.alt || "Homepage profile image"}
-                className="h-full w-full object-cover grayscale contrast-125"
+                className="absolute inset-0 h-full w-full object-cover grayscale contrast-125"
                 loading="eager"
                 decoding="async"
               />
             ) : (
-              <div className="relative flex h-full w-full items-center justify-center">
+              <div className="relative flex h-full min-h-[360px] w-full items-center justify-center">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(45,212,191,0.12),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(59,130,246,0.14),transparent_50%)]" />
                 <div className="relative text-center">
                   <p className="mono-label">PROFILE IMAGE</p>
@@ -82,8 +84,22 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
                 </div>
               </div>
             )}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent p-5">
+              <p className="mono-label text-teal-100">Operating Model</p>
+              <p className="mt-1 text-lg font-semibold text-white">Designed for calm scale</p>
+            </div>
           </div>
-        </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="glass-inset p-4">
+              <p className="font-semibold text-foreground">Platform thinking</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">Reusable systems, governance loops, and architecture-aware decisions.</p>
+            </div>
+            <div className="glass-inset p-4">
+              <p className="font-semibold text-foreground">Measurable momentum</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">Proof points, signal clarity, and execution rhythm tied to outcomes.</p>
+            </div>
+          </div>
+        </aside>
       </div>
     </Section>
   );
@@ -161,7 +177,7 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
             ) : (
               <div className="space-y-4">
                 {entry.credentials.map((credential) => (
-                  <div key={`${credential.programTitle}-${credential.institution}`} className="rounded-lg border border-border/70 bg-card/60 p-4">
+                  <div key={`${credential.programTitle}-${credential.institution}`} className="glass-inset p-4">
                     <p className="mono-label opacity-70">Program</p>
                     <h3 className="h4 mt-1">{credential.programTitle}</h3>
                     <p className="mono-label mt-3 opacity-70">Institution</p>

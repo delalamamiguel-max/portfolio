@@ -2,12 +2,14 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const cardVariants = cva("rounded-xl border shadow-sm transition-all duration-200", {
+const cardVariants = cva(
+  "rounded-lg border border-[color:var(--glass-border)] bg-[var(--glass-surface)] [box-shadow:var(--glass-shadow)] backdrop-blur-xl transition-all duration-200",
+  {
   variants: {
     variant: {
-      default: "border-border bg-card/90 hover:border-border",
-      metric: "border-border bg-card/95 hover:-translate-y-0.5 hover:border-border hover:shadow-md",
-      "case-study": "border-border bg-card/95 hover:border-systems-teal/60",
+      default: "hover:border-[color:var(--glass-border)] hover:bg-[var(--glass-surface-strong)]",
+      metric: "hover:-translate-y-0.5 hover:border-impact-green/45 hover:bg-[var(--glass-surface-strong)]",
+      "case-study": "hover:-translate-y-0.5 hover:border-systems-teal/55 hover:bg-[var(--glass-surface-strong)]",
     },
     padding: {
       sm: "p-6",
@@ -19,7 +21,8 @@ const cardVariants = cva("rounded-xl border shadow-sm transition-all duration-20
     variant: "default",
     padding: "sm",
   },
-});
+  },
+);
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
 
@@ -34,7 +37,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => <h3 ref={ref} className={cn("text-xl font-semibold tracking-tight text-primary-text", className)} {...props} />,
+  ({ className, ...props }, ref) => <h3 ref={ref} className={cn("text-xl font-semibold tracking-normal text-primary-text", className)} {...props} />,
 );
 CardTitle.displayName = "CardTitle";
 

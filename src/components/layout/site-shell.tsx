@@ -68,18 +68,18 @@ export function SiteShell({ children }: { children?: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen overflow-x-clip text-foreground transition-colors duration-300">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-strategic-blue focus:px-4 focus:py-2 focus:text-primary-text"
       >
         Skip to main content
       </a>
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      <header className="sticky top-0 z-30 border-b border-[color:var(--glass-border)] bg-[var(--glass-surface)] backdrop-blur-2xl">
         <div className="container flex h-16 items-center justify-between gap-2">
           <Link
             to="/"
-            className="min-w-0 rounded-sm text-xs font-semibold uppercase tracking-[0.08em] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm"
+            className="min-w-0 rounded-sm text-xs font-semibold uppercase tracking-normal text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-systems-teal focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm"
           >
             Architected by Miguel
           </Link>
@@ -88,10 +88,10 @@ export function SiteShell({ children }: { children?: ReactNode }) {
               <Link
                 key={item.hash}
                 to={`/${item.hash}`}
-                className={`rounded-md px-3 py-2 text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`rounded-md border px-3 py-2 text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-systems-teal focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   location.pathname === "/" && activeSectionId === item.sectionId
-                    ? "text-foreground"
-                    : "text-muted-text hover:text-foreground"
+                    ? "border-[color:var(--glass-border)] bg-[var(--glass-surface-strong)] text-foreground"
+                    : "border-transparent text-muted-text hover:border-[color:var(--glass-border-soft)] hover:bg-[var(--glass-surface)] hover:text-foreground"
                 }`}
               >
                 {item.label}
@@ -112,7 +112,7 @@ export function SiteShell({ children }: { children?: ReactNode }) {
             <Button
               type="button"
               variant="ghost"
-              className="h-9 rounded-md border border-border bg-card/70 px-3 text-xs font-medium text-foreground hover:bg-card"
+              className="h-9 rounded-md border border-[color:var(--glass-border)] bg-[var(--glass-surface)] px-3 text-xs font-medium text-foreground hover:bg-[var(--glass-surface-strong)]"
               onClick={() => setMobileNavOpen((open) => !open)}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-primary-nav"
@@ -124,7 +124,7 @@ export function SiteShell({ children }: { children?: ReactNode }) {
         </div>
         <div
           id="mobile-primary-nav"
-          className={`${mobileNavOpen ? "block" : "hidden"} border-t border-border/70 md:hidden`}
+          className={`${mobileNavOpen ? "block" : "hidden"} border-t border-[color:var(--glass-border)] md:hidden`}
         >
           <nav aria-label="Mobile primary" className="container py-3">
             <div className="grid gap-1">
@@ -134,8 +134,8 @@ export function SiteShell({ children }: { children?: ReactNode }) {
                   to={`/${item.hash}`}
                   className={`w-full rounded-md px-3 py-2 text-left text-base leading-6 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     location.pathname === "/" && activeSectionId === item.sectionId
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-text hover:bg-secondary hover:text-foreground"
+                      ? "bg-[var(--glass-surface-strong)] text-foreground"
+                      : "text-muted-text hover:bg-[var(--glass-surface)] hover:text-foreground"
                   }`}
                 >
                   {item.label}
