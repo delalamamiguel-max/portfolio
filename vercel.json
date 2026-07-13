@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/content.ts": {
+      "includeFiles": "content/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -7,6 +12,26 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-Frame-Options", "value": "DENY" }
       ]
+    },
+    {
+      "source": "/(login|resume-download|style-guide)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(admin|deep-dive)(/.*)?",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/case-studies/(.+)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/files/cms/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/images/cms/case-studies-(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ],
   "rewrites": [

@@ -1,26 +1,27 @@
+import caseStudyIndexJson from "@/generated/case-study-index.json";
 import {
+  type CaseStudyCategory,
+  CASE_STUDY_CATEGORIES,
   type ContactContent,
   type HomeContent,
   type HomepageStructureBlock,
-  type MarkdownDoc,
   type ResumeContent,
-  type ValidatedCaseStudy,
-  validateCaseStudyDoc,
   validateContactContent,
   validateHomeContent,
   validateHomepageStructure,
-  validatePhilosophyDoc,
   validateResumeContent,
 } from "@/lib/content-schema";
 
+// Public page content (safe to ship in the client bundle).
 const homeJson = import.meta.glob("/content/pages/home.json", { eager: true, import: "default" }) as Record<string, unknown>;
 const homepageStructureJson = import.meta.glob("/content/pages/home-structure.json", { eager: true, import: "default" }) as Record<string, unknown>;
 const resumeJson = import.meta.glob("/content/pages/resume.json", { eager: true, import: "default" }) as Record<string, unknown>;
 const contactJson = import.meta.glob("/content/pages/contact.json", { eager: true, import: "default" }) as Record<string, unknown>;
 
-const caseStudyFiles = import.meta.glob("/content/case-studies/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
-const philosophyFiles = import.meta.glob("/content/philosophy/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
-const deepDiveFiles = import.meta.glob("/content/deep-dive/*.md", { eager: true, query: "?raw", import: "default" }) as Record<string, string>;
+// Private markdown (case studies, deep dives, philosophy) is intentionally NOT
+// imported here: bundling it would expose gated content to every visitor.
+// Bodies are served by the session-authenticated /api/content endpoint; the
+// public homepage uses only the build-time metadata index below.
 
 function firstValue<T>(record: Record<string, T>): T {
   const value = Object.values(record)[0];
@@ -29,12 +30,6 @@ function firstValue<T>(record: Record<string, T>): T {
   }
 
   return value;
-}
-
-function mapMarkdownDocs(record: Record<string, string>, parser: (raw: string) => MarkdownDoc): MarkdownDoc[] {
-  return Object.values(record)
-    .map((raw) => parser(raw))
-    .sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export function getHomeContent(): HomeContent {
@@ -53,43 +48,49 @@ export function getContactContent(): ContactContent {
   return validateContactContent(firstValue(contactJson));
 }
 
-export function getPhilosophyDocs(includeDrafts = false): MarkdownDoc[] {
-  const docs = mapMarkdownDocs(philosophyFiles, validatePhilosophyDoc);
-  return includeDrafts ? docs : docs.filter((doc) => doc.published);
+export type CaseStudyIndexEntry = {
+  slug: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  category: CaseStudyCategory;
+};
+
+export function getCaseStudyIndex(): CaseStudyIndexEntry[] {
+  return (caseStudyIndexJson as CaseStudyIndexEntry[]).map((entry) => ({
+    ...entry,
+    category: CASE_STUDY_CATEGORIES.includes(entry.category) ? entry.category : "both",
+  }));
 }
 
-export function getCaseStudies(includeDrafts = false): ValidatedCaseStudy[] {
-  const docs = Object.values(caseStudyFiles)
-    .map((raw) => validateCaseStudyDoc(raw))
-    .sort((a, b) => a.title.localeCompare(b.title));
+export type ContentDomain = "case-studies" | "deep-dive" | "philosophy";
 
-  return includeDrafts ? docs : docs.filter((doc) => doc.published);
+export async function fetchContentDoc(domain: ContentDomain, slug: string): Promise<string | null> {
+  const response = await fetch(`/api/content?domain=${domain}&slug=${encodeURIComponent(slug)}`, {
+    credentials: "include",
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Unable to load content");
+  }
+
+  const payload = (await response.json()) as { raw?: string };
+  return typeof payload.raw === "string" ? payload.raw : null;
 }
 
-export function getCaseStudyBySlug(slug: string, includeDrafts = false): ValidatedCaseStudy | undefined {
-  return getCaseStudies(includeDrafts).find((doc) => doc.slug === slug);
-}
+export async function fetchContentRawMap(domain: ContentDomain): Promise<Record<string, string>> {
+  const response = await fetch(`/api/content?domain=${domain}`, {
+    credentials: "include",
+  });
 
-export function getDeepDives(includeDrafts = false): ValidatedCaseStudy[] {
-  const docs = Object.values(deepDiveFiles)
-    .map((raw) => validateCaseStudyDoc(raw))
-    .sort((a, b) => a.title.localeCompare(b.title));
+  if (!response.ok) {
+    throw new Error("Unable to load content");
+  }
 
-  return includeDrafts ? docs : docs.filter((doc) => doc.published);
-}
-
-export function getDeepDiveBySlug(slug: string, includeDrafts = false): ValidatedCaseStudy | undefined {
-  return getDeepDives(includeDrafts).find((doc) => doc.slug === slug);
-}
-
-export function getCaseStudyRawMap(): Record<string, string> {
-  return { ...caseStudyFiles };
-}
-
-export function getPhilosophyRawMap(): Record<string, string> {
-  return { ...philosophyFiles };
-}
-
-export function getDeepDiveRawMap(): Record<string, string> {
-  return { ...deepDiveFiles };
+  const payload = (await response.json()) as { files?: Record<string, string> };
+  return payload.files ?? {};
 }

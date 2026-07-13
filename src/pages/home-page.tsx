@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { MetricBlock } from "@/components/ui/metric-block";
 import { TagPill } from "@/components/ui/tag-pill";
 import {
-  getCaseStudies,
+  getCaseStudyIndex,
   getContactContent,
   getHomeContent,
   getHomepageStructure,
@@ -199,7 +199,7 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
 }
 
 function CaseStudiesSection({ id }: { id: string }) {
-  const studies = getCaseStudies(false);
+  const studies = getCaseStudyIndex();
   const [selectedCategory, setSelectedCategory] = useState<CaseStudyCategory>("both");
   const filteredStudies = useMemo(
     () => (selectedCategory === "both" ? studies : studies.filter((study) => study.category === selectedCategory)),
