@@ -32,5 +32,7 @@ export default async function middleware(request: Request) {
 }
 
 export const config = {
-  matcher: ["/case-studies/:path*", "/deep-dive/:path*", "/admin/:path*"],
+  // ":path+" (not "*") so the bare public redirect route /case-studies stays
+  // reachable while every nested detail route requires a session.
+  matcher: ["/case-studies/:path+", "/deep-dive/:path+", "/admin/:path*"],
 };

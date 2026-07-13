@@ -355,9 +355,17 @@ function ContactSection({ id }: { id: string }) {
             </Button>
           </form>
 
-          <div className="mt-4 min-h-6">
+          <div className="mt-4 min-h-6" role="status" aria-live="polite">
             {status === "success" ? <p className="body-md text-accent">Message sent. Thanks for reaching out.</p> : null}
-            {status === "error" ? <p className="body-md text-impact-green">Unable to send right now. Please try again.</p> : null}
+            {status === "error" ? (
+              <p className="body-md status-danger-text">
+                Unable to send right now. Please email{" "}
+                <a className="underline" href="mailto:delalama.miguel@gmail.com">
+                  delalama.miguel@gmail.com
+                </a>{" "}
+                directly.
+              </p>
+            ) : null}
           </div>
         </Card>
       </div>
