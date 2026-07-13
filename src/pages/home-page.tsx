@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Section } from "@/components/layout/section";
@@ -441,7 +441,9 @@ export function HomePage() {
 
   return (
     <div>
-      {structure.map((block) => sectionRenderers[block.type](block.id, content))}
+      {structure.map((block) => (
+        <Fragment key={block.id}>{sectionRenderers[block.type](block.id, content)}</Fragment>
+      ))}
       <FooterSection />
     </div>
   );
