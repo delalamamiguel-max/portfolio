@@ -1,5 +1,19 @@
 [
   {
+    "slug": "atlas-case-study",
+    "title": "Atlas Case Study",
+    "summary": "Generative AI copy variations at scale: 17% productivity, 25% engagement, 15% revenue lift.",
+    "tags": [
+      "Generative AI",
+      "Personalization",
+      "Experimentation",
+      "MarTech",
+      "Copy at Scale",
+      "Enterprise AI"
+    ],
+    "category": "company-products"
+  },
+  {
     "slug": "clockero-case-study",
     "title": "Clockero Case Study",
     "summary": "Built solo. Shipped to production. AI-powered field workforce accountability.",

@@ -14,7 +14,7 @@ How AT&T Moved from Manual Segmentation to ML-Powered Personalization and Drove 
 ![Image](/images/cms/case-studies-signalai-case-study/2026/02/screenshot-2026-02-27-at-6-31-28-pm-699581.webp){align=center width=100}
 
 
-**BACKGROUND**
+
 
 **Context: Who & What**
 
@@ -22,7 +22,7 @@ AT&T's dot-com platform serves millions of customers across consumer and busines
 
 This case study covers the end-to-end product work spanning stakeholder alignment through architecture design and A/B-validated launch that made the transition possible.
 
-**THE CHALLENGE**
+## The Challenge
 
 **Conflicting Priorities, Static Outputs**
 
@@ -38,13 +38,13 @@ Key pain points included:
 - Marketing and engineering were misaligned on what 'success' looked like, stalling prioritization
 - Infrastructure concerns about ML inference load had no proposed solution, creating engineering resistance
 
-**THE SOLUTION**
+## The Solution
 
 **ML-Based Personalization, Built for Scale**
 
 The solution was a decoupled ML personalization microservice integrated into the CMS platform. It was designed so marketing could act on high-value segments immediately while engineering retained full confidence in infrastructure stability.
 
-**KEY ARCHITECTURE DECISIONS**
+## Key Architecture Decisions
 
 **How We Built It**
 
@@ -53,7 +53,7 @@ The solution was a decoupled ML personalization microservice integrated into the
 - Feedback loops for self-optimization. User interactions including clicks, dwell time, and cart behavior were fed back into the model, enabling continuous improvement without manual retraining cycles.
 - Phased roadmap with scalability prioritized early. Infrastructure concerns were addressed in the first sprint, reducing engineering resistance and creating alignment before feature work began.
 
-**EXECUTION & COLLABORATION**
+## Execution & Collaboration
 
 **Aligning Four Teams Around One Roadmap**
 
@@ -67,9 +67,15 @@ Key execution steps:
 - Designed and ran an A/B test comparing the ML recommendation variant against the manual segmentation control, establishing clean measurement before scaling
 - Worked with engineering to finalize the microservice architecture, caching strategy, and feedback loop implementation, with infrastructure concerns formally addressed in the roadmap before feature delivery
 
-**RESULTS & IMPACT**
+## Results & Impact
 
 **Measurable Wins Across the Board**
+
+Headline outcomes:
+
+- 8% click-through rate improvement, validated through A/B testing against the manual segmentation control
+- 12% engagement improvement across personalized experiences
+- Deployed at scale on a platform serving approximately 30 million monthly users
 
 ![Image](/images/cms/case-studies-signalai-case-study/2026/02/screenshot-2026-02-27-at-6-32-44-pm-803460.webp){align=center width=100}
 
@@ -81,7 +87,7 @@ Beyond the headline metrics, the project delivered meaningful qualitative outcom
 - Freed-up segmentation time (−5% build overhead) was reallocated to higher-leverage strategic initiatives
 - The Redis caching implementation became a reference architecture for other inference-heavy services on the platform
 
-**LEARNINGS & WHAT'S NEXT**
+## Learnings & What's Next
 
 **Key Takeaways**
 

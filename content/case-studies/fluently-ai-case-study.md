@@ -13,7 +13,7 @@ published: true
 
 
 
-**BACKGROUND**
+
 
 **Context: Who and What**
 
@@ -21,7 +21,7 @@ AT&T dot-com serves millions of customers across consumer and business segments,
 
 Fluently AI is an in-house AI-powered translation and content management platform built to replace that outsourced model entirely, enabling AT&T to deliver accurate, brand-consistent Spanish-language content at a fraction of the cost and time.
 
-**THE CHALLENGE**
+## The Challenge
 
 **High Costs, Slow Updates, Inconsistent Quality**
 
@@ -38,7 +38,7 @@ Key pain points included:
   - Inconsistent quality across vendors created brand and compliance risk
   - Growing demand from the Hispanic audience made the existing model increasingly unsustainable
 
-**THE SOLUTION**
+## The Solution
 
 **Fluently AI: An In-House Translation and Content Platform**
 
@@ -46,7 +46,7 @@ Fluently AI was designed as a generic, scalable product to replace the vendor de
 
 The architecture was built with future scalability in mind, enabling seamless addition of new languages to support AT&T's broader multilingual market ambitions beyond the initial Hispanic audience.
 
-**KEY DESIGN DECISIONS**
+## Key Design Decisions
 
 **How We Built It**
 
@@ -55,7 +55,7 @@ The architecture was built with future scalability in mind, enabling seamless ad
   - Standardized quality controls. Consistent translation logic replaced the variability of multiple vendor outputs, improving brand alignment and reducing compliance review overhead.
   - Integration with existing CMS. Fluently AI was built to work within the existing AT&T dot-com infrastructure, reducing deployment risk and avoiding a full platform replacement.
 
-**EXECUTION AND COLLABORATION**
+## Execution & Collaboration
 
 **Building a Cross-Functional Business Case**
 
@@ -73,11 +73,15 @@ Key execution steps:
   - Established clear roles and accountability across teams after funding was confirmed, ensuring each group understood its contribution and how it connected to the broader initiative
   - Built and managed a prioritized roadmap focused on high-impact features first, keeping the project on track and reducing scope creep during delivery
 
-**RESULTS AND IMPACT**
+## Results & Impact
 
 **Measurable Wins Across Cost, Speed, and Quality**
 
+Headline outcomes:
 
+  - Approximately 99% faster translation turnaround compared to the outsourced vendor model
+  - Approximately 50% fewer content defects after standardizing quality controls
+  - Multi-million-dollar annual OPEX savings from eliminating outsourced translation contracts
 
 ![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-39-57-pm-006299.webp){align=center width=100}
 
@@ -90,7 +94,7 @@ Beyond the headline metrics, Fluently AI delivered meaningful strategic outcomes
   - Improved translation consistency strengthened brand integrity and reduced the compliance review burden on legal and marketing teams
   - The stakeholder alignment process became a model for how to build cross-functional buy-in for future platform initiatives
 
-**LEARNINGS AND WHAT'S NEXT**
+## Learnings & What's Next
 
 **Key Takeaways**
 
