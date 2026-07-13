@@ -5,6 +5,7 @@ import { Section } from "@/components/layout/section";
 import { HistoryBackButton } from "@/components/ui/history-back-button";
 import { fetchContentDoc, getResumeContent, type ContentDomain } from "@/lib/content-loader";
 import { validateCaseStudyDoc, type ValidatedCaseStudy } from "@/lib/content-schema";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 type DocState =
   | { status: "loading" }
@@ -85,6 +86,7 @@ function DocStateFallback({ state, notFoundTitle, notFoundDetail }: { state: Doc
 export function CaseStudyDetailPage() {
   const { slug } = useParams();
   const state = useFetchedStudy("case-studies", slug, true);
+  useDocumentTitle(state.status === "ready" ? state.study.title : undefined);
 
   if (state.status !== "ready") {
     return <DocStateFallback state={state} notFoundTitle="Case study not available." notFoundDetail="This case study is not published." />;
@@ -96,6 +98,7 @@ export function CaseStudyDetailPage() {
 export function DeepDiveDetailPage() {
   const { slug } = useParams();
   const state = useFetchedStudy("deep-dive", slug, true);
+  useDocumentTitle(state.status === "ready" ? state.study.title : undefined);
 
   if (state.status !== "ready") {
     return <DocStateFallback state={state} notFoundTitle="Deep Dive not available." notFoundDetail="This deep dive is not published." />;

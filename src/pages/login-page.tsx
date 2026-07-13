@@ -4,8 +4,10 @@ import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 export function LoginPage() {
+  useDocumentTitle("Sign in");
   const location = useLocation();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");

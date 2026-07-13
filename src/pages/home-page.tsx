@@ -39,12 +39,7 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
             {content.heroEyebrow}
           </p>
           <div className="max-w-4xl">
-            <h1 className="h1 text-balance sm:hidden">{content.heroHeadline}</h1>
-            <h1 className="h1 hidden text-balance sm:block">
-              <span className="block whitespace-nowrap">Senior Product Leader.</span>
-              <span className="block">Complex systems,</span>
-              <span className="block">simple experiences.</span>
-            </h1>
+            <h1 className="h1 text-balance">{content.heroHeadline}</h1>
           </div>
           <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -377,6 +372,7 @@ function FooterSection() {
   return (
     <footer className="container border-t border-border/60 py-8">
       <div className="flex flex-col gap-2 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-foreground">Miguel de la Lama · Senior Product Manager</p>
         <a
           href="https://www.linkedin.com/in/migueldelalama/"
           target="_blank"
