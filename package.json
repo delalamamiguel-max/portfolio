@@ -4,8 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "content:index": "node scripts/generate-content-index.mjs",
+    "predev": "npm run content:index",
     "dev": "vite",
     "typecheck": "tsc -b",
+    "prebuild": "npm run content:index",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
