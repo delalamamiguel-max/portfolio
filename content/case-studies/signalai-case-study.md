@@ -1,7 +1,7 @@
 ---
 slug: signalai-case-study
-title: SignalAI Case Study
-summary: Thirty million users. One smarter engine. Real results.
+title: SignalAI: Personalization at 30-Million-User Scale
+summary: How AT&T replaced manual segmentation with ML personalization, lifting CTR 8% and engagement 12%.
 tags: [ML Personalization, Real-Time Engagement, A/B Testing, CTR Optimization, Enterprise AI, MarTech]
 category: company-products
 published: true

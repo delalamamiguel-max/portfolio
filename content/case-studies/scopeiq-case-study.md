@@ -1,7 +1,7 @@
 ---
 slug: scopeiq-case-study
-title: ScopeIQ Case Study
-summary: Built to Stop Guessing: How an Internal AI Model Slashed Planning Time by 70% 
+title: ScopeIQ: Getting a Distrusted Model Adopted
+summary: How listening, explainability, and an MVP rollout turned a shelved planning model into core process.
 tags: [AI-Powered Planning, Operational Efficiency, ML, Agency Innovation, Budget Forecasting, Resource AI]
 category: company-products
 published: true

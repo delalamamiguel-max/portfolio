@@ -1,7 +1,7 @@
 ---
 slug: clockero-case-study
-title: Clockero Case Study
-summary: Built solo. Shipped to production. AI-powered field workforce accountability.
+title: Clockero: AI-Native Field Accountability, Built Solo
+summary: GPS-verified check-ins, voice-to-report AI, production SaaS shipped by one person.
 tags: [ai, B2B, SaaS, experimentation, governance, vibe coding]
 category: personal-entrepreneurship
 published: true

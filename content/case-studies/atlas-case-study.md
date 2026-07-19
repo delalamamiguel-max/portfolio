@@ -1,7 +1,7 @@
 ---
 slug: atlas-case-study
-title: Atlas Case Study
-summary: Generative AI copy variations at scale: 17% productivity, 25% engagement, 15% revenue lift.
+title: Atlas: Generative Copy at the Speed of Targeting
+summary: GenAI copy variations at scale: 17% productivity, 25% engagement, 15% revenue improvement.
 tags: [Generative AI, Personalization, Experimentation, MarTech, Copy at Scale, Enterprise AI]
 category: company-products
 published: true

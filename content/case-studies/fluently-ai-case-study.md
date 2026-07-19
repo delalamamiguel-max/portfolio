@@ -1,7 +1,7 @@
 ---
 slug: fluently-ai-case-study
-title: Fluently AI Case Study
-summary: Building Fluently AI: How AT&T Eliminated Outsourcing and Saved Millions
+title: Fluently AI: The Platform That Replaced Outsourcing
+summary: An in-house AI translation platform that cut turnaround ~99% and content defects ~50% at AT&T.
 tags: [AI, TaaS Platform, Multilingual, att.com, Automation, Product-Strategy]
 category: company-products
 published: true
