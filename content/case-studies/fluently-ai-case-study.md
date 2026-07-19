@@ -83,7 +83,7 @@ Headline outcomes:
 
   - Approximately 99% faster translation turnaround compared to the outsourced vendor model
   - Approximately 50% fewer content defects after standardizing quality controls
-  - Multi-million-dollar annual OPEX savings from eliminating outsourced translation contracts
+  - $8M+ in annual OPEX savings from eliminating outsourced translation contracts
 
 ![Image 2](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-26-at-8-39-57-pm-006299.webp){align=center width=100}
 

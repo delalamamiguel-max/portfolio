@@ -86,7 +86,7 @@ Beyond the headline metrics, the project delivered meaningful qualitative outcom
 
 - Engineering and marketing aligned on a shared roadmap for the first time in the platform's history, reducing future prioritization conflict
 - The microservice architecture established a reusable pattern for future ML integrations across the CMS platform
-- Freed-up segmentation time (−5% build overhead) was reallocated to higher-leverage strategic initiatives
+- Segment creation time dropped by approximately 25%, freeing capacity for higher-leverage strategic initiatives
 - The Redis caching implementation became a reference architecture for other inference-heavy services on the platform
 
 ## Learnings & What's Next
