@@ -10,6 +10,7 @@ Strategy x Systems x Scaled Execution.
 ## Environment Variables
 - Required: `SITE_PASSWORD`
 - CMS (GitHub writes): `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`
+- Contact form delivery (Resend): `RESEND_API_KEY` (required for delivery; without it the form returns an honest "temporarily unavailable" error), optional `CONTACT_TO_EMAIL` (default delalama.miguel@gmail.com) and `CONTACT_FROM_EMAIL` (default onboarding@resend.dev; use a sender on a Resend-verified domain for production)
 
 Copy local env:
 - `cp .env.example .env`

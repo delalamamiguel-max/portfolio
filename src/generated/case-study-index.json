@@ -1,0 +1,100 @@
+[
+  {
+    "slug": "atlas-case-study",
+    "title": "Atlas: Generative Copy at the Speed of Targeting",
+    "summary": "GenAI copy variations at scale: 17% productivity, 25% engagement, 15% revenue improvement.",
+    "tags": [
+      "Generative AI",
+      "Personalization",
+      "Experimentation",
+      "MarTech",
+      "Copy at Scale",
+      "Enterprise AI"
+    ],
+    "category": "company-products"
+  },
+  {
+    "slug": "bidflare-case-study",
+    "title": "BidFlare: Explainable Contract Matching",
+    "summary": "Deterministic scoring with bounded AI review for California public-sector opportunities.",
+    "tags": [
+      "AI",
+      "GovTech",
+      "B2B SaaS",
+      "Recommendations",
+      "Document AI",
+      "0-to-1"
+    ],
+    "category": "personal-entrepreneurship"
+  },
+  {
+    "slug": "clockero-case-study",
+    "title": "Clockero: AI-Native Field Accountability, Built Solo",
+    "summary": "GPS-verified check-ins, voice-to-report AI, production SaaS shipped by one person.",
+    "tags": [
+      "AI",
+      "B2B",
+      "SaaS",
+      "experimentation",
+      "governance",
+      "AI-assisted dev"
+    ],
+    "category": "personal-entrepreneurship"
+  },
+  {
+    "slug": "fluently-ai-case-study",
+    "title": "Fluently AI: The Platform That Replaced Outsourcing",
+    "summary": "An in-house AI translation platform that cut turnaround ~99% and content defects ~50% at AT&T.",
+    "tags": [
+      "AI",
+      "TaaS Platform",
+      "Multilingual",
+      "att.com",
+      "Automation",
+      "Product-Strategy"
+    ],
+    "category": "company-products"
+  },
+  {
+    "slug": "scopeiq-case-study",
+    "title": "ScopeIQ: Getting a Distrusted Model Adopted",
+    "summary": "How listening, explainability, and an MVP rollout turned a shelved planning model into core process.",
+    "tags": [
+      "AI-Powered Planning",
+      "Operational Efficiency",
+      "ML",
+      "Agency Innovation",
+      "Budget Forecasting",
+      "Resource AI"
+    ],
+    "category": "company-products"
+  },
+  {
+    "slug": "signalai-case-study",
+    "title": "SignalAI: Personalization at 30-Million-User Scale",
+    "summary": "How AT&T replaced manual segmentation with ML personalization, lifting CTR 8% and engagement 12%.",
+    "tags": [
+      "ML Personalization",
+      "Real-Time Engagement",
+      "A/B Testing",
+      "CTR Optimization",
+      "Enterprise AI",
+      "MarTech"
+    ],
+    "category": "company-products"
+  },
+  {
+    "slug": "traceguard-ai-case-study",
+    "title": "TraceGuard AI: Audit-Ready Recall Readiness",
+    "summary": "AI-assisted evidence capture and guided mock recalls for food companies. First customer live.",
+    "tags": [
+      "AI",
+      "B2B SaaS",
+      "Compliance",
+      "FSMA 204",
+      "Document AI",
+      "0-to-1"
+    ],
+    "category": "personal-entrepreneurship"
+  }
+]

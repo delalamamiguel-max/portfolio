@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /resume-download
+Disallow: /style-guide
+Disallow: /case-studies/
+Disallow: /deep-dive/
+Disallow: /files/cms/
+Disallow: /images/cms/case-studies-
+
+Sitemap: https://www.migueldelalama.com/sitemap.xml

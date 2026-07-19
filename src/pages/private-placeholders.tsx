@@ -1,36 +1,83 @@
-import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { CaseStudyTemplate } from "@/components/case-study/case-study-template";
 import { Section } from "@/components/layout/section";
-import { Card } from "@/components/ui/card";
 import { HistoryBackButton } from "@/components/ui/history-back-button";
-import { TagPill } from "@/components/ui/tag-pill";
-import { getCaseStudies, getCaseStudyBySlug, getDeepDiveBySlug, getDeepDives, getResumeContent } from "@/lib/content-loader";
+import { fetchContentDoc, getResumeContent, type ContentDomain } from "@/lib/content-loader";
+import { validateCaseStudyDoc, type ValidatedCaseStudy } from "@/lib/content-schema";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
-export function CaseStudiesIndexPage() {
-  const studies = getCaseStudies(false);
+type DocState =
+  | { status: "loading" }
+  | { status: "not-found" }
+  | { status: "error" }
+  | { status: "ready"; study: ValidatedCaseStudy };
+
+function useFetchedStudy(domain: ContentDomain, slug: string | undefined, requirePublished: boolean): DocState {
+  const [state, setState] = useState<DocState>({ status: "loading" });
+
+  useEffect(() => {
+    if (!slug) {
+      setState({ status: "not-found" });
+      return;
+    }
+
+    let mounted = true;
+    setState({ status: "loading" });
+
+    fetchContentDoc(domain, slug)
+      .then((raw) => {
+        if (!mounted) return;
+
+        if (!raw) {
+          setState({ status: "not-found" });
+          return;
+        }
+
+        try {
+          const study = validateCaseStudyDoc(raw);
+          if (requirePublished && !study.published) {
+            setState({ status: "not-found" });
+            return;
+          }
+          setState({ status: "ready", study });
+        } catch {
+          setState({ status: "error" });
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setState({ status: "error" });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [domain, slug, requirePublished]);
+
+  return state;
+}
+
+function DocStateFallback({ state, notFoundTitle, notFoundDetail }: { state: DocState; notFoundTitle: string; notFoundDetail: string }) {
+  if (state.status === "loading") {
+    return (
+      <Section density="dense">
+        <p className="body-md text-muted-text" role="status">
+          Loading content...
+        </p>
+      </Section>
+    );
+  }
+
+  const isError = state.status === "error";
 
   return (
     <Section density="dense">
-      <div className="max-w-4xl space-y-6">
-        <h1 className="h1">Case Studies</h1>
-        <p className="body-lg">Index of published private case studies.</p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {studies.map((study) => (
-            <Card key={study.slug} variant="case-study">
-              <h2 className="h4">{study.title}</h2>
-              <p className="mt-2 min-w-0 break-words text-muted-text [overflow-wrap:anywhere]">{study.summary}</p>
-              <div className="mt-4 flex max-w-full flex-wrap items-start gap-2">
-                {study.tags.map((tag) => (
-                  <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
-                ))}
-              </div>
-              <Link className="mt-4 inline-block link-accent" to={`/case-studies/${study.slug}`}>
-                Open case study
-              </Link>
-            </Card>
-          ))}
-        </div>
+      <div className="max-w-2xl space-y-4">
+        <h1 className="h1">{isError ? "Unable to load this page." : notFoundTitle}</h1>
+        <p className="body-md">{isError ? "Something went wrong while loading the content. Please try again." : notFoundDetail}</p>
+        <HistoryBackButton fallbackTo="/" label="Back to Home" />
       </div>
     </Section>
   );
@@ -38,48 +85,26 @@ export function CaseStudiesIndexPage() {
 
 export function CaseStudyDetailPage() {
   const { slug } = useParams();
-  const study = slug ? getCaseStudyBySlug(slug, false) : undefined;
+  const state = useFetchedStudy("case-studies", slug, true);
+  useDocumentTitle(state.status === "ready" ? state.study.title : undefined);
 
-  if (!study) {
-    return (
-      <Section density="dense">
-        <div className="max-w-2xl space-y-4">
-          <h1 className="h1">Case study not available.</h1>
-          <p className="body-md">This case study is not published.</p>
-          <HistoryBackButton fallbackTo="/" label="Back to Home" />
-        </div>
-      </Section>
-    );
+  if (state.status !== "ready") {
+    return <DocStateFallback state={state} notFoundTitle="Case study not available." notFoundDetail="This case study is not published." />;
   }
 
-  return <CaseStudyTemplate study={study} />;
+  return <CaseStudyTemplate study={state.study} showBackButton={false} />;
 }
 
 export function DeepDiveDetailPage() {
   const { slug } = useParams();
-  const study = slug ? getDeepDiveBySlug(slug, false) : undefined;
-  const deepDives = getDeepDives(false);
+  const state = useFetchedStudy("deep-dive", slug, true);
+  useDocumentTitle(state.status === "ready" ? state.study.title : undefined);
 
-  if (!study) {
-    return (
-      <Section density="dense">
-        <div className="max-w-3xl space-y-5">
-          <h1 className="h1">Deep Dive not available.</h1>
-          <p className="body-lg">This deep dive is not published.</p>
-          <HistoryBackButton fallbackTo="/deep-dive" label="Back" />
-          <div className="space-y-2">
-            {deepDives.map((doc) => (
-              <Link key={doc.slug} to={`/deep-dive/${doc.slug}`} className="block link-accent">
-                {doc.title}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </Section>
-    );
+  if (state.status !== "ready") {
+    return <DocStateFallback state={state} notFoundTitle="Deep Dive not available." notFoundDetail="This deep dive is not published." />;
   }
 
-  return <CaseStudyTemplate study={study} />;
+  return <CaseStudyTemplate study={state.study} showBackButton={false} />;
 }
 
 export function ResumeDownloadPage() {

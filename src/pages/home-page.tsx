@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Section } from "@/components/layout/section";
@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { MetricBlock } from "@/components/ui/metric-block";
 import { TagPill } from "@/components/ui/tag-pill";
 import {
-  getCaseStudies,
+  getCaseStudyIndex,
   getContactContent,
   getHomeContent,
   getHomepageStructure,
@@ -39,12 +39,7 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
             {content.heroEyebrow}
           </p>
           <div className="max-w-4xl">
-            <h1 className="h1 text-balance sm:hidden">{content.heroHeadline}</h1>
-            <h1 className="h1 hidden text-balance sm:block">
-              <span className="block whitespace-nowrap">Senior Product Leader.</span>
-              <span className="block">Complex systems,</span>
-              <span className="block">simple experiences.</span>
-            </h1>
+            <h1 className="h1 text-balance">{content.heroHeadline}</h1>
           </div>
           <p className="body-lg max-w-2xl">{content.heroSubheadline}</p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -85,18 +80,18 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
               </div>
             )}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent p-5">
-              <p className="mono-label text-teal-100">Operating Model</p>
-              <p className="mt-1 text-lg font-semibold text-white">Designed for calm scale</p>
+              <p className="mono-label text-teal-100">The pattern</p>
+              <p className="mt-1 text-lg font-semibold text-white">Problem → intelligence at the core → proof → scale</p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="glass-inset p-4">
-              <p className="font-semibold text-foreground">Platform thinking</p>
-              <p className="mt-1 text-sm leading-6 text-muted-text">Reusable systems, governance loops, and architecture-aware decisions.</p>
+              <p className="font-semibold text-foreground">Enterprise scale</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">AT&amp;T platforms and personalization serving 30M+ monthly users.</p>
             </div>
             <div className="glass-inset p-4">
-              <p className="font-semibold text-foreground">Measurable momentum</p>
-              <p className="mt-1 text-sm leading-6 text-muted-text">Proof points, signal clarity, and execution rhythm tied to outcomes.</p>
+              <p className="font-semibold text-foreground">Founder execution</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">AI-native SaaS designed, built, and shipped end to end.</p>
             </div>
           </div>
         </aside>
@@ -199,7 +194,8 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
 }
 
 function CaseStudiesSection({ id }: { id: string }) {
-  const studies = getCaseStudies(false);
+  const location = useLocation();
+  const studies = getCaseStudyIndex();
   const [selectedCategory, setSelectedCategory] = useState<CaseStudyCategory>("both");
   const filteredStudies = useMemo(
     () => (selectedCategory === "both" ? studies : studies.filter((study) => study.category === selectedCategory)),
@@ -210,8 +206,8 @@ function CaseStudiesSection({ id }: { id: string }) {
     <Section id={id} ariaLabel="Case studies">
       <div data-reveal className="max-w-5xl space-y-6">
         <header className="space-y-2">
-          <h2 className="h2">Case Studies</h2>
-          <p className="body-lg">Selected strategic product systems work.</p>
+          <h2 className="h2" id="case-studies-heading" tabIndex={-1}>The work</h2>
+          <p className="body-lg">One pattern across every product: intelligence at the core, proven by measurement.</p>
         </header>
         <div className="flex flex-wrap gap-2">
           {CASE_STUDY_CATEGORIES.map((category) => (
@@ -236,7 +232,12 @@ function CaseStudiesSection({ id }: { id: string }) {
                   <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
-              <Link to={`/case-studies/${study.slug}`} className="mt-5 inline-flex items-center gap-1 link-accent">
+              <Link
+                to={`/case-studies/${study.slug}`}
+                state={{ backgroundLocation: location }}
+                id={`case-card-${study.slug}`}
+                className="mt-5 inline-flex items-center gap-1 link-accent"
+              >
                 Open case study
                 <span aria-hidden>→</span>
               </Link>
@@ -351,13 +352,21 @@ function ContactSection({ id }: { id: string }) {
             </div>
 
             <Button variant="primary" size="lg" type="submit" disabled={submitting} className="min-w-[112px]">
-              {submitting ? "Sending..." : "Send"}
+              {submitting ? "Sending..." : "Start a conversation"}
             </Button>
           </form>
 
-          <div className="mt-4 min-h-6">
+          <div className="mt-4 min-h-6" role="status" aria-live="polite">
             {status === "success" ? <p className="body-md text-accent">Message sent. Thanks for reaching out.</p> : null}
-            {status === "error" ? <p className="body-md text-impact-green">Unable to send right now. Please try again.</p> : null}
+            {status === "error" ? (
+              <p className="body-md status-danger-text">
+                Unable to send right now. Please email{" "}
+                <a className="underline" href="mailto:delalama.miguel@gmail.com">
+                  delalama.miguel@gmail.com
+                </a>{" "}
+                directly.
+              </p>
+            ) : null}
           </div>
         </Card>
       </div>
@@ -369,6 +378,7 @@ function FooterSection() {
   return (
     <footer className="container border-t border-border/60 py-8">
       <div className="flex flex-col gap-2 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-foreground">Miguel de la Lama · Senior Product Manager</p>
         <a
           href="https://www.linkedin.com/in/migueldelalama/"
           target="_blank"
@@ -437,7 +447,9 @@ export function HomePage() {
 
   return (
     <div>
-      {structure.map((block) => sectionRenderers[block.type](block.id, content))}
+      {structure.map((block) => (
+        <Fragment key={block.id}>{sectionRenderers[block.type](block.id, content)}</Fragment>
+      ))}
       <FooterSection />
     </div>
   );

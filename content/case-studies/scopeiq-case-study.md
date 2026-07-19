@@ -1,7 +1,7 @@
 ---
 slug: scopeiq-case-study
-title: ScopeIQ Case Study
-summary: Built to Stop Guessing: How an Internal AI Model Slashed Planning Time by 70% 
+title: ScopeIQ: Getting a Distrusted Model Adopted
+summary: How listening, explainability, and an MVP rollout turned a shelved planning model into core process.
 tags: [AI-Powered Planning, Operational Efficiency, ML, Agency Innovation, Budget Forecasting, Resource AI]
 category: company-products
 published: true
@@ -9,12 +9,14 @@ published: true
 
 ## Strategic Context
 
+![ScopeIQ turned a distrusted model into an adopted one through a trust loop](/images/cms/case-studies-scopeiq-case-study/diagram.webp){align=center width=100}
+
 How a machine learning model built on five years of historical data reduced operational planning time by up to 70% and secured stakeholder buy-in at Saatchi and Saatchi Conill, part of Publicis Groupe, one of the top three global advertising networks.
 
 ![Image](/images/cms/case-studies-scopeiq-case-study/2026/02/screenshot-2026-02-27-at-6-05-04-pm-118763.webp){align=center width=100}
 
 
-**BACKGROUND**
+
 
 **Context: Who and What**
 
@@ -22,7 +24,7 @@ Saatchi and Saatchi Conill is part of Publicis Groupe, one of the top three glob
 
 This product was conceived, architected, and led from within the Digital Innovations team, an internal group built specifically to identify and develop technology solutions that could modernize how the agency operated. The predictive resource allocation model was the flagship initiative of that team, trained on five years of historical project and resource data.
 
-**THE CHALLENGE**
+## The Challenge
 
 **A Useful Model Nobody Trusted**
 
@@ -39,7 +41,7 @@ Key pain points included:
 - No feedback mechanism existed, so errors in the model had no path to correction
 - Manual resource planning remained the default, keeping operational overhead high and planning cycles slow
 
-**THE SOLUTION**
+## The Solution
 
 **A Rebuilt Model with a Human-Centered Adoption Strategy**
 
@@ -47,7 +49,7 @@ The solution addressed both the technical and human sides of the adoption proble
 
 The entire initiative was conceived, architected, and led internally, with the Digital Innovations team driving product strategy, stakeholder engagement, data science partnership, and engineering delivery end to end.
 
-**KEY DESIGN DECISIONS**
+## Key Design Decisions
 
 **How We Built It**
 
@@ -56,7 +58,7 @@ The entire initiative was conceived, architected, and led internally, with the D
 - Feedback loop for continuous improvement. Key leaders and managers were given the ability to flag disagreements with the model's recommendations in real time, feeding corrections back into future iterations.
 - MVP-first rollout with smaller teams. Rather than launching broadly, the revised model was validated with a subset of teams first, confirming performance before scaling to the wider organization.
 
-**EXECUTION AND COLLABORATION**
+## Execution & Collaboration
 
 **Turning Skeptics into Champions**
 
@@ -73,7 +75,7 @@ Key execution steps:
 - Collaborated with engineering to design and launch an MVP with a select group of smaller teams, validating the improved model in a controlled environment before broader rollout
 - Built and managed the feedback loop that allowed managers to flag recommendations in real time, creating a living improvement cycle rather than a static release
 
-**RESULTS AND IMPACT**
+## Results & Impact
 
 **From Distrust to Adoption, with Measurable Efficiency Gains**
 
@@ -87,7 +89,7 @@ Beyond the headline metrics, the initiative delivered lasting organizational val
 - Funding was secured for future Digital Innovations initiatives based on the demonstrated performance and business impact of this model
 - The MVP validation approach established a repeatable playbook for introducing ML-powered tools to skeptical internal audiences
 
-**LEARNINGS AND WHAT'S NEXT**
+## Learnings & What's Next
 
 **Key Takeaways**
 
