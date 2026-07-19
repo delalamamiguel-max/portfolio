@@ -1,27 +1,27 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "../lib/session.js";
+import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken, VIEWER_SESSION_COOKIE_NAME } from "../lib/session.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "GET") {
-    res.status(405).json({ authenticated: false });
+    res.status(405).json({ authenticated: false, scope: null });
     return;
   }
 
-  const secret = process.env.SITE_PASSWORD;
-
-  if (!secret) {
-    res.status(500).json({ authenticated: false });
-    return;
-  }
-
+  const adminSecret = process.env.SITE_PASSWORD;
+  const viewerSecret = process.env.CASE_STUDY_PASSWORD;
   const cookies = parseCookies(req.headers.cookie ?? null);
-  const token = cookies[SESSION_COOKIE_NAME];
 
-  if (!token) {
-    res.status(200).json({ authenticated: false });
+  const adminToken = cookies[SESSION_COOKIE_NAME];
+  if (adminSecret && adminToken && (await verifySessionToken(adminToken, adminSecret))) {
+    res.status(200).json({ authenticated: true, scope: "admin" });
     return;
   }
 
-  const authenticated = await verifySessionToken(token, secret);
-  res.status(200).json({ authenticated });
+  const viewerToken = cookies[VIEWER_SESSION_COOKIE_NAME];
+  if (viewerSecret && viewerToken && (await verifySessionToken(viewerToken, viewerSecret))) {
+    res.status(200).json({ authenticated: true, scope: "viewer" });
+    return;
+  }
+
+  res.status(200).json({ authenticated: false, scope: null });
 }

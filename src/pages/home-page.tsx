@@ -225,6 +225,11 @@ function CaseStudiesSection({ id }: { id: string }) {
         <div className="grid gap-4 md:grid-cols-2">
           {filteredStudies.map((study) => (
             <Card key={study.slug} variant="case-study">
+              {study.category === "company-products" ? (
+                <span className="mb-2 inline-flex w-fit items-center gap-1.5 rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 font-mono text-[11px] tracking-normal text-warning">
+                  <span aria-hidden>🔒</span> Password Protected
+                </span>
+              ) : null}
               <h3 className="h4">{study.title}</h3>
               <p className="mt-2 min-w-0 break-words text-muted-text [overflow-wrap:anywhere]">{study.summary}</p>
               <div className="mt-4 flex max-w-full flex-wrap items-start gap-2">

@@ -1,16 +1,23 @@
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken } from "./lib/session.js";
+import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken, VIEWER_SESSION_COOKIE_NAME } from "./lib/session.js";
+import { PUBLIC_CASE_STUDY_SLUGS } from "./lib/case-study-access.js";
 
-// Static asset prefixes that hold private content and must not be served
-// without a session (the page routes that reference them are gated too).
-const PRIVATE_ASSET_PREFIXES = ["/files/cms/resume/", "/images/cms/case-studies-"];
+const CASE_STUDY_PATH = /^\/case-studies\/([a-z0-9-]+)$/;
+const CASE_STUDY_IMAGE_PATH = /^\/images\/cms\/case-studies-([a-z0-9-]+)\//;
 
-// The broad /images/cms matcher also catches public assets (e.g. the homepage
-// profile image); only the private prefixes require a session.
-function requiresSession(pathname: string): boolean {
-  if (pathname.startsWith("/images/cms/")) {
-    return PRIVATE_ASSET_PREFIXES.some((prefix) => pathname.startsWith(prefix));
-  }
-  return true;
+async function hasAdminSession(request: Request): Promise<boolean> {
+  const secret = process.env.SITE_PASSWORD;
+  if (!secret) return false;
+
+  const token = parseCookies(request.headers.get("cookie"))[SESSION_COOKIE_NAME];
+  return Boolean(token) && verifySessionToken(token, secret);
+}
+
+async function hasViewerSession(request: Request): Promise<boolean> {
+  const secret = process.env.CASE_STUDY_PASSWORD;
+  if (!secret) return false;
+
+  const token = parseCookies(request.headers.get("cookie"))[VIEWER_SESSION_COOKIE_NAME];
+  return Boolean(token) && verifySessionToken(token, secret);
 }
 
 function redirectToLogin(request: Request): Response {
@@ -21,30 +28,38 @@ function redirectToLogin(request: Request): Response {
 }
 
 export default async function middleware(request: Request) {
-  const url = new URL(request.url);
+  const { pathname } = new URL(request.url);
 
-  if (!requiresSession(url.pathname)) {
-    return;
+  // Admin surfaces: strictly admin-scope, a viewer session is not enough.
+  if (pathname.startsWith("/admin") || pathname === "/style-guide" || pathname.startsWith("/deep-dive/")) {
+    if (!(await hasAdminSession(request))) return redirectToLogin(request);
+    return fetch(request);
   }
 
-  const secret = process.env.SITE_PASSWORD;
-
-  if (!secret) {
-    return redirectToLogin(request);
+  // Case-study document routes: public slugs pass through untouched; the
+  // rest require admin or viewer.
+  const caseStudySlug = pathname.match(CASE_STUDY_PATH)?.[1];
+  if (caseStudySlug) {
+    if (PUBLIC_CASE_STUDY_SLUGS.has(caseStudySlug)) return fetch(request);
+    if (!((await hasAdminSession(request)) || (await hasViewerSession(request)))) return redirectToLogin(request);
+    return fetch(request);
   }
 
-  const cookieHeader = request.headers.get("cookie");
-  const cookies = parseCookies(cookieHeader);
-  const token = cookies[SESSION_COOKIE_NAME];
-
-  if (!token) {
-    return redirectToLogin(request);
+  // Case-study images live under /images/cms/case-studies-<slug>/... and
+  // follow the same public/gated split as the document route above. Other
+  // /images/cms/* assets (e.g. the homepage profile photo) are untouched.
+  const imageSlug = pathname.match(CASE_STUDY_IMAGE_PATH)?.[1];
+  if (imageSlug) {
+    if (PUBLIC_CASE_STUDY_SLUGS.has(imageSlug)) return fetch(request);
+    if (!((await hasAdminSession(request)) || (await hasViewerSession(request)))) return redirectToLogin(request);
+    return fetch(request);
   }
 
-  const valid = await verifySessionToken(token, secret);
-
-  if (!valid) {
-    return redirectToLogin(request);
+  // Resume: gated by the same admin-or-viewer rule as company-product case
+  // studies (the resume itself carries no public/private split).
+  if (pathname.startsWith("/files/cms/resume/") || pathname === "/resume-download") {
+    if (!((await hasAdminSession(request)) || (await hasViewerSession(request)))) return redirectToLogin(request);
+    return fetch(request);
   }
 
   return fetch(request);
