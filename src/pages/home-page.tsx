@@ -80,18 +80,18 @@ function HeroSection({ id, content }: { id: string; content: HomeContent }) {
               </div>
             )}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent p-5">
-              <p className="mono-label text-teal-100">Operating Model</p>
-              <p className="mt-1 text-lg font-semibold text-white">Designed for calm scale</p>
+              <p className="mono-label text-teal-100">The pattern</p>
+              <p className="mt-1 text-lg font-semibold text-white">Problem → intelligence at the core → proof → scale</p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="glass-inset p-4">
-              <p className="font-semibold text-foreground">Platform thinking</p>
-              <p className="mt-1 text-sm leading-6 text-muted-text">Reusable systems, governance loops, and architecture-aware decisions.</p>
+              <p className="font-semibold text-foreground">Enterprise scale</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">AT&amp;T platforms and personalization serving 30M+ monthly users.</p>
             </div>
             <div className="glass-inset p-4">
-              <p className="font-semibold text-foreground">Measurable momentum</p>
-              <p className="mt-1 text-sm leading-6 text-muted-text">Proof points, signal clarity, and execution rhythm tied to outcomes.</p>
+              <p className="font-semibold text-foreground">Founder execution</p>
+              <p className="mt-1 text-sm leading-6 text-muted-text">AI-native SaaS designed, built, and shipped end to end.</p>
             </div>
           </div>
         </aside>
@@ -205,8 +205,8 @@ function CaseStudiesSection({ id }: { id: string }) {
     <Section id={id} ariaLabel="Case studies">
       <div data-reveal className="max-w-5xl space-y-6">
         <header className="space-y-2">
-          <h2 className="h2">Case Studies</h2>
-          <p className="body-lg">Selected strategic product systems work.</p>
+          <h2 className="h2">The work</h2>
+          <p className="body-lg">One pattern across every product: intelligence at the core, proven by measurement.</p>
         </header>
         <div className="flex flex-wrap gap-2">
           {CASE_STUDY_CATEGORIES.map((category) => (
@@ -346,7 +346,7 @@ function ContactSection({ id }: { id: string }) {
             </div>
 
             <Button variant="primary" size="lg" type="submit" disabled={submitting} className="min-w-[112px]">
-              {submitting ? "Sending..." : "Send"}
+              {submitting ? "Sending..." : "Start a conversation"}
             </Button>
           </form>
 

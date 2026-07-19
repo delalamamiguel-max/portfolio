@@ -81,7 +81,7 @@ export function SiteShell({ children }: { children?: ReactNode }) {
             to="/"
             className="min-w-0 rounded-sm text-xs font-semibold uppercase tracking-normal text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-systems-teal focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm"
           >
-            Architected by Miguel
+            Miguel de la Lama
           </Link>
           <nav aria-label="Primary" className="hidden items-center gap-1 md:flex md:gap-2">
             {navItems.map((item) => (
