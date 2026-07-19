@@ -1,11 +1,11 @@
 {
-  "selectedImpactHeading": "Selected Impact",
-  "selectedImpactSubtext": "Real products. Real scale. Real results.",
-  "heroEyebrow": "Built for scale. Designed for trust.",
-  "heroHeadline": "Senior Product Leader. Complex systems, simple experiences.",
-  "heroSubheadline": "The experience looks simple. The systems behind it aren't.",
-  "strategicPillarsHeading": "How I Operate",
-  "strategicPillarsSubtext": "Where strategic intent becomes engineered outcome.",
+  "selectedImpactHeading": "Proof",
+  "selectedImpactSubtext": "Shipped products. Measured outcomes.",
+  "heroEyebrow": "Miguel de la Lama · Senior Product Leader",
+  "heroHeadline": "I build products with AI at the foundation.",
+  "heroSubheadline": "Not features with a model bolted on. Products where intelligence is the core: personalization serving 30 million users, generative AI that moved revenue, and AI-native SaaS shipped end to end.",
+  "strategicPillarsHeading": "How I Build",
+  "strategicPillarsSubtext": "The method behind the pattern.",
   "profileImage": {
     "src": "/images/cms/home-profile/2026/07/headshot-updated-133224.webp",
     "alt": "Portrait of Miguel de la Lama"
@@ -34,17 +34,17 @@
   ],
   "strategicPillars": [
     {
-      "headline": "Strategy",
-      "subheadline": "I design decision systems, not feature roadmaps.",
+      "headline": "Find the leverage",
+      "subheadline": "AI earns its place by moving a business number.",
       "bullets": [
         "Tie AI capability to measurable business outcomes",
-        "Sequence platform investments against scale and governance constraints",
-        "Build business cases that unlock executive funding"
+        "Build business cases that unlock executive funding",
+        "Sequence platform investments against scale and governance constraints"
       ]
     },
     {
-      "headline": "Systems Architecture",
-      "subheadline": "I treat platforms as operating models.",
+      "headline": "Intelligence at the core",
+      "subheadline": "Architecture built around the model, not squeezed around it.",
       "bullets": [
         "Data as product (internal and third-party integration)",
         "ML lifecycle design (telemetry → retraining → deployment)",
@@ -52,30 +52,16 @@
       ]
     },
     {
-      "headline": "Execution at Scale",
-      "subheadline": "Complex systems require structured alignment.",
+      "headline": "Prove it, then scale",
+      "subheadline": "Experimentation over opinion, every launch.",
       "bullets": [
-        "Lead cross-functional teams across Product, Engineering, Data Science, and Legal",
-        "Launch via experimentation, not opinion",
-        "MVPs used to de-risk investment and accelerate adoption"
+        "A/B-validated launches with clean measurement before scaling",
+        "MVPs used to de-risk investment and accelerate adoption",
+        "Lead 30+ contributors across Product, Engineering, Data Science, Analytics, Marketing, and Business"
       ]
     }
   ],
   "customSections": [
-    {
-      "cmsLabel": "Narrative",
-      "publicTitle": "My Approach",
-      "layoutType": "narrative",
-      "body": "The principles that show up in every product, every time.",
-      "bullets": [
-        " AI embedded into workflow, not layered on top.",
-        "Experimentation before scale.",
-        "Architecture that anticipates governance.",
-        "Adoption engineered, not assumed."
-      ],
-      "closingStatement": "The result is systems built to last.",
-      "credentials": []
-    },
     {
       "cmsLabel": "Learning - Continuous Learning",
       "publicTitle": "Continuous Learning",
@@ -86,22 +72,22 @@
         {
           "programTitle": "Bachelor of Business Administration, Marketing",
           "institution": "University of Texas at El Paso",
-          "appliedContext": "The business and consumer lens behind every product decision."
+          "appliedContext": "The business lens behind every product decision."
         },
         {
           "programTitle": "Post-Graduate Program in Artificial Intelligence & Machine Learning",
           "institution": "UT Austin McCombs School of Business",
-          "appliedContext": "Applied in production: AT&T personalization, Fluently translation infrastructure, and Clockero voice AI"
+          "appliedContext": "Applied in production across AT&T personalization, Fluently, and Clockero."
         },
         {
           "programTitle": "Product Strategy",
           "institution": "Northwestern Kellogg School of Management",
-          "appliedContext": "How I build executive business cases and sequence platform investments that get funded."
+          "appliedContext": "How I build business cases that get funded."
         },
         {
           "programTitle": "Artificial Intelligence: Implications for Business Strategy",
           "institution": "MIT Sloan & MIT CSAIL",
-          "appliedContext": "Shaped the mindset that AI belongs in the foundation not the feature list. Visible in every platform decision since."
+          "appliedContext": "Where the conviction formed: AI belongs in the foundation, not the feature list."
         },
         {
           "programTitle": "UX Research & Strategy",
@@ -112,11 +98,11 @@
     }
   ],
   "primaryCTA": {
-    "label": "Explore Case Studies",
+    "label": "See the work",
     "href": "/#case-studies"
   },
   "secondaryCTA": {
-    "label": "Contact",
-    "href": "/#contact"
+    "label": "Get the resume",
+    "href": "/#resume"
   }
 }

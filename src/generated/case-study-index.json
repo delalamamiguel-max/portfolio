@@ -1,8 +1,8 @@
 [
   {
     "slug": "atlas-case-study",
-    "title": "Atlas Case Study",
-    "summary": "Generative AI copy variations at scale: 17% productivity, 25% engagement, 15% revenue lift.",
+    "title": "Atlas: Generative Copy at the Speed of Targeting",
+    "summary": "GenAI copy variations at scale: 17% productivity, 25% engagement, 15% revenue improvement.",
     "tags": [
       "Generative AI",
       "Personalization",
@@ -15,8 +15,8 @@
   },
   {
     "slug": "clockero-case-study",
-    "title": "Clockero Case Study",
-    "summary": "Built solo. Shipped to production. AI-powered field workforce accountability.",
+    "title": "Clockero: AI-Native Field Accountability, Built Solo",
+    "summary": "GPS-verified check-ins, voice-to-report AI, production SaaS shipped by one person.",
     "tags": [
       "ai",
       "B2B",
@@ -29,8 +29,8 @@
   },
   {
     "slug": "fluently-ai-case-study",
-    "title": "Fluently AI Case Study",
-    "summary": "Building Fluently AI: How AT&T Eliminated Outsourcing and Saved Millions",
+    "title": "Fluently AI: The Platform That Replaced Outsourcing",
+    "summary": "An in-house AI translation platform that cut turnaround ~99% and content defects ~50% at AT&T.",
     "tags": [
       "AI",
       "TaaS Platform",
@@ -43,8 +43,8 @@
   },
   {
     "slug": "scopeiq-case-study",
-    "title": "ScopeIQ Case Study",
-    "summary": "Built to Stop Guessing: How an Internal AI Model Slashed Planning Time by 70%",
+    "title": "ScopeIQ: Getting a Distrusted Model Adopted",
+    "summary": "How listening, explainability, and an MVP rollout turned a shelved planning model into core process.",
     "tags": [
       "AI-Powered Planning",
       "Operational Efficiency",
@@ -57,8 +57,8 @@
   },
   {
     "slug": "signalai-case-study",
-    "title": "SignalAI Case Study",
-    "summary": "Thirty million users. One smarter engine. Real results.",
+    "title": "SignalAI: Personalization at 30-Million-User Scale",
+    "summary": "How AT&T replaced manual segmentation with ML personalization, lifting CTR 8% and engagement 12%.",
     "tags": [
       "ML Personalization",
       "Real-Time Engagement",

@@ -12,27 +12,21 @@
     "enabled": true
   },
   {
+    "id": "case-studies",
+    "type": "case-studies",
+    "navLabel": "Work",
+    "enabled": true
+  },
+  {
     "id": "strategic-pillars",
     "type": "strategic-pillars",
-    "navLabel": "Pillars",
+    "navLabel": "Method",
     "enabled": true
   },
   {
     "id": "custom-sections",
     "type": "custom-sections",
-    "navLabel": "Insights",
-    "enabled": true
-  },
-  {
-    "id": "case-studies",
-    "type": "case-studies",
-    "navLabel": "Case Studies",
-    "enabled": true
-  },
-  {
-    "id": "philosophy",
-    "type": "philosophy",
-    "navLabel": "Philosophy",
+    "navLabel": "Learning",
     "enabled": true
   },
   {
