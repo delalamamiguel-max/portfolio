@@ -1,6 +1,7 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { matchPath, Navigate, Route, Routes, useLocation, type Location } from "react-router-dom";
 import { SiteShell } from "@/components/layout/site-shell";
+import { CaseStudyOverlay } from "@/components/case-study/case-study-overlay";
 import { verifySession } from "@/lib/auth";
 
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
@@ -60,22 +61,39 @@ function PrivateRoute({ children }: { children: JSX.Element }) {
   return children;
 }
 
+const OVERLAY_PATTERNS = ["/case-studies/:slug", "/deep-dive/:slug"];
+
 export default function App() {
+  const location = useLocation();
+  const state = location.state as { backgroundLocation?: Location } | null;
+  const backgroundLocation = state?.backgroundLocation ?? null;
+  const overlayOpen = OVERLAY_PATTERNS.some((pattern) => matchPath(pattern, location.pathname));
+  const baseRef = useRef<HTMLDivElement>(null);
+
+  // While the overlay is open, the page behind it is inert: unreachable by
+  // keyboard and hidden from assistive technology.
+  useEffect(() => {
+    const element = baseRef.current;
+    if (!element) return;
+
+    if (overlayOpen) {
+      element.setAttribute("inert", "");
+    } else {
+      element.removeAttribute("inert");
+    }
+  }, [overlayOpen]);
+
   return (
     <Suspense fallback={<div className="container py-12 text-muted-text">Loading page...</div>}>
-      <Routes>
+      <div ref={baseRef}>
+      <Routes location={backgroundLocation ?? location}>
         <Route element={<SiteShell />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/case-studies" element={<Navigate to="/#case-studies" replace />} />
-          <Route
-            path="/case-studies/:slug"
-            element={
-              <PrivateRoute>
-                <CaseStudyDetailPage />
-              </PrivateRoute>
-            }
-          />
+          {/* Overlay URLs render the homepage as the visual context; the
+              overlay itself is matched against the real location below. */}
+          <Route path="/case-studies/:slug" element={<HomePage />} />
           <Route path="/philosophy" element={<Navigate to="/" replace />} />
           <Route path="/resume" element={<Navigate to="/#resume" replace />} />
           <Route
@@ -87,14 +105,7 @@ export default function App() {
             }
           />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
-          <Route
-            path="/deep-dive/:slug"
-            element={
-              <PrivateRoute>
-                <DeepDiveDetailPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/deep-dive/:slug" element={<HomePage />} />
           <Route
             path="/style-guide"
             element={
@@ -155,6 +166,35 @@ export default function App() {
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </div>
+
+      {overlayOpen ? (
+        <Suspense fallback={null}>
+          <Routes>
+            <Route
+              path="/case-studies/:slug"
+              element={
+                <CaseStudyOverlay hasBackground={Boolean(backgroundLocation)}>
+                  <PrivateRoute>
+                    <CaseStudyDetailPage />
+                  </PrivateRoute>
+                </CaseStudyOverlay>
+              }
+            />
+            <Route
+              path="/deep-dive/:slug"
+              element={
+                <CaseStudyOverlay hasBackground={Boolean(backgroundLocation)}>
+                  <PrivateRoute>
+                    <DeepDiveDetailPage />
+                  </PrivateRoute>
+                </CaseStudyOverlay>
+              }
+            />
+            <Route path="*" element={null} />
+          </Routes>
+        </Suspense>
+      ) : null}
     </Suspense>
   );
 }

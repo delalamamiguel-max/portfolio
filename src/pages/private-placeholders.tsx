@@ -92,7 +92,7 @@ export function CaseStudyDetailPage() {
     return <DocStateFallback state={state} notFoundTitle="Case study not available." notFoundDetail="This case study is not published." />;
   }
 
-  return <CaseStudyTemplate study={state.study} />;
+  return <CaseStudyTemplate study={state.study} showBackButton={false} />;
 }
 
 export function DeepDiveDetailPage() {
@@ -104,7 +104,7 @@ export function DeepDiveDetailPage() {
     return <DocStateFallback state={state} notFoundTitle="Deep Dive not available." notFoundDetail="This deep dive is not published." />;
   }
 
-  return <CaseStudyTemplate study={state.study} />;
+  return <CaseStudyTemplate study={state.study} showBackButton={false} />;
 }
 
 export function ResumeDownloadPage() {

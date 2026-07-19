@@ -194,6 +194,7 @@ function CustomSectionsSection({ id, content }: { id: string; content: HomeConte
 }
 
 function CaseStudiesSection({ id }: { id: string }) {
+  const location = useLocation();
   const studies = getCaseStudyIndex();
   const [selectedCategory, setSelectedCategory] = useState<CaseStudyCategory>("both");
   const filteredStudies = useMemo(
@@ -205,7 +206,7 @@ function CaseStudiesSection({ id }: { id: string }) {
     <Section id={id} ariaLabel="Case studies">
       <div data-reveal className="max-w-5xl space-y-6">
         <header className="space-y-2">
-          <h2 className="h2">The work</h2>
+          <h2 className="h2" id="case-studies-heading" tabIndex={-1}>The work</h2>
           <p className="body-lg">One pattern across every product: intelligence at the core, proven by measurement.</p>
         </header>
         <div className="flex flex-wrap gap-2">
@@ -231,7 +232,12 @@ function CaseStudiesSection({ id }: { id: string }) {
                   <TagPill key={`${study.slug}-${tag}`}>{tag}</TagPill>
                 ))}
               </div>
-              <Link to={`/case-studies/${study.slug}`} className="mt-5 inline-flex items-center gap-1 link-accent">
+              <Link
+                to={`/case-studies/${study.slug}`}
+                state={{ backgroundLocation: location }}
+                id={`case-card-${study.slug}`}
+                className="mt-5 inline-flex items-center gap-1 link-accent"
+              >
                 Open case study
                 <span aria-hidden>→</span>
               </Link>

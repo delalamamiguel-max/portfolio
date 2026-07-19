@@ -7,13 +7,15 @@ import { markdownToHtml } from "@/lib/markdown";
 
 type CaseStudyTemplateProps = {
   study: ValidatedCaseStudy;
+  /** Hidden inside the overlay, where the Close control owns that job. */
+  showBackButton?: boolean;
 };
 
 function toId(heading: string): string {
   return heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
+export function CaseStudyTemplate({ study, showBackButton = true }: CaseStudyTemplateProps) {
   const navItems = study.sections.map((section) => ({ id: toId(section.heading), label: section.heading }));
   const hasSections = study.sections.length > 0;
 
@@ -24,8 +26,8 @@ export function CaseStudyTemplate({ study }: CaseStudyTemplateProps) {
 
         <div className="space-y-8">
           <header className="space-y-4">
-            <HistoryBackButton fallbackTo="/" label="Back to Home" />
-            <h1 className="h1">{study.title}</h1>
+            {showBackButton ? <HistoryBackButton fallbackTo="/" label="Back to Home" /> : null}
+            <h1 className="h1" id="case-study-title">{study.title}</h1>
             <p className="body-lg max-w-3xl">{study.summary}</p>
             <div className="flex max-w-full flex-wrap items-start gap-2">
               {study.tags.map((tag) => (
