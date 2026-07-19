@@ -14,16 +14,30 @@
     "category": "company-products"
   },
   {
+    "slug": "bidflare-case-study",
+    "title": "BidFlare: Explainable Contract Matching",
+    "summary": "Deterministic scoring with bounded AI review for California public-sector opportunities.",
+    "tags": [
+      "AI",
+      "GovTech",
+      "B2B SaaS",
+      "Recommendations",
+      "Document AI",
+      "0-to-1"
+    ],
+    "category": "personal-entrepreneurship"
+  },
+  {
     "slug": "clockero-case-study",
     "title": "Clockero: AI-Native Field Accountability, Built Solo",
     "summary": "GPS-verified check-ins, voice-to-report AI, production SaaS shipped by one person.",
     "tags": [
-      "ai",
+      "AI",
       "B2B",
       "SaaS",
       "experimentation",
       "governance",
-      "vibe coding"
+      "AI-assisted dev"
     ],
     "category": "personal-entrepreneurship"
   },
@@ -68,5 +82,19 @@
       "MarTech"
     ],
     "category": "company-products"
+  },
+  {
+    "slug": "traceguard-ai-case-study",
+    "title": "TraceGuard AI: Audit-Ready Recall Readiness",
+    "summary": "AI-assisted evidence capture and guided mock recalls for food companies. First customer live.",
+    "tags": [
+      "AI",
+      "B2B SaaS",
+      "Compliance",
+      "FSMA 204",
+      "Document AI",
+      "0-to-1"
+    ],
+    "category": "personal-entrepreneurship"
   }
 ]

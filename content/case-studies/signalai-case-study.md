@@ -9,6 +9,8 @@ published: true
 
 ## Strategic Context
 
+![SignalAI: a decoupled, self-optimizing personalization microservice](/images/cms/case-studies-signalai-case-study/diagram.webp){align=center width=100}
+
 How AT&T Moved from Manual Segmentation to ML-Powered Personalization and Drove an 8% CTR Lift Across the Customer Platform
 
 ![Image](/images/cms/case-studies-signalai-case-study/2026/02/screenshot-2026-02-27-at-6-31-28-pm-699581.webp){align=center width=100}

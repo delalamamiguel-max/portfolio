@@ -9,6 +9,8 @@ published: true
 
 ## Strategic Context
 
+![ScopeIQ turned a distrusted model into an adopted one through a trust loop](/images/cms/case-studies-scopeiq-case-study/diagram.webp){align=center width=100}
+
 How a machine learning model built on five years of historical data reduced operational planning time by up to 70% and secured stakeholder buy-in at Saatchi and Saatchi Conill, part of Publicis Groupe, one of the top three global advertising networks.
 
 ![Image](/images/cms/case-studies-scopeiq-case-study/2026/02/screenshot-2026-02-27-at-6-05-04-pm-118763.webp){align=center width=100}

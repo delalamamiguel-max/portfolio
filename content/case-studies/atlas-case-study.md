@@ -9,9 +9,11 @@ published: true
 
 ## Strategic Context
 
+![Atlas closes the personalization gap between targeting and copy](/images/cms/case-studies-atlas-case-study/diagram.webp){align=center width=100}
+
 **From Personalized Targeting to Personalized Language**
 
-AT&T's ML-powered psychographic personalization program made it possible to decide *who* should see *what* across experiences serving approximately 30 million monthly users. But deciding what to show is only half of personalization — the message itself still had to be written. Producing distinct, on-brand copy variations for each psychographic audience remained a manual effort, which capped how much of the personalization capability could actually be used.
+AT&T's ML-powered psychographic personalization program made it possible to decide *who* should see *what* across experiences serving approximately 30 million monthly users. But deciding what to show is only half of personalization; the message itself still had to be written. Producing distinct, on-brand copy variations for each psychographic audience remained a manual effort, which capped how much of the personalization capability could actually be used.
 
 Atlas is a generative AI capability I led to close that gap: producing psychographic copy variations at scale, so the volume of message variants could keep pace with the sophistication of the targeting.
 

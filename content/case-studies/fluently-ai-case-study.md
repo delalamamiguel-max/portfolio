@@ -9,6 +9,8 @@ published: true
 
 ## Strategic Context
 
+![Fluently AI: from an outsourced vendor loop to an owned in-house platform](/images/cms/case-studies-fluently-ai-case-study/diagram.webp){align=center width=100}
+
 ![Results](/images/cms/case-studies-fluently-ai-case-study/2026/02/screenshot-2026-02-24-at-9-03-39-pm-496437.webp){align=center width=100}
 
 
