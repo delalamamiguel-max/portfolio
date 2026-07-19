@@ -109,5 +109,3 @@ Planned next iterations:
   - Expand Fluently AI to support additional multilingual markets beyond Spanish
   - Integrate real-time content performance data to inform translation prioritization
   - Explore applying the platform architecture to other AT&T digital properties beyond dot-com
-
-*Case study prepared for portfolio use. Metrics reflect approximate outcomes from internal measurement.*

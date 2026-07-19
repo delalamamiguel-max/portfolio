@@ -120,11 +120,3 @@ Email/password would have been faster to implement. SMS OTP was the right choice
 **Offline-first is a feature, not a nice-to-have**
 
 Field workers lose connectivity regularly. Building offline support with IndexedDB from the start meant the core job (check in + log) works regardless of signal. This was a non-negotiable product decision, not an enhancement.
-
-## What's Next
-
-- MFA for Admin accounts: enterprise-readiness requirement
-- Dev/prod environment separation: second Supabase project for safe experimentation
-- Industry-specific AI prompt tuning: better log quality for construction vs. agriculture vs. logistics
-- Native mobile app: background GPS tracking for continuous location verification
-- Advanced analytics dashboard: attendance trends, compliance rates, org-level insights

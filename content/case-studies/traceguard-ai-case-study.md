@@ -104,5 +104,3 @@ As adoption grows, the metrics that matter here are drill completion time versus
 **Documented limitations are a feature.** Writing down what the system doesn't yet do, and the upgrade path, is what separates a credible production system from a demo.
 
 Next: deepen the first customer deployment into measured outcomes, validate pricing against real willingness to pay, add live-database integration tests, and sequence the enterprise roadmap (SSO, MFA, integrations) against actual customer pull rather than speculation.
-
-*Case study prepared for portfolio use. Product capabilities are verifiable in the live product; customer outcomes are early and described as such.*

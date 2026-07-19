@@ -102,5 +102,3 @@ The foundation built by Scope IQ opened the door to several high-value extension
 - Expand the model to cover additional client segments and engagement types not represented in the initial training data
 - Integrate real-time project performance data to enable in-year resource reallocation, not just annual planning
 - Apply the feedback loop architecture to other internal planning tools across the agency
-
-*Case study prepared for portfolio use. Metrics reflect approximate outcomes from internal measurement.*
