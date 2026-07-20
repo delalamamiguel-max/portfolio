@@ -54,7 +54,15 @@ export function LoginPage() {
         return;
       }
 
-      navigate(next);
+      // Static files (e.g. /files/cms/resume/*.pdf, /images/cms/*) are not SPA
+      // routes — React Router would match the catch-all and show NotFoundPage.
+      // Use a full-page navigation so the browser fetches the file directly.
+      const isStaticFile = /\.[a-z0-9]+$/i.test(next) || next.startsWith("/files/") || next.startsWith("/images/");
+      if (isStaticFile) {
+        window.location.href = next;
+      } else {
+        navigate(next);
+      }
     } catch {
       setError("Incorrect password. Try again.");
     } finally {
