@@ -72,7 +72,7 @@ export default async function middleware(request: Request) {
 
   // Resume: its own scope. A case-study-only grant must not open the resume,
   // so this checks the resume cookie, never the case-study one.
-  if (pathname.startsWith("/files/cms/resume/") || pathname === "/resume-download") {
+  if (pathname.startsWith("/files/cms/resume/")) {
     if (!((await hasAdminSession(request)) || (await hasResumeSession(request)))) return redirectToLogin(request);
     return fetch(request);
   }
@@ -87,7 +87,6 @@ export const config = {
     "/case-studies/:path+",
     "/deep-dive/:path+",
     "/admin/:path*",
-    "/resume-download",
     "/style-guide",
     "/files/cms/resume/:path+",
     "/images/cms/:path+",

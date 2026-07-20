@@ -1,8 +1,11 @@
-import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Section } from "@/components/layout/section";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { EmailLink } from "@/components/ui/email-link";
+import { cn } from "@/lib/utils";
+import { CONTACT_EMAIL, contactMailto } from "@/lib/site";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { MetricBlock } from "@/components/ui/metric-block";
 import { TagPill } from "@/components/ui/tag-pill";
@@ -259,18 +262,22 @@ function CaseStudiesSection({ id }: { id: string }) {
 
 function ResumeSection({ id }: { id: string }) {
   const resume = getResumeContent();
-  const hasPdf = Boolean(resume.downloadablePdfUrl?.trim());
+  const pdfUrl = resume.downloadablePdfUrl?.trim();
   return (
     <Section id={id} ariaLabel="Resume" density="dense">
       <div data-reveal className="mx-auto max-w-3xl space-y-8 text-center">
         <h2 className="h3">Resume</h2>
-        {hasPdf ? (
+        {pdfUrl ? (
           <div className="space-y-3">
-            <Link to="/resume-download" className="inline-flex">
-              <Button variant="primary" size="lg">Download PDF</Button>
-            </Link>
+            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "primary", size: "lg" }))}>
+              Download PDF
+              <span className="ml-2" aria-hidden>
+                ↗
+              </span>
+            </a>
             <p className="text-sm text-muted-text">
-              The resume is password protected. <Link to="/request-access" className="link-accent">Request access</Link>
+              Opens in a new tab. The resume is password protected; request access at{" "}
+              <EmailLink subject="Resume access request" />. Access is reviewed personally.
             </p>
           </div>
         ) : (
@@ -285,37 +292,6 @@ function ResumeSection({ id }: { id: string }) {
 
 function ContactSection({ id }: { id: string }) {
   const contact = getContactContent();
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [website, setWebsite] = useState(""); // honeypot
-  const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitting(true);
-    setStatus("idle");
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, message, website, sourcePage: window.location.pathname + window.location.hash }),
-      });
-
-      if (!response.ok) {
-        setStatus("error");
-        return;
-      }
-
-      setStatus("success");
-      setMessage("");
-    } catch {
-      setStatus("error");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <Section id={id} ariaLabel="Contact">
@@ -327,70 +303,14 @@ function ContactSection({ id }: { id: string }) {
         </header>
 
         <Card variant="case-study" padding="md" className="max-w-4xl">
-          <div className="mb-4 space-y-2">
-            {contact.contactMethods.map((method) => (
-              <a key={method.value} className="mono-label block hover:underline" href={method.value}>{method.label}</a>
-            ))}
-          </div>
-
-          <form className="space-y-4" onSubmit={onSubmit}>
-            <div className="space-y-2">
-              <label className="text-sm text-primary-text" htmlFor="contact-email">
-                Work Email
-              </label>
-              <input
-                id="contact-email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground placeholder:text-muted-text"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm text-primary-text" htmlFor="contact-message">
-                Message
-              </label>
-              <textarea
-                id="contact-message"
-                className="min-h-32 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground placeholder:text-muted-text"
-                required
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-              />
-            </div>
-
-            {/* Honeypot: hidden from real users and assistive tech. */}
-            <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
-              <label htmlFor="contact-website">Website</label>
-              <input
-                id="contact-website"
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
-                value={website}
-                onChange={(event) => setWebsite(event.target.value)}
-              />
-            </div>
-
-            <Button variant="primary" size="lg" type="submit" disabled={submitting} className="min-w-[112px]">
-              {submitting ? "Sending..." : "Start a conversation"}
-            </Button>
-          </form>
-
-          <div className="mt-4 min-h-6" role="status" aria-live="polite">
-            {status === "success" ? <p className="body-md text-accent">Message sent. Thanks for reaching out. I'll get back to you soon.</p> : null}
-            {status === "error" ? (
-              <p className="body-md status-danger-text">
-                Your message couldn't be sent. Please try again or email me directly at{" "}
-                <a className="underline" href="mailto:delalama.miguel@gmail.com">
-                  delalama.miguel@gmail.com
-                </a>
-                .
-              </p>
-            ) : null}
+          <p className="body-md max-w-2xl">
+            The fastest way to reach me is email. Whether it is a role, a project, or a conversation about building products
+            with AI at the foundation, write to me directly. Every message gets a personal reply.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <a href={contactMailto()} className={cn(buttonVariants({ variant: "primary", size: "lg" }))}>
+              Email {CONTACT_EMAIL}
+            </a>
           </div>
         </Card>
       </div>
@@ -401,7 +321,7 @@ function ContactSection({ id }: { id: string }) {
 function FooterSection() {
   return (
     <footer className="container border-t border-border/60 py-8">
-      <div className="flex flex-col gap-2 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 pr-16 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
         <p className="text-foreground">Miguel de la Lama · Senior Product Manager</p>
         <a
           href="https://www.linkedin.com/in/migueldelalama/"
@@ -411,9 +331,7 @@ function FooterSection() {
         >
           LinkedIn
         </a>
-        <a href="mailto:delalama.miguel@gmail.com" className="hover:text-foreground hover:underline">
-          delalama.miguel@gmail.com
-        </a>
+        <EmailLink className="text-muted-text no-underline hover:text-foreground hover:underline" />
       </div>
     </footer>
   );

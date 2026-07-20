@@ -8,14 +8,8 @@ import { PUBLIC_CASE_STUDY_SLUGS } from "@/lib/case-study-access";
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
 const LoginPage = lazy(() => import("@/pages/login-page").then((module) => ({ default: module.LoginPage })));
 const NotFoundPage = lazy(() => import("@/pages/not-found-page").then((module) => ({ default: module.NotFoundPage })));
-const RequestAccessPage = lazy(() =>
-  import("@/pages/request-access-page").then((module) => ({ default: module.RequestAccessPage })),
-);
 const CaseStudyDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.CaseStudyDetailPage })),
-);
-const ResumeDownloadPage = lazy(() =>
-  import("@/pages/private-placeholders").then((module) => ({ default: module.ResumeDownloadPage })),
 );
 const DeepDiveDetailPage = lazy(() =>
   import("@/pages/private-placeholders").then((module) => ({ default: module.DeepDiveDetailPage })),
@@ -114,21 +108,12 @@ export default function App() {
         <Route element={<SiteShell />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/request-access" element={<RequestAccessPage />} />
           <Route path="/case-studies" element={<Navigate to="/#case-studies" replace />} />
           {/* Overlay URLs render the homepage as the visual context; the
               overlay itself is matched against the real location below. */}
           <Route path="/case-studies/:slug" element={<HomePage />} />
           <Route path="/philosophy" element={<Navigate to="/" replace />} />
           <Route path="/resume" element={<Navigate to="/#resume" replace />} />
-          <Route
-            path="/resume-download"
-            element={
-              <PrivateRoute requireScope="resume">
-                <ResumeDownloadPage />
-              </PrivateRoute>
-            }
-          />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route path="/deep-dive/:slug" element={<HomePage />} />
           <Route
