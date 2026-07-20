@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { EmailLink } from "@/components/ui/email-link";
 import { Input } from "@/components/ui/input";
 import { useDocumentTitle } from "@/lib/use-document-title";
 
@@ -24,7 +25,7 @@ export function LoginPage() {
     if (next.startsWith("/case-studies") || next.startsWith("/deep-dive")) {
       return { headline: "Access case studies", detail: "Case studies are shared privately with recruiters and hiring managers." };
     }
-    if (next.startsWith("/resume")) {
+    if (next.startsWith("/resume") || next.startsWith("/files/cms/resume")) {
       return { headline: "Access resume", detail: "The resume is shared privately with recruiters and hiring managers." };
     }
     if (next.startsWith("/admin") || next === "/style-guide") {
@@ -34,9 +35,6 @@ export function LoginPage() {
   }, [next]);
 
   const isOwnerArea = next.startsWith("/admin") || next === "/style-guide";
-  const requestAccessHref = `mailto:delalama.miguel@gmail.com?subject=${encodeURIComponent(
-    "Portfolio access request",
-  )}&body=${encodeURIComponent("Hi Miguel, I'd like access to your private portfolio content.\n\nName:\nCompany / role:\n")}`;
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,11 +93,9 @@ export function LoginPage() {
 
           {!isOwnerArea ? (
             <p className="mt-6 text-sm text-muted-text">
-              Don't have the password?{" "}
-              <a href={requestAccessHref} className="link-accent">
-                Request access by email
-              </a>{" "}
-              — I typically reply the same day.
+              Don't have the password? Request access by emailing{" "}
+              <EmailLink subject="Portfolio access request" />. Access is reviewed personally and is not granted
+              automatically.
             </p>
           ) : null}
 

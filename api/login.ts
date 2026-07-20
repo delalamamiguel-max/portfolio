@@ -1,6 +1,13 @@
 import { timingSafeEqual } from "node:crypto";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildSessionCookie, createSessionToken, SESSION_COOKIE_NAME, VIEWER_SESSION_COOKIE_NAME } from "../lib/session.js";
+import {
+  buildSessionCookie,
+  createSessionToken,
+  resumeScopeSecret,
+  RESUME_SESSION_COOKIE_NAME,
+  SESSION_COOKIE_NAME,
+  VIEWER_SESSION_COOKIE_NAME,
+} from "../lib/session.js";
 
 type RateLimitEntry = {
   count: number;
@@ -82,8 +89,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (viewerSecret && safeCompare(providedPassword, viewerSecret)) {
-    const token = await createSessionToken(viewerSecret);
-    res.setHeader("Set-Cookie", buildSessionCookie(token, VIEWER_SESSION_COOKIE_NAME));
+    // The shared password grants both viewer scopes (it predates the split);
+    // scoped-down access is issued through the approval workflow instead.
+    res.setHeader("Set-Cookie", [
+      buildSessionCookie(await createSessionToken(viewerSecret), VIEWER_SESSION_COOKIE_NAME),
+      buildSessionCookie(await createSessionToken(resumeScopeSecret(viewerSecret)), RESUME_SESSION_COOKIE_NAME),
+    ]);
     res.status(200).json({ ok: true, scope: "viewer" });
     return;
   }

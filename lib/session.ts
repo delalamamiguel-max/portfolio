@@ -1,9 +1,18 @@
 const SESSION_DURATION_SECONDS = 60 * 60 * 12;
 const SESSION_COOKIE_NAME = "miguel_session";
-// Separate cookie for viewer-only access (company-product case studies +
-// resume). Distinct from the admin cookie so a site owner logged into /admin
-// keeps that session, and a viewer session never grants CMS write access.
+// Separate cookie for viewer access to company-product case studies. Distinct
+// from the admin cookie so a site owner logged into /admin keeps that session,
+// and a viewer session never grants CMS write access.
 const VIEWER_SESSION_COOKIE_NAME = "miguel_viewer_session";
+// Resume access is its own scope with its own cookie AND its own signing
+// secret (derive with resumeScopeSecret below). Distinct secrets matter:
+// with a shared secret, a case-study token value could be replayed under the
+// resume cookie name to forge cross-scope access.
+const RESUME_SESSION_COOKIE_NAME = "miguel_resume_session";
+
+export function resumeScopeSecret(caseStudyPassword: string): string {
+  return `resume-scope::${caseStudyPassword}`;
+}
 
 type SessionPayload = {
   exp: number;
@@ -127,4 +136,5 @@ export function clearSessionCookie(cookieName: string = SESSION_COOKIE_NAME): st
   ].join("; ");
 }
 
-export { SESSION_COOKIE_NAME, VIEWER_SESSION_COOKIE_NAME, SESSION_DURATION_SECONDS };
+export { SESSION_COOKIE_NAME, VIEWER_SESSION_COOKIE_NAME, RESUME_SESSION_COOKIE_NAME, SESSION_DURATION_SECONDS };
+export { hmacHex, toBase64Url, fromBase64Url };

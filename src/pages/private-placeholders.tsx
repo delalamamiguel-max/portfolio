@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { CaseStudyTemplate } from "@/components/case-study/case-study-template";
 import { Section } from "@/components/layout/section";
 import { HistoryBackButton } from "@/components/ui/history-back-button";
-import { fetchContentDoc, getResumeContent, type ContentDomain } from "@/lib/content-loader";
+import { fetchContentDoc, type ContentDomain } from "@/lib/content-loader";
 import { validateCaseStudyDoc, type ValidatedCaseStudy } from "@/lib/content-schema";
 import { useDocumentTitle } from "@/lib/use-document-title";
 
@@ -105,38 +105,4 @@ export function DeepDiveDetailPage() {
   }
 
   return <CaseStudyTemplate study={state.study} showBackButton={false} />;
-}
-
-export function ResumeDownloadPage() {
-  const resume = getResumeContent();
-  const resumeUrl = resume.downloadablePdfUrl?.trim();
-
-  useEffect(() => {
-    if (!resumeUrl) return;
-    window.location.assign(resumeUrl);
-  }, [resumeUrl]);
-
-  if (!resumeUrl) {
-    return (
-      <Section density="dense">
-        <div className="max-w-2xl space-y-4">
-          <h1 className="h1">Resume unavailable.</h1>
-          <p className="body-md">A resume file has not been configured yet.</p>
-          <HistoryBackButton fallbackTo="/" label="Back to Home" />
-        </div>
-      </Section>
-    );
-  }
-
-  return (
-    <Section density="dense">
-      <div className="max-w-2xl space-y-4">
-        <h1 className="h3">Opening resume...</h1>
-        <p className="body-md">If download does not start, use the link below.</p>
-        <a href={resumeUrl} className="link-accent">
-          Download resume PDF
-        </a>
-      </div>
-    </Section>
-  );
 }
