@@ -1,8 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { matchPath, Navigate, Route, Routes, useLocation, type Location } from "react-router-dom";
+import { matchPath, Navigate, Route, Routes, useLocation, useParams, type Location } from "react-router-dom";
 import { SiteShell } from "@/components/layout/site-shell";
 import { CaseStudyOverlay } from "@/components/case-study/case-study-overlay";
 import { verifySession } from "@/lib/auth";
+import { PUBLIC_CASE_STUDY_SLUGS } from "@/lib/case-study-access";
 
 const HomePage = lazy(() => import("@/pages/home-page").then((module) => ({ default: module.HomePage })));
 const LoginPage = lazy(() => import("@/pages/login-page").then((module) => ({ default: module.LoginPage })));
@@ -32,23 +33,25 @@ const AdminDeepDivePage = lazy(() =>
   import("@/pages/admin/admin-deep-dive").then((module) => ({ default: module.AdminDeepDivePage })),
 );
 
-function PrivateRoute({ children }: { children: JSX.Element }) {
+/** requireAdmin: strictly admin-scope (CMS/admin surfaces). Omitted, a
+ * viewer-scope session (company-product case studies, resume) is enough. */
+function PrivateRoute({ children, requireAdmin = false }: { children: JSX.Element; requireAdmin?: boolean }) {
   const location = useLocation();
   const [allowed, setAllowed] = useState<boolean | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
-    verifySession().then((authenticated) => {
+    verifySession().then(({ authenticated, scope }) => {
       if (mounted) {
-        setAllowed(authenticated);
+        setAllowed(requireAdmin ? scope === "admin" : authenticated);
       }
     });
 
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [requireAdmin]);
 
   if (allowed === null) {
     return <div className="container py-12 text-muted-text">Checking access...</div>;
@@ -59,6 +62,19 @@ function PrivateRoute({ children }: { children: JSX.Element }) {
   }
 
   return children;
+}
+
+/** Case studies split into two access tiers (see PUBLIC_CASE_STUDY_SLUGS):
+ * public slugs render with no auth check at all; everything else goes
+ * through the normal admin-or-viewer gate. */
+function CaseStudyAccessGate({ children }: { children: JSX.Element }) {
+  const { slug } = useParams();
+
+  if (slug && PUBLIC_CASE_STUDY_SLUGS.has(slug)) {
+    return children;
+  }
+
+  return <PrivateRoute>{children}</PrivateRoute>;
 }
 
 const OVERLAY_PATTERNS = ["/case-studies/:slug", "/deep-dive/:slug"];
@@ -109,7 +125,7 @@ export default function App() {
           <Route
             path="/style-guide"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <StyleGuidePage />
               </PrivateRoute>
             }
@@ -117,7 +133,7 @@ export default function App() {
           <Route
             path="/admin"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminHomePage />
               </PrivateRoute>
             }
@@ -125,7 +141,7 @@ export default function App() {
           <Route
             path="/admin/pages"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminPagesPage />
               </PrivateRoute>
             }
@@ -133,7 +149,7 @@ export default function App() {
           <Route
             path="/admin/philosophy"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminPhilosophyPage />
               </PrivateRoute>
             }
@@ -141,7 +157,7 @@ export default function App() {
           <Route
             path="/admin/case-studies"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminCaseStudiesPage />
               </PrivateRoute>
             }
@@ -149,7 +165,7 @@ export default function App() {
           <Route
             path="/admin/case-studies/preview/:slug"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminCaseStudyPreviewPage />
               </PrivateRoute>
             }
@@ -157,7 +173,7 @@ export default function App() {
           <Route
             path="/admin/deep-dive"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireAdmin>
                 <AdminDeepDivePage />
               </PrivateRoute>
             }
@@ -175,9 +191,9 @@ export default function App() {
               path="/case-studies/:slug"
               element={
                 <CaseStudyOverlay hasBackground={Boolean(backgroundLocation)}>
-                  <PrivateRoute>
+                  <CaseStudyAccessGate>
                     <CaseStudyDetailPage />
-                  </PrivateRoute>
+                  </CaseStudyAccessGate>
                 </CaseStudyOverlay>
               }
             />
@@ -185,7 +201,7 @@ export default function App() {
               path="/deep-dive/:slug"
               element={
                 <CaseStudyOverlay hasBackground={Boolean(backgroundLocation)}>
-                  <PrivateRoute>
+                  <PrivateRoute requireAdmin>
                     <DeepDiveDetailPage />
                   </PrivateRoute>
                 </CaseStudyOverlay>

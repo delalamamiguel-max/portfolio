@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { buildSessionCookie, createSessionToken } from "../lib/session.js";
+import { buildSessionCookie, createSessionToken, SESSION_COOKIE_NAME, VIEWER_SESSION_COOKIE_NAME } from "../lib/session.js";
 
 type RateLimitEntry = {
   count: number;
@@ -64,22 +64,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const expectedPassword = process.env.SITE_PASSWORD;
+  const adminSecret = process.env.SITE_PASSWORD;
+  const viewerSecret = process.env.CASE_STUDY_PASSWORD;
 
-  if (!expectedPassword) {
+  if (!adminSecret) {
     res.status(500).json({ error: "Server misconfigured." });
     return;
   }
 
   const providedPassword = typeof req.body?.password === "string" ? req.body.password : "";
 
-  if (!safeCompare(providedPassword, expectedPassword)) {
-    res.status(401).json({ error: "Incorrect password. Try again." });
+  if (safeCompare(providedPassword, adminSecret)) {
+    const token = await createSessionToken(adminSecret);
+    res.setHeader("Set-Cookie", buildSessionCookie(token, SESSION_COOKIE_NAME));
+    res.status(200).json({ ok: true, scope: "admin" });
     return;
   }
 
-  const token = await createSessionToken(expectedPassword);
+  if (viewerSecret && safeCompare(providedPassword, viewerSecret)) {
+    const token = await createSessionToken(viewerSecret);
+    res.setHeader("Set-Cookie", buildSessionCookie(token, VIEWER_SESSION_COOKIE_NAME));
+    res.status(200).json({ ok: true, scope: "viewer" });
+    return;
+  }
 
-  res.setHeader("Set-Cookie", buildSessionCookie(token));
-  res.status(200).json({ ok: true });
+  res.status(401).json({ error: "Incorrect password. Try again." });
 }

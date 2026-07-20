@@ -1,7 +1,8 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { assertCmsAuthorized } from "./cms/auth.js";
+import { assertAdminOrViewerAuthorized, assertCmsAuthorized } from "./cms/auth.js";
+import { PUBLIC_CASE_STUDY_SLUGS } from "../lib/case-study-access.js";
 
 const ALLOWED_DOMAINS = new Set(["case-studies", "deep-dive", "philosophy"]);
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -10,15 +11,17 @@ function contentDir(domain: string): string {
   return path.join(process.cwd(), "content", domain);
 }
 
+/** Cheap frontmatter peek: only what's needed to decide whether a public-slug
+ * case study is actually published (a draft-in-progress edit must never be
+ * servable without a session, even for slugs that are public once published). */
+function isPublished(raw: string): boolean {
+  const match = raw.match(/^published:\s*(true|false)\s*$/m);
+  return match ? match[1] === "true" : false;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "GET") {
     res.status(405).json({ error: "Method not allowed" });
-    return;
-  }
-
-  const auth = await assertCmsAuthorized(req);
-  if (auth.ok === false) {
-    res.status(auth.status).json({ error: auth.error });
     return;
   }
 
@@ -40,13 +43,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const filePath = path.join(contentDir(domain), `${slug}.md`);
+      let raw: string;
 
       try {
-        const raw = await readFile(filePath, "utf8");
-        res.status(200).json({ raw });
+        raw = await readFile(filePath, "utf8");
       } catch {
         res.status(404).json({ error: "Not found" });
+        return;
       }
+
+      const isPubliclyReadable = domain === "case-studies" && PUBLIC_CASE_STUDY_SLUGS.has(slug) && isPublished(raw);
+
+      if (!isPubliclyReadable) {
+        // Deep dives and philosophy stay admin-only (no public renderer for
+        // them today); gated case studies accept admin OR viewer.
+        const auth = domain === "case-studies" ? await assertAdminOrViewerAuthorized(req) : await assertCmsAuthorized(req);
+        if (auth.ok === false) {
+          res.status(auth.status).json({ error: auth.error });
+          return;
+        }
+      }
+
+      res.status(200).json({ raw });
+      return;
+    }
+
+    // Bulk listing (no slug): only ever used by the admin editors, so it
+    // always requires the admin scope regardless of domain or public slugs.
+    const auth = await assertCmsAuthorized(req);
+    if (auth.ok === false) {
+      res.status(auth.status).json({ error: auth.error });
       return;
     }
 

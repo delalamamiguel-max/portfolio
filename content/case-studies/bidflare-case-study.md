@@ -100,5 +100,3 @@ The launch plan is deliberate: instrument the funnel end to end first, so the fi
 **Verification is what makes AI-generated content shippable.** The brief's independent QA pass, which re-reads sources and deletes anything untraceable, is the difference between a demo feature and something an agency can act on.
 
 Next: formal launch, end-to-end funnel instrumentation, moving monetization from pre-production to production, expanding local-portal coverage behind the adapter model, and letting observed behavior choose between deepening match quality and broadening coverage.
-
-*Case study prepared for portfolio use. Product capabilities are verifiable in the deployed product; the product is pre-launch and adoption metrics do not yet exist.*

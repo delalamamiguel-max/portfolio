@@ -1,4 +1,6 @@
-export async function verifySession(): Promise<boolean> {
+export type SessionScope = "admin" | "viewer" | null;
+
+export async function verifySession(): Promise<{ authenticated: boolean; scope: SessionScope }> {
   try {
     const response = await fetch("/api/verify-session", {
       method: "GET",
@@ -7,13 +9,13 @@ export async function verifySession(): Promise<boolean> {
     });
 
     if (!response.ok) {
-      return false;
+      return { authenticated: false, scope: null };
     }
 
-    const data = (await response.json()) as { authenticated?: boolean };
-    return Boolean(data.authenticated);
+    const data = (await response.json()) as { authenticated?: boolean; scope?: SessionScope };
+    return { authenticated: Boolean(data.authenticated), scope: data.scope ?? null };
   } catch {
-    return false;
+    return { authenticated: false, scope: null };
   }
 }
 

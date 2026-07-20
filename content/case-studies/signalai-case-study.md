@@ -89,18 +89,10 @@ Beyond the headline metrics, the project delivered meaningful qualitative outcom
 - Segment creation time dropped by approximately 25%, freeing capacity for higher-leverage strategic initiatives
 - The Redis caching implementation became a reference architecture for other inference-heavy services on the platform
 
-## Learnings & What's Next
+## Learnings
 
 **Key Takeaways**
 
 - Infrastructure concerns are a prioritization blocker, not a technical afterthought. Addressing the caching and scaling architecture before feature work eliminated the primary source of engineering resistance.
 - Shared workshops outperform async alignment on cross-functional problems. The structured workshop format surfaced assumptions that would have created re-work if left unresolved.
 - A/B testing with high-value segments first de-risked the broader rollout. Running the experiment on cart abandoners and repeat purchasers produced faster, cleaner signal than a broad launch would have.
-
-Planned next iterations:
-
-- Expand feedback loop coverage to include downstream purchase events (not just clicks) to improve model precision
-- Explore real-time segment recalculation during active sessions for higher-funnel personalization
-- Apply the microservice pattern to email and push notification personalization channels
-
-*Case study prepared for portfolio use. Metrics reflect approximate outcomes from internal measurement.*
