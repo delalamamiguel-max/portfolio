@@ -1,4 +1,11 @@
-import { parseCookies, SESSION_COOKIE_NAME, verifySessionToken, VIEWER_SESSION_COOKIE_NAME } from "./lib/session.js";
+import {
+  parseCookies,
+  resumeScopeSecret,
+  RESUME_SESSION_COOKIE_NAME,
+  SESSION_COOKIE_NAME,
+  verifySessionToken,
+  VIEWER_SESSION_COOKIE_NAME,
+} from "./lib/session.js";
 import { PUBLIC_CASE_STUDY_SLUGS } from "./lib/case-study-access.js";
 
 const CASE_STUDY_PATH = /^\/case-studies\/([a-z0-9-]+)$/;
@@ -18,6 +25,14 @@ async function hasViewerSession(request: Request): Promise<boolean> {
 
   const token = parseCookies(request.headers.get("cookie"))[VIEWER_SESSION_COOKIE_NAME];
   return Boolean(token) && verifySessionToken(token, secret);
+}
+
+async function hasResumeSession(request: Request): Promise<boolean> {
+  const secret = process.env.CASE_STUDY_PASSWORD;
+  if (!secret) return false;
+
+  const token = parseCookies(request.headers.get("cookie"))[RESUME_SESSION_COOKIE_NAME];
+  return Boolean(token) && verifySessionToken(token, resumeScopeSecret(secret));
 }
 
 function redirectToLogin(request: Request): Response {
@@ -55,10 +70,10 @@ export default async function middleware(request: Request) {
     return fetch(request);
   }
 
-  // Resume: gated by the same admin-or-viewer rule as company-product case
-  // studies (the resume itself carries no public/private split).
+  // Resume: its own scope. A case-study-only grant must not open the resume,
+  // so this checks the resume cookie, never the case-study one.
   if (pathname.startsWith("/files/cms/resume/") || pathname === "/resume-download") {
-    if (!((await hasAdminSession(request)) || (await hasViewerSession(request)))) return redirectToLogin(request);
+    if (!((await hasAdminSession(request)) || (await hasResumeSession(request)))) return redirectToLogin(request);
     return fetch(request);
   }
 

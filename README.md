@@ -11,7 +11,8 @@ Strategy x Systems x Scaled Execution.
 - Required: `SITE_PASSWORD` (admin/CMS access — also grants full read access to every gated case study and the resume)
 - `CASE_STUDY_PASSWORD` (viewer-only access to Company Products case studies and the resume; does not grant CMS write access). Case studies tagged Personal / Entrepreneurship are public and need no password at all — see `lib/case-study-access.ts` / `src/lib/case-study-access.ts` for the allow-list (keep both files in sync).
 - CMS (GitHub writes): `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`
-- Contact form delivery (Resend): `RESEND_API_KEY` (required for delivery; without it the form returns an honest "temporarily unavailable" error), optional `CONTACT_TO_EMAIL` (default delalama.miguel@gmail.com) and `CONTACT_FROM_EMAIL` (default onboarding@resend.dev; use a sender on a Resend-verified domain for production)
+- Email delivery (contact form + access requests, Resend): `RESEND_API_KEY` (required; see docs/email-and-access-setup.md), optional `CONTACT_TO_EMAIL` (default delalama.miguel@gmail.com) and `CONTACT_FROM_EMAIL` (default onboarding@resend.dev; use a sender on a Resend-verified domain for production)
+- Access requests: `BLOB_READ_WRITE_TOKEN` (auto-set by the linked private `portfolio-access` Blob store) backs the request registry with pending/approved/declined/expired/revoked states
 
 Copy local env:
 - `cp .env.example .env`

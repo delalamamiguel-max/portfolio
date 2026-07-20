@@ -34,9 +34,6 @@ export function LoginPage() {
   }, [next]);
 
   const isOwnerArea = next.startsWith("/admin") || next === "/style-guide";
-  const requestAccessHref = `mailto:delalama.miguel@gmail.com?subject=${encodeURIComponent(
-    "Portfolio access request",
-  )}&body=${encodeURIComponent("Hi Miguel, I'd like access to your private portfolio content.\n\nName:\nCompany / role:\n")}`;
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -96,10 +93,10 @@ export function LoginPage() {
           {!isOwnerArea ? (
             <p className="mt-6 text-sm text-muted-text">
               Don't have the password?{" "}
-              <a href={requestAccessHref} className="link-accent">
-                Request access by email
-              </a>{" "}
-              — I typically reply the same day.
+              <Link to="/request-access" className="link-accent">
+                Request access
+              </Link>
+              . I review every request personally, usually the same day.
             </p>
           ) : null}
 

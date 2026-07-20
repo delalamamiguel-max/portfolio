@@ -265,9 +265,14 @@ function ResumeSection({ id }: { id: string }) {
       <div data-reveal className="mx-auto max-w-3xl space-y-8 text-center">
         <h2 className="h3">Resume</h2>
         {hasPdf ? (
-          <Link to="/resume-download" className="inline-flex">
-            <Button variant="primary" size="lg">Download PDF</Button>
-          </Link>
+          <div className="space-y-3">
+            <Link to="/resume-download" className="inline-flex">
+              <Button variant="primary" size="lg">Download PDF</Button>
+            </Link>
+            <p className="text-sm text-muted-text">
+              The resume is password protected. <Link to="/request-access" className="link-accent">Request access</Link>
+            </p>
+          </div>
         ) : (
           <Button variant="secondary" size="lg" disabled>
             Resume unavailable
@@ -282,6 +287,7 @@ function ContactSection({ id }: { id: string }) {
   const contact = getContactContent();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -294,7 +300,7 @@ function ContactSection({ id }: { id: string }) {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, message }),
+        body: JSON.stringify({ email, message, website, sourcePage: window.location.pathname + window.location.hash }),
       });
 
       if (!response.ok) {
@@ -356,20 +362,33 @@ function ContactSection({ id }: { id: string }) {
               />
             </div>
 
+            {/* Honeypot: hidden from real users and assistive tech. */}
+            <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
+              <label htmlFor="contact-website">Website</label>
+              <input
+                id="contact-website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(event) => setWebsite(event.target.value)}
+              />
+            </div>
+
             <Button variant="primary" size="lg" type="submit" disabled={submitting} className="min-w-[112px]">
               {submitting ? "Sending..." : "Start a conversation"}
             </Button>
           </form>
 
           <div className="mt-4 min-h-6" role="status" aria-live="polite">
-            {status === "success" ? <p className="body-md text-accent">Message sent. Thanks for reaching out.</p> : null}
+            {status === "success" ? <p className="body-md text-accent">Message sent. Thanks for reaching out. I'll get back to you soon.</p> : null}
             {status === "error" ? (
               <p className="body-md status-danger-text">
-                Unable to send right now. Please email{" "}
+                Your message couldn't be sent. Please try again or email me directly at{" "}
                 <a className="underline" href="mailto:delalama.miguel@gmail.com">
                   delalama.miguel@gmail.com
-                </a>{" "}
-                directly.
+                </a>
+                .
               </p>
             ) : null}
           </div>
