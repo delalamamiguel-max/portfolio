@@ -1,15 +1,19 @@
 # Architected by Miguel
 
-Strategy x Systems x Scaled Execution.
+## Purpose and status
 
-## Stack
+Strategy x Systems x Scaled Execution. A professional portfolio with case-study browsing, résumé downloads and a GitHub-backed content editor. This README describes the inspected default-branch implementation; it does not certify live deployment health or inclusion of content on other branches.
+
+## Architecture and integrations
+
 - Vite + React + TypeScript
 - Tailwind CSS + shadcn/ui foundations
 - Vercel Functions + Edge Middleware for password-gated private routes
 
-## Environment Variables
+## Setup and environments
+
 - Required: `SITE_PASSWORD` (admin/CMS access — also grants full read access to every gated case study and the resume)
-- `CASE_STUDY_PASSWORD` (viewer-only access to Company Products case studies and the resume; does not grant CMS write access). Case studies tagged Personal / Entrepreneurship are public and need no password at all — see `lib/case-study-access.ts` / `src/lib/case-study-access.ts` for the allow-list (keep both files in sync).
+- `CASE_STUDY_PASSWORD` (viewer-only access to gated case studies and the resume; does not grant CMS write access). Public access is controlled by the explicit slug allow-list in `lib/case-study-access.ts` and its client mirror `src/lib/case-study-access.ts` (keep both files in sync). Changing a CMS category alone does not change access. Other case studies require an admin or viewer session.
 - CMS (GitHub writes): `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`
 - Contact and access requests are handled by direct email to hello@migueldelalama.com (no email provider or storage required); access to gated content is granted manually by sharing the viewer password
 
@@ -21,6 +25,18 @@ Copy local env:
 1. Install dependencies: `npm install`
 2. Start frontend: `npm run dev`
 3. For full middleware + API behavior, run with Vercel dev: `npx vercel dev`
+
+## Repository map
+
+- `src/`: React routes, components, client access helpers and generated content index.
+- `api/`, `lib/`, `middleware.ts`: Vercel functions, server helpers and route/asset access checks.
+- `content/`: versioned page data and Markdown case studies.
+- `public/`: served assets, including CMS uploads; review exposure before adding files.
+- `scripts/`: content-index generation and QA utilities.
+- `docs/`, root planning documents: design and release references.
+- `vercel.json`, `.github/workflows/ci.yml`: hosting routing/headers and build CI.
+
+`AGENTS.md` points to four source-of-truth files under `prd/`, but those files are absent at those paths in this checkout; matching documents exist at the repository root and are linked below. Its blanket “case studies are private” rule also predates the explicit public-slug allow-list in current source. Preserve the implemented boundary and resolve this guidance conflict with the owner before changing access behavior; this README update changes neither.
 
 ## Routes
 Public:
@@ -58,7 +74,7 @@ Private:
   - ordered block rendering on `/` with semantic section IDs and scroll offset handling
   - old public routes (`/case-studies`, `/resume`, `/contact`) now redirect to section anchors on `/`
   - `Philosophy` section is removed from the live homepage flow
-  - case-study cards on homepage open private detail routes (`/case-studies/:slug`) protected by existing session middleware flow
+  - case-study cards open detail routes (`/case-studies/:slug`); explicit allow-listed slugs are public and remaining slugs follow the session middleware flow
   - case-study filter controls on homepage support three categories:
     - ordered as: `Both`, `Company Products`, `Personal / Entrepreneurship`
     - `Company Products`
@@ -69,7 +85,6 @@ Private:
   - resume block on homepage is intentionally CTA-only (`Download PDF`, opens in new tab)
   - footer includes direct LinkedIn and email contact links
   - hero profile image uses an editorial treatment (larger, unframed, high-contrast monochrome)
-  - floating `Top` button appears after first viewport and smooth-scrolls upward
   - floating `Top` button appears as soon as user starts scrolling and remains fixed in lower-right
   - subtle scroll-reveal animation is applied to homepage blocks and respects `prefers-reduced-motion`
 - Case Study CMS supports:
@@ -110,15 +125,17 @@ Private:
 - Case study body Markdown/MDX headings are the source of truth for frontend section structure (dynamic rendering).
 - Chunk load recovery: client auto-reloads once when a stale hashed dynamic-import bundle is requested after deployment.
 
-## Production Deploy (Vercel)
-1. Ensure `SITE_PASSWORD` is configured in Vercel for `Production`, `Preview`, and `Development`.
-2. Validate locally:
-   - `npm run lint`
-   - `npm run build`
-3. Deploy preview: `vercel`
-4. Promote to production: `vercel --prod`
+## Deployment and rollback
 
-## QA
+Vercel serves the frontend, functions and middleware; `vercel.json` defines routing and response headers. CMS edits commit to the configured GitHub repository/branch and can trigger a new build. A CMS save is therefore a repository write and potentially a deployment, not an isolated preview operation. Neither CMS nor deployment commands were invoked for this README change.
+
+For separately approved releases, verify password roles, explicit public allow-lists, target branch and asset access before promotion. Restore a compatible approved artifact/content revision for rollback; reverting the web deployment does not erase Git history, uploaded files or copies already retrieved. Current deployment settings and last-good rollback artifacts were not verified. Keep this branch local pending review and publication-safety assessment.
+
+## Safe commands
+
+Use `git status --short`, `git diff -- README.md` and `git diff --check` for documentation work. `npm run dev` and `npm run build` run `content:index` first; that script validates content and writes `src/generated/case-study-index.json`. They are not read-only checks. `typecheck`, `lint`, `preview`, `qa:smoke` and `qa:markdown` have distinct scopes; inspect their scripts before execution. Vercel dev and smoke checks can exercise API/authentication/network behavior.
+
+## Testing and validation
 - Manual checklist: `docs/release-checklist.md`
 - Automated smoke checks:
   - `./scripts/qa-smoke.sh https://<your-domain>`
@@ -131,3 +148,21 @@ Private:
 - Trigger: pushes to `main` and pull requests
 - Job: `npm ci` then `npm run build`
 - This provides the branch status check shown in GitHub Branches and commit checks.
+
+## Risks and guardrails
+
+This repository is public. Website password gates do not hide source content, uploaded assets or Git history from repository readers. Do not add confidential employer/client material, credentials or private résumé details on the assumption that a web route is protected. Keep GitHub write tokens server-side and scoped to the approved content target; viewer credentials must never grant CMS writes. Direct-email links do not imply an automated sending service.
+
+## Related documentation
+
+- [Agent guidance](AGENTS.md) — stale paths/access-policy caveats above.
+- [Product plan](masterplan.md)
+- [Implementation plan](implementation-plan.md)
+- [Design guidance](design-guidelines.md)
+- [Routes and roles](app-flow-pages-and-roles.md)
+- [Release checklist](docs/release-checklist.md)
+- [System map](PORTFOLIO_SYSTEM_MAP.md)
+
+Existing CMS notes and historical QA reports are useful references, not newly executed validation. Preserve the owner-approved visual language and working content flows.
+
+This README update was checked statically only. No installs, application builds/tests, provider calls, database operations, skill installations or deployments were performed. Live hosting, external URLs and runtime behavior remain unverified.
